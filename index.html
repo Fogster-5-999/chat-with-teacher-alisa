@@ -9,9 +9,21 @@
 <body>
 <div id="app">
     <div id="header">
-        <div id="avatar">👩‍🏫</div>
-        <div id="contact-name">Алиса Сергеевна</div>
-        <div id="status">была сегодня</div>
+        <div id="avatar"><span id="avatar-emoji">👩‍🏫</span><img id="avatar-img" src="" alt="" /></div>
+        <div id="header-text">
+            <div id="contact-name">Алиса Сергеевна</div>
+            <div id="status">была сегодня</div>
+        </div>
+        <button id="music-toggle" style="background:none; border:none; color:#7fa9b9; font-size:20px; cursor:pointer; padding:0 10px;">🔊</button>
+    </div>
+
+    <!-- Всплывающее уведомление в стиле мессенджера (например, от друга) -->
+    <div id="push-notification">
+        <div id="push-notif-icon">💬</div>
+        <div id="push-notif-body">
+            <div id="push-notif-name"></div>
+            <div id="push-notif-text"></div>
+        </div>
     </div>
 
     <div id="stats-bar">
@@ -33,6 +45,10 @@
     </div>
 
     <div id="messages">
+        <div id="network-status" style="display:none; text-align:center; padding:12px; color:#8ba9b9; font-size:14px;">
+            <span>Подключение...</span>
+            <div class="spinner"></div>
+        </div>
         <div id="typing-indicator" class="typing-indicator" style="display:none;">
             <span>Алиса печатает</span>
             <span class="dots">.</span>
@@ -46,6 +62,53 @@
         <div>Показываем рекламу...</div>
         <div style="font-size:14px; margin-top:12px; color:#8ba9b9;">(в реальной игре будет реклама Яндекса)</div>
         <button id="close-ad-btn" style="margin-top:20px; padding:10px 30px; border:none; border-radius:30px; background:#4d7b8f; color:#fff; font-size:16px; cursor:pointer;">Закрыть рекламу</button>
+    </div>
+
+    <!-- Профиль (в стиле Telegram, выезжает справа) -->
+    <div id="profile-modal">
+        <div id="profile-header">
+            <button id="close-profile" aria-label="Назад">←</button>
+            <div id="profile-header-title">Профиль</div>
+        </div>
+        <div id="profile-scroll">
+            <div id="profile-cover">
+                <div id="profile-avatar-large">
+                    <span id="profile-avatar-emoji">👩‍🏫</span>
+                    <img id="profile-avatar-img" src="" alt="" />
+                </div>
+                <div id="profile-name">Алиса Сергеевна</div>
+                <div id="profile-status">была сегодня</div>
+            </div>
+            <div id="profile-info-list">
+                <div class="profile-info-row">
+                    <span class="profile-info-icon">💼</span>
+                    <div class="profile-info-text">
+                        <div class="profile-info-label">Учитель английского языка</div>
+                        <div class="profile-info-sub">место работы</div>
+                    </div>
+                </div>
+                <div class="profile-info-row">
+                    <span class="profile-info-icon">📝</span>
+                    <div class="profile-info-text">
+                        <div class="profile-info-label">Люблю свою работу и учеников. Всегда готова помочь, но строго спрашиваю за домашку 😉</div>
+                        <div class="profile-info-sub">о себе</div>
+                    </div>
+                </div>
+                <div class="profile-info-row">
+                    <span class="profile-info-icon">👤</span>
+                    <div class="profile-info-text">
+                        <div class="profile-info-label">@alisa_sergeevna</div>
+                        <div class="profile-info-sub">имя пользователя</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Лайтбокс: увеличенный просмотр фото (в чате и в профиле) -->
+    <div id="photo-lightbox">
+        <button id="lightbox-close" aria-label="Закрыть">✕</button>
+        <img id="lightbox-img" src="" alt="" />
     </div>
 </div>
 
