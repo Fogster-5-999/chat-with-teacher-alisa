@@ -32,7 +32,7 @@ let musicUserToggled = false; // ставится в true, если игрок �
 // ================================================================
 // Впиши сюда путь к фото (например 'res/alisa.jpg'), когда оно будет готово —
 // оно автоматически появится и в шапке, и в профиле вместо эмодзи.
-const TEACHER_PHOTO_URL = 'res/ava.jpg';
+const TEACHER_PHOTO_URL = 'res/ava.png';
 
 function applyTeacherPhoto() {
     if (!TEACHER_PHOTO_URL) return;
