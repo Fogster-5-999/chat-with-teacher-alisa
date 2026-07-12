@@ -68,6 +68,7 @@ function initAudio() {
     try {
         notificationSound = new Audio('res/message.mp3');
         notificationSound.volume = 0.5;
+        notificationSound.preload = 'auto';
         console.log('Звук уведомления загружен (res/message.mp3)');
     } catch (e) {
         console.warn('Не удалось загрузить звук уведомления:', e);
@@ -93,14 +94,32 @@ function toggleMusic() {
     }
 }
 
+let pendingNotificationSound = false;
+
 function playNotification() {
-    if (notificationSound) {
-        notificationSound.currentTime = 0;
-        notificationSound.play().catch(e => console.warn('Не удалось проиграть уведомление:', e));
-    } else {
+    if (!notificationSound) {
         console.warn('Звук уведомления не загружен');
+        return;
+    }
+    try { notificationSound.currentTime = 0; } catch (e) {}
+    const p = notificationSound.play();
+    if (p && typeof p.catch === 'function') {
+        p.catch(e => {
+            // Браузер заблокировал автоматическое воспроизведение —
+            // доиграем звук на самом ближайшем тапе игрока.
+            console.warn('Не удалось проиграть уведомление сразу, отложено до следующего тапа:', e);
+            pendingNotificationSound = true;
+        });
     }
 }
+
+document.addEventListener('click', function playPendingNotification() {
+    if (pendingNotificationSound && notificationSound) {
+        pendingNotificationSound = false;
+        try { notificationSound.currentTime = 0; } catch (e) {}
+        notificationSound.play().catch(() => {});
+    }
+});
 
 // ================================================================
 // 3. YANDEX SDK (ЭМУЛЯЦИЯ)
@@ -211,6 +230,21 @@ document.addEventListener('click', function autoStartMusic() {
             isMusicPlaying = true;
             document.getElementById('music-toggle').textContent = '🔊';
         }).catch(() => {});
+    }
+    // "Разблокируем" звук уведомления первым тапом: некоторые браузеры/вебвью
+    // (в т.ч. в Yandex Games) блокируют play(), если он вызван не напрямую
+    // из клика — а playNotification() у нас срабатывает позже, из таймеров.
+    if (notificationSound && !notificationSound.dataset.unlocked) {
+        notificationSound.dataset.unlocked = '1';
+        const vol = notificationSound.volume;
+        notificationSound.volume = 0;
+        notificationSound.play().then(() => {
+            notificationSound.pause();
+            notificationSound.currentTime = 0;
+            notificationSound.volume = vol;
+        }).catch(() => {
+            notificationSound.volume = vol;
+        });
     }
 }, { once: false });
 
