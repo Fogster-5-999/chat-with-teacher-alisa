@@ -4,115 +4,193 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <title>Переписка с учительницей</title>
-    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="src/ui/styles.css" />
 </head>
 <body>
-<div id="app">
-    <div id="header">
-        <div id="avatar"><span id="avatar-emoji">👩‍🏫</span><img id="avatar-img" src="" alt="" /></div>
-        <div id="header-text">
-            <div id="contact-name">Алиса Сергеевна</div>
-            <div id="status">была сегодня</div>
-        </div>
-        <button id="music-toggle" style="background:none; border:none; color:#7fa9b9; font-size:20px; cursor:pointer; padding:0 10px;">🔊</button>
-    </div>
-
-    <!-- Всплывающее уведомление в стиле мессенджера (например, от друга) -->
-    <div id="push-notification">
-        <div id="push-notif-icon">💬</div>
-        <div id="push-notif-body">
-            <div id="push-notif-name"></div>
-            <div id="push-notif-text"></div>
-        </div>
-    </div>
-
-    <div id="stats-bar">
-        <div class="stat-item">
-            <span class="stat-icon">📚</span>
-            <span class="stat-label">Успеваемость</span>
-            <span class="stat-value" id="stat-success">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-icon">❤️</span>
-            <span class="stat-label">Романтика</span>
-            <span class="stat-value" id="stat-romance">0</span>
-        </div>
-        <div class="stat-item">
-            <span class="stat-icon">😂</span>
-            <span class="stat-label">Юмор</span>
-            <span class="stat-value" id="stat-humor">0</span>
-        </div>
-    </div>
-
-    <div id="messages">
-        <div id="network-status" style="display:none; text-align:center; padding:12px; color:#8ba9b9; font-size:14px;">
-            <span>Подключение...</span>
-            <div class="spinner"></div>
-        </div>
-        <div id="typing-indicator" class="typing-indicator" style="display:none;">
-            <span>Алиса печатает</span>
-            <span class="dots">.</span>
-        </div>
-    </div>
-
-    <div id="options"></div>
-
-    <div id="ad-overlay">
-        <div class="ad-spinner"></div>
-        <div>Показываем рекламу...</div>
-        <div style="font-size:14px; margin-top:12px; color:#8ba9b9;">(в реальной игре будет реклама Яндекса)</div>
-        <button id="close-ad-btn" style="margin-top:20px; padding:10px 30px; border:none; border-radius:30px; background:#4d7b8f; color:#fff; font-size:16px; cursor:pointer;">Закрыть рекламу</button>
-    </div>
-
-    <!-- Профиль (в стиле Telegram, выезжает справа) -->
-    <div id="profile-modal">
-        <div id="profile-header">
-            <button id="close-profile" aria-label="Назад">←</button>
-            <div id="profile-header-title">Профиль</div>
-        </div>
-        <div id="profile-scroll">
-            <div id="profile-cover">
-                <div id="profile-avatar-large">
-                    <span id="profile-avatar-emoji">👩‍🏫</span>
-                    <img id="profile-avatar-img" src="" alt="" />
+    <div id="app">
+        <!-- Главное меню -->
+        <div id="menu-screen" class="screen active">
+            <div class="menu-container">
+                <h1 class="game-title">📱 Переписка</h1>
+                <p class="game-subtitle">Выбери сюжетную линию</p>
+                <div class="menu-buttons">
+                    <button class="menu-btn active" data-story="teacher">👩‍🏫 Учительница английского</button>
+                    <button class="menu-btn locked" disabled>🔒 Сюжет #2 (скоро)</button>
+                    <button class="menu-btn locked" disabled>🔒 Сюжет #3 (скоро)</button>
                 </div>
-                <div id="profile-name">Алиса Сергеевна</div>
-                <div id="profile-status">была сегодня</div>
-            </div>
-            <div id="profile-info-list">
-                <div class="profile-info-row">
-                    <span class="profile-info-icon">💼</span>
-                    <div class="profile-info-text">
-                        <div class="profile-info-label">Учитель английского языка</div>
-                        <div class="profile-info-sub">место работы</div>
-                    </div>
-                </div>
-                <div class="profile-info-row">
-                    <span class="profile-info-icon">📝</span>
-                    <div class="profile-info-text">
-                        <div class="profile-info-label">Люблю свою работу и учеников. Всегда готова помочь, но строго спрашиваю за домашку 😉</div>
-                        <div class="profile-info-sub">о себе</div>
-                    </div>
-                </div>
-                <div class="profile-info-row">
-                    <span class="profile-info-icon">👤</span>
-                    <div class="profile-info-text">
-                        <div class="profile-info-label">@alisa_sergeevna</div>
-                        <div class="profile-info-sub">имя пользователя</div>
-                    </div>
+                <div class="menu-footer">
+                    <button id="settings-btn" class="icon-btn">⚙️</button>
                 </div>
             </div>
         </div>
+
+        <!-- Основной экран игры (чат) -->
+        <div id="game-screen" class="screen">
+            <div id="header">
+                <div id="avatar">
+                    <span id="avatar-emoji">👩‍🏫</span>
+                    <img id="avatar-img" src="" alt="" />
+                </div>
+                <div id="header-text">
+                    <div id="contact-name">Алиса Сергеевна</div>
+                    <div id="status">была сегодня</div>
+                </div>
+                <button id="music-toggle" class="icon-btn">🔊</button>
+                <button id="settings-btn-game" class="icon-btn">⚙️</button>
+            </div>
+
+            <div id="stats-bar">
+                <div class="stat-item">
+                    <span class="stat-icon">📚</span>
+                    <span class="stat-label" data-i18n="stats.success">Успеваемость</span>
+                    <span class="stat-value" id="stat-success">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">❤️</span>
+                    <span class="stat-label" data-i18n="stats.romance">Романтика</span>
+                    <span class="stat-value" id="stat-romance">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-icon">😂</span>
+                    <span class="stat-label" data-i18n="stats.humor">Юмор</span>
+                    <span class="stat-value" id="stat-humor">0</span>
+                </div>
+            </div>
+
+            <div id="messages">
+                <div id="network-status" style="display:none; text-align:center; padding:12px; color:#8ba9b9; font-size:14px;">
+                    <span data-i18n="network.connecting">Подключение...</span>
+                    <div class="spinner"></div>
+                </div>
+                <div id="typing-indicator" class="typing-indicator" style="display:none;">
+                    <span data-i18n="typing.alisa">Алиса печатает</span>
+                    <span class="dots">.</span>
+                </div>
+            </div>
+
+            <div id="options"></div>
+        </div>
+
+        <!-- Модалка настроек -->
+        <div id="settings-modal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 data-i18n="settings.title">Настройки</h2>
+                    <button class="close-modal" id="close-settings">✕</button>
+                </div>
+                <div class="settings-list">
+                    <div class="setting-item">
+                        <span class="setting-label" data-i18n="settings.language">Язык</span>
+                        <div class="setting-control">
+                            <button class="lang-btn active" data-lang="ru">Русский</button>
+                            <button class="lang-btn" data-lang="en">English</button>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <span class="setting-label" data-i18n="settings.theme">Тема</span>
+                        <div class="setting-control">
+                            <button class="theme-btn active" data-theme="dark">🌙 Тёмная</button>
+                            <button class="theme-btn" data-theme="light">☀️ Светлая</button>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <span class="setting-label" data-i18n="settings.sound">Звук уведомлений</span>
+                        <div class="setting-control">
+                            <button class="sound-btn active" data-sound="on">🔊 Вкл</button>
+                            <button class="sound-btn" data-sound="off">🔇 Выкл</button>
+                        </div>
+                    </div>
+                    <div class="setting-item">
+                        <span class="setting-label" data-i18n="settings.reset">Сбросить прогресс</span>
+                        <div class="setting-control">
+                            <button id="reset-progress-btn" class="reset-btn" data-i18n="settings.reset">🔄 Сбросить</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Модалка профиля -->
+        <div id="profile-modal">
+            <div id="profile-header">
+                <button id="close-profile" aria-label="Назад">←</button>
+                <div id="profile-header-title" data-i18n="profile.title">Профиль</div>
+            </div>
+            <div id="profile-scroll">
+                <div id="profile-cover">
+                    <div id="profile-avatar-large">
+                        <span id="profile-avatar-emoji">👩‍🏫</span>
+                        <img id="profile-avatar-img" src="" alt="" />
+                    </div>
+                    <div id="profile-name">Алиса Сергеевна</div>
+                    <div id="profile-status">была сегодня</div>
+                </div>
+                <div id="profile-info-list">
+                    <div class="profile-info-row">
+                        <span class="profile-info-icon">💼</span>
+                        <div class="profile-info-text">
+                            <div class="profile-info-label" data-i18n="profile.job">Учитель английского языка</div>
+                            <div class="profile-info-sub" data-i18n="profile.job_sub">место работы</div>
+                        </div>
+                    </div>
+                    <div class="profile-info-row">
+                        <span class="profile-info-icon">📝</span>
+                        <div class="profile-info-text">
+                            <div class="profile-info-label" data-i18n="profile.bio">Люблю свою работу и учеников. Всегда готова помочь, но строго спрашиваю за домашку 😉</div>
+                            <div class="profile-info-sub" data-i18n="profile.bio_sub">о себе</div>
+                        </div>
+                    </div>
+                    <div class="profile-info-row">
+                        <span class="profile-info-icon">👤</span>
+                        <div class="profile-info-text">
+                            <div class="profile-info-label">@alisa_sergeevna</div>
+                            <div class="profile-info-sub" data-i18n="profile.username">имя пользователя</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Лайтбокс для фото -->
+        <div id="photo-lightbox">
+            <button id="lightbox-close" aria-label="Закрыть">✕</button>
+            <img id="lightbox-img" src="" alt="" />
+        </div>
+
+        <div id="day-transition-overlay" aria-hidden="true">
+            <div id="day-transition-card">
+                <div id="day-transition-label">Новый день</div>
+            </div>
+        </div>
+
+        <!-- Оверлей рекламы -->
+        <div id="ad-overlay">
+            <div class="ad-spinner"></div>
+            <div data-i18n="ad.loading">Показываем рекламу...</div>
+            <div style="font-size:14px; margin-top:12px; color:#8ba9b9;">(в реальной игре будет реклама Яндекса)</div>
+            <button id="close-ad-btn" style="margin-top:20px; padding:10px 30px; border:none; border-radius:30px; background:#4d7b8f; color:#fff; font-size:16px; cursor:pointer;">Закрыть</button>
+        </div>
+
+        <!-- Push-уведомление -->
+        <div id="push-notification">
+            <div id="push-notif-icon">💬</div>
+            <div id="push-notif-body">
+                <div id="push-notif-name"></div>
+                <div id="push-notif-text"></div>
+            </div>
+        </div>
     </div>
 
-    <!-- Лайтбокс: увеличенный просмотр фото (в чате и в профиле) -->
-    <div id="photo-lightbox">
-        <button id="lightbox-close" aria-label="Закрыть">✕</button>
-        <img id="lightbox-img" src="" alt="" />
-    </div>
-</div>
-
-<script src="story.js"></script>
-<script src="script.js"></script>
+    <script type="importmap">
+        {
+            "imports": {
+                "src/": "./src/"
+            }
+        }
+    </script>
+    <script type="module" src="src/app.js"></script>
 </body>
 </html>
