@@ -1,10 +1,10 @@
-import { t, setLanguage } from '../data/translations.js';
+import { t, setLanguage, getCurrentLanguage } from '../data/translations.js';
 import { getConfig, setConfig } from '../data/config.js';
 import { startGame, applyLanguage } from '../engine/game.js';
+import { openSettings } from './settings.js';
 
 const menuScreen = document.getElementById('menu-screen');
 const gameScreen = document.getElementById('game-screen');
-const menuButtons = document.querySelectorAll('.menu-btn');
 
 export function showMenu() {
     menuScreen.classList.add('active');
@@ -17,32 +17,33 @@ export function hideMenu() {
 }
 
 export function initMenu() {
-    menuButtons.forEach((btn, index) => {
-        if (index === 0) {
-            btn.addEventListener('click', () => {
-                hideMenu();
-                startGame('teacher');
-            });
-        } else if (index === 1) {
-            btn.addEventListener('click', () => {
-                hideMenu();
-                startGame('story2');
-            });
-        }
+    document.getElementById('top-lang-btn').addEventListener('click', () => {
+        const current = getCurrentLanguage();
+        const next = current === 'ru' ? 'en' : 'ru';
+        setLanguage(next);
+        const config = getConfig();
+        config.language = next;
+        setConfig(config);
+        applyLanguage();
+        document.getElementById('current-lang-label').textContent =
+            next === 'ru' ? 'RU' : 'EN';
     });
 
-    document.querySelectorAll('.lang-flag-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const lang = btn.dataset.lang;
-            setLanguage(lang);
-            const config = getConfig();
-            config.language = lang;
-            setConfig(config);
-            applyLanguage();
+    document.querySelectorAll('.story-card-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const card = btn.closest('.story-card');
+            if (card && !card.classList.contains('locked')) {
+                const storyId = card.dataset.story || 'teacher';
+                hideMenu();
+                startGame(storyId);
+            }
         });
     });
 
-    document.getElementById('settings-btn').addEventListener('click', () => {
-        import('./settings.js').then(({ openSettings }) => openSettings());
+    document.getElementById('menu-achievements-btn').addEventListener('click', () => {
+        console.log('Достижения — скоро');
     });
+
+    document.getElementById('menu-settings-btn').addEventListener('click', openSettings);
 }

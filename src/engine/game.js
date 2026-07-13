@@ -24,16 +24,8 @@ export function applyLanguage() {
         const key = el.dataset.i18n;
         if (key) el.textContent = t(key);
     });
-    const menuBtns = document.querySelectorAll('.menu-btn');
-    if (menuBtns.length >= 3) {
-        menuBtns[0].textContent = t('menu.story1');
-        menuBtns[1].textContent = t('menu.story2');
-        menuBtns[2].textContent = t('menu.story3');
-    }
-    const title = document.querySelector('.game-title');
-    const subtitle = document.querySelector('.game-subtitle');
-    if (title) title.textContent = t('menu.title');
-    if (subtitle) subtitle.textContent = t('menu.subtitle');
+    const langLabel = document.getElementById('current-lang-label');
+    if (langLabel) langLabel.textContent = lang === 'ru' ? 'RU' : 'EN';
     const contactName = document.getElementById('contact-name');
     if (contactName) contactName.textContent = t('profile.name');
     const headerStatus = document.getElementById('status');

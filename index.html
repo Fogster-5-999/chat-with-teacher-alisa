@@ -13,24 +13,79 @@
     <div id="app">
         <!-- Главное меню -->
         <div id="menu-screen" class="screen active">
-            <div class="menu-container">
-                <h1 class="game-title">📱 Переписка</h1>
-                <p class="game-subtitle">Выбери сюжетную линию</p>
-                <div class="menu-buttons">
-                    <button class="menu-btn active" data-story="teacher">👩‍🏫 Учительница английского</button>
-                    <button class="menu-btn locked" disabled>🔒 Сюжет #2 (скоро)</button>
-                    <button class="menu-btn locked" disabled>🔒 Сюжет #3 (скоро)</button>
+            <div id="main-menu" class="menu-overlay">
+                <button class="top-lang-btn" id="top-lang-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="2" y1="12" x2="22" y2="12"/>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                    </svg>
+                    <span id="current-lang-label">RU</span>
+                </button>
+
+                <div class="menu-hero">
+                    <img src="res/ava.png" alt="Алиса" class="hero-avatar" />
+                    <div class="hero-overlay">
+                        <h1 class="hero-title" data-i18n="menu.hero_title">ЧАТ С УЧИТЕЛЬНИЦЕЙ</h1>
+                        <span class="hero-subtitle" data-i18n="menu.hero_subtitle">Алисой</span>
+                    </div>
                 </div>
-                <div class="menu-lang">
-                    <button class="lang-flag-btn" data-lang="ru" title="Русский">
-                        <svg viewBox="0 0 512 512" width="32" height="32"><circle cx="256" cy="256" r="256" fill="#f0f0f0"/><path d="M0 256c0 30.6 5.4 60 15.3 87.3h481.4c9.9-27.3 15.3-56.7 15.3-87.3H0z" fill="#0052b4"/><path d="M15.3 168.7C42.2 94.3 112.9 41.5 196 21.1v324.2H15.3z" fill="#f0f0f0"/><path d="M496.7 168.7H15.3c14 38.6 38.2 72.4 69.4 97.4l171.3-171.3V504c5-.3 10-.9 15-1.6V168.7z" fill="#d80027"/></svg>
-                    </button>
-                    <button class="lang-flag-btn" data-lang="en" title="English">
-                        <svg viewBox="0 0 512 512" width="32" height="32"><circle cx="256" cy="256" r="256" fill="#0052b4"/><path d="M256 0c141.4 0 256 114.6 256 256S397.4 512 256 512 0 397.4 0 256 114.6 0 256 0z" fill="#002060"/><path d="M512 224H288V0h-64v224H0v64h224v224h64V288h224z" fill="#f0f0f0"/><path d="M512 240H272V0h-32v240H0v32h240v240h32V272h240z" fill="#d80027"/></svg>
-                    </button>
+
+                <div class="stories-section">
+                    <div class="story-card" data-story="teacher">
+                        <div class="story-card-preview">
+                            <img src="res/menu_story1.png" alt="Алиса" />
+                        </div>
+                        <div class="story-card-info">
+                            <h3 class="story-card-name" data-i18n="menu.story1_title">Алиса ❤️</h3>
+                            <span class="story-card-status" data-i18n="menu.story1_status">Учитель английского языка</span>
+                            <div class="story-unread-badge" data-i18n="menu.story1_unread">💬 2 новых сообщения</div>
+                            <button class="story-card-btn" data-i18n="menu.story1_btn">Начать переписку</button>
+                        </div>
+                    </div>
+
+                    <div class="story-card locked">
+                        <div class="story-card-preview">
+                            <div class="story-card-lock-icon">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="story-card-badge">Скоро</div>
+                        <div class="story-card-info">
+                            <h3 class="story-card-name">Сюжет #2</h3>
+                            <span class="story-card-status">Скоро появится</span>
+                        </div>
+                    </div>
+
+                    <div class="story-card locked">
+                        <div class="story-card-preview">
+                            <div class="story-card-lock-icon">
+                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="story-card-badge">Скоро</div>
+                        <div class="story-card-info">
+                            <h3 class="story-card-name">Сюжет #3</h3>
+                            <span class="story-card-status">Скоро появится</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="menu-footer">
-                    <button id="settings-btn" class="icon-btn">⚙️</button>
+
+                <div class="menu-bottom-actions">
+                    <button id="menu-achievements-btn" class="menu-tab-btn">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34M12 2a4 4 0 0 1 4 4v5a4 4 0 0 1-4 4 4 4 0 0 1-4-4V6a4 4 0 0 1 4-4z"/></svg>
+                        <span class="tab-label" data-i18n="menu.achievements">Достижения</span>
+                    </button>
+                    <button id="menu-settings-btn" class="menu-tab-btn">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                        <span class="tab-label" data-i18n="menu.settings">Настройки</span>
+                    </button>
                 </div>
             </div>
         </div>
