@@ -6,12 +6,20 @@ const achievementsModal = document.getElementById('achievements-modal');
 const closeAchievementsBtn = document.getElementById('close-achievements');
 
 export function openAchievements() {
+    if (achievementsModal.classList.contains('open')) {
+        closeAchievements();
+        return;
+    }
     renderAchievements();
-    achievementsModal.classList.add('active');
+    achievementsModal.classList.add('open');
+    requestAnimationFrame(() => achievementsModal.classList.add('visible'));
 }
 
 export function closeAchievements() {
-    achievementsModal.classList.remove('active');
+    achievementsModal.classList.remove('visible');
+    setTimeout(() => {
+        achievementsModal.classList.remove('open');
+    }, 350);
 }
 
 export function initAchievements() {

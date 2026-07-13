@@ -7,12 +7,20 @@ const settingsModal = document.getElementById('settings-modal');
 const closeSettingsBtn = document.getElementById('close-settings');
 
 export function openSettings() {
-    settingsModal.classList.add('active');
+    if (settingsModal.classList.contains('open')) {
+        closeSettings();
+        return;
+    }
+    settingsModal.classList.add('open');
+    requestAnimationFrame(() => settingsModal.classList.add('visible'));
     updateSettingsUI();
 }
 
 export function closeSettings() {
-    settingsModal.classList.remove('active');
+    settingsModal.classList.remove('visible');
+    setTimeout(() => {
+        settingsModal.classList.remove('open');
+    }, 350);
 }
 
 export function initSettings() {

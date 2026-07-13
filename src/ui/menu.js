@@ -8,8 +8,9 @@ const menuScreen = document.getElementById('menu-screen');
 const gameScreen = document.getElementById('game-screen');
 
 export function showMenu() {
+    gameScreen.classList.remove('active', 'screen-enter');
+    menuScreen.classList.remove('screen-exit');
     menuScreen.classList.add('active');
-    gameScreen.classList.remove('active');
 }
 
 export function hideMenu() {

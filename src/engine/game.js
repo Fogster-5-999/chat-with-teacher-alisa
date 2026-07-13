@@ -43,6 +43,10 @@ export function applyLanguage() {
     const profileTitle = document.getElementById('profile-header-title');
     if (profileTitle) profileTitle.textContent = t('profile.title');
 
+    const app = document.getElementById('app');
+    app.classList.add('lang-flash');
+    setTimeout(() => app.classList.remove('lang-flash'), 300);
+
     renderAllMessages(state.messages || []);
     reRenderSavedOptions();
     if (state.flags.gameEnded) {
@@ -71,11 +75,20 @@ export function applyLanguage() {
 }
 
 export function startGame(storyId) {
-    if (storyId === 'teacher') {
-        loadSaveAndStart();
-    } else if (storyId === 'story2') {
-        loadStory2();
-    }
+    const menuScreen = document.getElementById('menu-screen');
+    const gameScreen = document.getElementById('game-screen');
+    menuScreen.classList.add('screen-exit');
+    setTimeout(() => {
+        menuScreen.classList.remove('active', 'screen-exit');
+        gameScreen.classList.add('active');
+        requestAnimationFrame(() => gameScreen.classList.add('screen-enter'));
+        setTimeout(() => gameScreen.classList.remove('screen-enter'), 380);
+        if (storyId === 'teacher') {
+            loadSaveAndStart();
+        } else if (storyId === 'story2') {
+            loadStory2();
+        }
+    }, 320);
 }
 
 function loadStory2() {

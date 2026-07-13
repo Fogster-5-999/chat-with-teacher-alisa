@@ -45,7 +45,11 @@ export const translations = {
         'menu.story1_unread': '💬 2 новых сообщения',
         'achievements.title': 'Достижения',
         'achievements.unlocked': 'Открыто',
-        'achievements.locked': 'Скрыто'
+        'achievements.locked': 'Скрыто',
+        'story_title_2': 'Сюжет #2',
+        'story_title_3': 'Сюжет #3',
+        'story_soon': 'Скоро появится',
+        'badge_soon': 'Скоро'
     },
     en: {
         'menu.title': '📱 Chat Story',
@@ -99,7 +103,11 @@ export const translations = {
         'notif.alisa': 'Alisa',
         'achievements.title': 'Achievements',
         'achievements.unlocked': 'Unlocked',
-        'achievements.locked': 'Hidden'
+        'achievements.locked': 'Hidden',
+        'story_title_2': 'Story #2',
+        'story_title_3': 'Story #3',
+        'story_soon': 'Coming soon',
+        'badge_soon': 'Soon'
     }
 };
 
