@@ -6,14 +6,9 @@ import { initSettings, openSettings } from './ui/settings.js';
 import { initAchievements } from './ui/achievements.js';
 import { initLightbox } from './ui/lightbox.js';
 import { loadConfig } from './data/config.js';
-import { applyTheme, applyLanguage } from './engine/game.js';
+import { applyTheme, applyLanguage, updateCoreStatsUI } from './engine/game.js';
 
-window.updateStatsUI = function() {
-    const state = getGameState();
-    document.getElementById('stat-success').textContent = state.stats.success;
-    document.getElementById('stat-romance').textContent = state.stats.romance;
-    document.getElementById('stat-humor').textContent = state.stats.humor;
-};
+window.updateStatsUI = updateCoreStatsUI;
 
 document.addEventListener('DOMContentLoaded', async function() {
     loadConfig();

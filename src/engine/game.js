@@ -1,4 +1,4 @@
-import { getConfig } from '../data/config.js';
+import { getConfig, MAX_STATS } from '../data/config.js';
 import { t, setLanguage } from '../data/translations.js';
 import { getGameState, setGameState, loadGame, loadDay, resetGame } from './core.js';
 import { resetGameState } from './state.js';
@@ -74,6 +74,24 @@ export function applyLanguage() {
     }
 }
 
+const statMapping = { grades: 'success', romance: 'romance', humor: 'humor' };
+
+export function updateCoreStatsUI() {
+    const state = getGameState();
+    const stats = state.stats;
+    for (const [uiKey, stateKey] of Object.entries(statMapping)) {
+        const value = stats[stateKey] || 0;
+        const valEl = document.getElementById('val-' + uiKey);
+        if (valEl) valEl.textContent = value;
+        const fillEl = document.getElementById('fill-' + uiKey);
+        if (fillEl) {
+            const maxVal = MAX_STATS[uiKey] || 50;
+            const percent = Math.min(100, Math.max(0, (value / maxVal) * 100));
+            fillEl.style.width = percent + '%';
+        }
+    }
+}
+
 export function startGame(storyId) {
     const menuScreen = document.getElementById('menu-screen');
     const gameScreen = document.getElementById('game-screen');
@@ -81,6 +99,7 @@ export function startGame(storyId) {
     setTimeout(() => {
         menuScreen.classList.remove('active', 'screen-exit');
         gameScreen.classList.add('active');
+        updateCoreStatsUI();
         requestAnimationFrame(() => gameScreen.classList.add('screen-enter'));
         setTimeout(() => gameScreen.classList.remove('screen-enter'), 380);
         if (storyId === 'teacher') {

@@ -1,5 +1,11 @@
 export const getConfig = () => config;
 
+export const MAX_STATS = {
+    romance: 50,
+    grades: 50,
+    humor: 50
+};
+
 const defaultConfig = {
     language: 'ru',
     theme: 'dark',
