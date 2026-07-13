@@ -104,35 +104,47 @@
                 <button id="settings-btn-game" class="icon-btn">⚙️</button>
             </div>
 
-            <div id="stats-bar">
-                <div class="stat-item grades" id="stat-grades">
-                    <span class="stat-label">
-                        <span class="stat-icon">📚</span>
-                        <span data-i18n="stats.success">Успеваемость</span>
-                        <span class="stat-value" id="val-grades">0</span>
-                    </span>
-                    <div class="stat-progress">
-                        <div class="stat-progress-fill" id="fill-grades"></div>
+            <div class="stats-bar" id="stats-bar">
+                <div class="stat-item romance" id="stat-romance">
+                    <div class="stat-icon-wrapper">
+                        <span class="stat-icon">💖</span>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-header">
+                            <span class="stat-label" data-i18n="stats.romance">Романтика</span>
+                            <span class="stat-value" id="val-romance">0</span>
+                        </div>
+                        <div class="stat-progress">
+                            <div class="stat-progress-fill" id="fill-romance"></div>
+                        </div>
                     </div>
                 </div>
-                <div class="stat-item romance" id="stat-romance">
-                    <span class="stat-label">
-                        <span class="stat-icon">❤️</span>
-                        <span data-i18n="stats.romance">Романтика</span>
-                        <span class="stat-value" id="val-romance">0</span>
-                    </span>
-                    <div class="stat-progress">
-                        <div class="stat-progress-fill" id="fill-romance"></div>
+                <div class="stat-item grades" id="stat-grades">
+                    <div class="stat-icon-wrapper">
+                        <span class="stat-icon">📝</span>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-header">
+                            <span class="stat-label" data-i18n="stats.success">Оценки</span>
+                            <span class="stat-value" id="val-grades">0</span>
+                        </div>
+                        <div class="stat-progress">
+                            <div class="stat-progress-fill" id="fill-grades"></div>
+                        </div>
                     </div>
                 </div>
                 <div class="stat-item humor" id="stat-humor">
-                    <span class="stat-label">
+                    <div class="stat-icon-wrapper">
                         <span class="stat-icon">😂</span>
-                        <span data-i18n="stats.humor">Юмор</span>
-                        <span class="stat-value" id="val-humor">0</span>
-                    </span>
-                    <div class="stat-progress">
-                        <div class="stat-progress-fill" id="fill-humor"></div>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-header">
+                            <span class="stat-label" data-i18n="stats.humor">Юмор</span>
+                            <span class="stat-value" id="val-humor">0</span>
+                        </div>
+                        <div class="stat-progress">
+                            <div class="stat-progress-fill" id="fill-humor"></div>
+                        </div>
                     </div>
                 </div>
             </div>
