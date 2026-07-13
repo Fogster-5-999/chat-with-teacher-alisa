@@ -21,6 +21,14 @@
                     <button class="menu-btn locked" disabled>🔒 Сюжет #2 (скоро)</button>
                     <button class="menu-btn locked" disabled>🔒 Сюжет #3 (скоро)</button>
                 </div>
+                <div class="menu-lang">
+                    <button class="lang-flag-btn" data-lang="ru" title="Русский">
+                        <svg viewBox="0 0 512 512" width="32" height="32"><circle cx="256" cy="256" r="256" fill="#f0f0f0"/><path d="M0 256c0 30.6 5.4 60 15.3 87.3h481.4c9.9-27.3 15.3-56.7 15.3-87.3H0z" fill="#0052b4"/><path d="M15.3 168.7C42.2 94.3 112.9 41.5 196 21.1v324.2H15.3z" fill="#f0f0f0"/><path d="M496.7 168.7H15.3c14 38.6 38.2 72.4 69.4 97.4l171.3-171.3V504c5-.3 10-.9 15-1.6V168.7z" fill="#d80027"/></svg>
+                    </button>
+                    <button class="lang-flag-btn" data-lang="en" title="English">
+                        <svg viewBox="0 0 512 512" width="32" height="32"><circle cx="256" cy="256" r="256" fill="#0052b4"/><path d="M256 0c141.4 0 256 114.6 256 256S397.4 512 256 512 0 397.4 0 256 114.6 0 256 0z" fill="#002060"/><path d="M512 224H288V0h-64v224H0v64h224v224h64V288h224z" fill="#f0f0f0"/><path d="M512 240H272V0h-32v240H0v32h240v240h32V272h240z" fill="#d80027"/></svg>
+                    </button>
+                </div>
                 <div class="menu-footer">
                     <button id="settings-btn" class="icon-btn">⚙️</button>
                 </div>
@@ -82,13 +90,6 @@
                     <button class="close-modal" id="close-settings">✕</button>
                 </div>
                 <div class="settings-list">
-                    <div class="setting-item">
-                        <span class="setting-label" data-i18n="settings.language">Язык</span>
-                        <div class="setting-control">
-                            <button class="lang-btn active" data-lang="ru">Русский</button>
-                            <button class="lang-btn" data-lang="en">English</button>
-                        </div>
-                    </div>
                     <div class="setting-item">
                         <span class="setting-label" data-i18n="settings.theme">Тема</span>
                         <div class="setting-control">

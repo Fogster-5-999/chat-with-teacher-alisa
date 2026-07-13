@@ -1,7 +1,7 @@
 import { playNotificationSound } from './audio.js';
 import { t, getCurrentLanguage } from '../data/translations.js';
 import { getConfig } from '../data/config.js';
-import { renderMessage, addDayDivider, showTyping, hideTyping, showNetworkStatus, hideNetworkStatus, showOptions, clearMessages, renderFinalScreen, showMiniTest } from '../ui/components.js';
+import { renderMessage, addDayDivider, showTyping, hideTyping, showNetworkStatus, hideNetworkStatus, showOptions, hideOptions, clearMessages, renderFinalScreen, showMiniTest } from '../ui/components.js';
 import { GAME_SCRIPT } from '../data/story.js';
 import { getGameState, setGameState, getCurrentDate, setCurrentDate, getCurrentTime, setCurrentTime, resetCurrentTime, getNextMessageTime, saveGame, loadGame, resetGameState } from './state.js';
 
@@ -23,7 +23,7 @@ async function showDayTransition(dayKey) {
     const label = document.getElementById('day-transition-label');
     if (!overlay || !label) return;
 
-    const title = dayKey === 'day1' ? 'Новый день' : `День ${dayKey.replace('day', '')}`;
+    const title = dayKey === 'day1' ? t('day.new') : `${t('day.new')} ${dayKey.replace('day', '')}`;
     label.textContent = title;
     overlay.classList.add('active');
     await sleep(220);
@@ -49,7 +49,7 @@ function showTopNotification(title, text, durationMs = 5000) {
 }
 
 function showFriendNotification(name, text, durationMs = 5000) {
-    showTopNotification('Друг (' + name + ')', text, durationMs);
+    showTopNotification(t('friend.prefix') + name + ')', text, durationMs);
 }
 
 // ================================================================
@@ -163,11 +163,13 @@ export async function loadDay(dayKey, stageKey = null) {
         }
     }
 
+    hideOptions();
+
     if (dayData.conditionalMessages) {
         const currentState = getGameState();
         for (let condMsg of dayData.conditionalMessages) {
             if (condMsg.condition(currentState)) {
-                messagesToShow.push({ sender: condMsg.sender, text: condMsg.text });
+                messagesToShow.push({ sender: condMsg.sender, textKey: condMsg.textKey || condMsg.text });
             }
         }
     }
@@ -178,7 +180,7 @@ export async function loadDay(dayKey, stageKey = null) {
         await sleep(delay);
         hideTyping();
         const msgTime = getNextMessageTime();
-        const msgObj = { sender: msg.sender, text: msg.text, timestamp: msgTime.toISOString() };
+        const msgObj = { sender: msg.sender, textKey: msg.textKey || msg.text, timestamp: msgTime.toISOString() };
         const st = getGameState();
         st.messages.push(msgObj);
         setGameState(st);
@@ -188,11 +190,13 @@ export async function loadDay(dayKey, stageKey = null) {
 
     // Мини-тест идёт сразу после первого сообщения дня 2, до фото и дальнейшего сюжета.
     if (dayData.miniTest) {
+        hideTyping();
+        await sleep(500);
         const stMini = getGameState();
         const miniKey = 'miniTest:' + dayKey;
         if (!stMini.flags[miniKey]) {
             const introMsgTime = getNextMessageTime();
-            const introMsg = { sender: 'alisa', text: dayData.miniTest.intro, timestamp: introMsgTime.toISOString() };
+            const introMsg = { sender: 'alisa', textKey: dayData.miniTest.intro, timestamp: introMsgTime.toISOString() };
             stMini.messages.push(introMsg);
             setGameState(stMini);
             renderMessage(introMsg);
@@ -215,14 +219,14 @@ export async function loadDay(dayKey, stageKey = null) {
                         if (correctCount === totalQuestions) {
                             stRes.achievements.push(dayData.miniTest.achievementId || 'mini_test');
                             stRes.stats.success += (dayData.miniTest.successPoints || 3);
-                            showTopNotification('Алиса', dayData.miniTest.successMessage);
+                            showTopNotification(t('notif.alisa'), dayData.miniTest.successMessage);
                             if (window.updateStatsUI) window.updateStatsUI();
                         } else {
-                            showTopNotification('Алиса', dayData.miniTest.failMessage);
+                            showTopNotification(t('notif.alisa'), dayData.miniTest.failMessage);
                         }
                         if (dayKey === 'day2' && dayData.miniTest.followUpMessage) {
                             const followUpTime = getNextMessageTime();
-                            const followUpMsg = { sender: 'alisa', text: dayData.miniTest.followUpMessage, timestamp: followUpTime.toISOString() };
+                            const followUpMsg = { sender: 'alisa', textKey: dayData.miniTest.followUpMessage, timestamp: followUpTime.toISOString() };
                             stRes.messages.push(followUpMsg);
                             setGameState(stRes);
                             renderMessage(followUpMsg);
@@ -243,11 +247,11 @@ export async function loadDay(dayKey, stageKey = null) {
                                         if (wasShown) {
                                             stRes.achievements.push(dayData.miniTest.achievementId || 'mini_test');
                                             stRes.stats.success += (dayData.miniTest.successPoints || 3);
-                                            showTopNotification('Алиса', dayData.miniTest.successMessage);
+                                            showTopNotification(t('notif.alisa'), dayData.miniTest.successMessage);
                                             if (window.updateStatsUI) window.updateStatsUI();
                                             if (dayKey === 'day2' && dayData.miniTest.followUpMessage) {
                                                 const followUpTime = getNextMessageTime();
-                                                const followUpMsg = { sender: 'alisa', text: dayData.miniTest.followUpMessage, timestamp: followUpTime.toISOString() };
+                                                const followUpMsg = { sender: 'alisa', textKey: dayData.miniTest.followUpMessage, timestamp: followUpTime.toISOString() };
                                                 stRes.messages.push(followUpMsg);
                                                 setGameState(stRes);
                                                 renderMessage(followUpMsg);
@@ -306,11 +310,14 @@ export async function loadDay(dayKey, stageKey = null) {
         }
     }
 
+    hideTyping();
+    await sleep(600);
+
     showOptions(allOptions, async function(optionId, optionLabel) {
         document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
 
         const playerTime = getNextMessageTime();
-        const playerMsg = { sender: 'player', text: optionLabel, timestamp: playerTime.toISOString() };
+        const playerMsg = { sender: 'player', textKey: optionId, timestamp: playerTime.toISOString() };
         const st = getGameState();
         st.messages.push(playerMsg);
         setGameState(st);
@@ -337,7 +344,7 @@ export async function loadDay(dayKey, stageKey = null) {
                 await sleep(delay);
                 hideTyping();
                 const msgTime = getNextMessageTime();
-                const msgObj = { sender: msg.sender, text: msg.text, timestamp: msgTime.toISOString() };
+                const msgObj = { sender: msg.sender, textKey: msg.textKey || msg.text, timestamp: msgTime.toISOString() };
                 const st2 = getGameState();
                 st2.messages.push(msgObj);
                 setGameState(st2);
@@ -431,7 +438,9 @@ function showFinalMessage(dayData) {
     restartBtn.className = 'option-btn';
     restartBtn.textContent = t('game.restart');
     restartBtn.addEventListener('click', resetGame);
-    document.getElementById('options').appendChild(restartBtn);
+    const optsEl = document.getElementById('options');
+    optsEl.appendChild(restartBtn);
+    optsEl.style.display = 'flex';
 }
 
 function showEndGame() {
@@ -443,5 +452,7 @@ function showEndGame() {
     restartBtn.className = 'option-btn';
     restartBtn.textContent = t('game.restart');
     restartBtn.addEventListener('click', resetGame);
-    document.getElementById('options').appendChild(restartBtn);
+    const optsEl = document.getElementById('options');
+    optsEl.appendChild(restartBtn);
+    optsEl.style.display = 'flex';
 }

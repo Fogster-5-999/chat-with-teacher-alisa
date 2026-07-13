@@ -1,14 +1,17 @@
 import { playNotificationSound } from '../engine/audio.js';
 import { openLightbox } from './lightbox.js';
-import { translateStoryText } from '../data/translations.js';
+import { t, getCurrentLanguage } from '../data/translations.js';
 
 const messagesContainer = document.getElementById('messages');
 const optionsContainer = document.getElementById('options');
 const typingIndicator = document.getElementById('typing-indicator');
 const networkStatus = document.getElementById('network-status');
 
+let _savedOptions = null;
+let _savedHandler = null;
+
 export function renderMessage(msgObj) {
-    const { sender, text, timestamp, isHtml, type, photoUrl, blurred, prompt, isLocked } = msgObj;
+    const { sender, textKey, text, timestamp, isHtml, type, photoUrl, blurred, prompt, isLocked } = msgObj;
     const date = new Date(timestamp);
     const div = document.createElement('div');
     div.className = 'message ' + (sender === 'alisa' ? 'incoming' : sender === 'system' ? 'system' : 'outgoing');
@@ -17,9 +20,10 @@ export function renderMessage(msgObj) {
         renderPhotoContent(div, { photoUrl, blurred, prompt, isLocked });
     } else {
         const contentSpan = document.createElement('span');
-        const translatedText = translateStoryText(text);
-        if (isHtml) contentSpan.innerHTML = translatedText;
-        else contentSpan.textContent = translatedText;
+        const translated = t(textKey || '');
+        const displayText = (translated === (textKey || '')) ? (text || translated) : translated;
+        if (isHtml) contentSpan.innerHTML = displayText;
+        else contentSpan.textContent = displayText;
         div.appendChild(contentSpan);
     }
 
@@ -83,7 +87,7 @@ function renderPhotoContent(container, { photoUrl, blurred, prompt, isLocked }) 
         img.style.display = 'none';
         const stub = document.createElement('div');
         stub.className = 'photo-placeholder';
-        stub.textContent = '📷 фото не добавлено (' + photoUrl + ')';
+        stub.textContent = t('photo.error') + photoUrl + ')';
         wrap.insertBefore(stub, img);
     };
     const normalizedUrl = (photoUrl || '').startsWith('res/') ? photoUrl : `res/${photoUrl}`;
@@ -93,15 +97,15 @@ function renderPhotoContent(container, { photoUrl, blurred, prompt, isLocked }) 
     if (prompt) {
         const promptDiv = document.createElement('div');
         promptDiv.style.cssText = 'margin-top:6px; font-size:12px; color:var(--text-secondary); font-style:italic; text-align:center;';
-        promptDiv.textContent = '📷 ' + translateStoryText(prompt);
+        promptDiv.textContent = '📷 ' + t(prompt);
         wrap.appendChild(promptDiv);
     }
 
     const hintDiv = document.createElement('div');
     hintDiv.style.cssText = 'margin-top:8px; font-size:13px; color:var(--text-secondary); text-align:center;';
     hintDiv.textContent = isLocked
-        ? '👆 Нажми на фото, чтобы открыть (потребуется реклама)'
-        : '👆 Нажми на фото, чтобы рассмотреть поближе';
+        ? t('photo.hint_locked')
+        : t('photo.hint_unlocked');
     wrap.appendChild(hintDiv);
 
     container.appendChild(wrap);
@@ -117,7 +121,7 @@ function renderPhotoContent(container, { photoUrl, blurred, prompt, isLocked }) 
                                 if (window.unlockPhoto) window.unlockPhoto();
                                 img.classList.remove('blurred-photo');
                                 img.classList.add('unblurred');
-                                hintDiv.textContent = '👆 Нажми на фото, чтобы рассмотреть поближе';
+                                hintDiv.textContent = t('photo.hint_unlocked');
                                 img.removeEventListener('click', unlockHandler);
                                 img.addEventListener('click', function(e2) {
                                     e2.stopPropagation();
@@ -137,7 +141,25 @@ function renderPhotoContent(container, { photoUrl, blurred, prompt, isLocked }) 
     }
 }
 
+export function hideOptions() {
+    optionsContainer.style.display = 'none';
+}
+
+function showOptionsContainer() {
+    optionsContainer.style.display = 'flex';
+}
+
+export function reRenderSavedOptions() {
+    if (_savedOptions && _savedHandler !== null) {
+        showOptions(_savedOptions, _savedHandler);
+    }
+}
+
 export function showOptions(options, clickHandler) {
+    if (options && options.length > 0) {
+        _savedOptions = [...options];
+        _savedHandler = clickHandler;
+    }
     optionsContainer.innerHTML = '';
     options.forEach(opt => {
         const btn = document.createElement('button');
@@ -145,7 +167,7 @@ export function showOptions(options, clickHandler) {
         if (opt.hidden) {
             btn.classList.add('hidden-option');
             const costBadge = opt.cost && opt.cost > 1 ? ` <span class="cost-badge">📺×${opt.cost}</span>` : '';
-            btn.innerHTML = `<span>🔒 ${translateStoryText(opt.label)}${costBadge}</span><span class="lock-icon">🔒</span>`;
+            btn.innerHTML = `<span>🔒 ${t(opt.label)}${costBadge}</span><span class="lock-icon">🔒</span>`;
             btn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 const adsNeeded = opt.cost && opt.cost > 0 ? opt.cost : 1;
@@ -155,7 +177,7 @@ export function showOptions(options, clickHandler) {
                         showAd({
                             callbacks: {
                                 onClose: (wasShown) => {
-                                    if (!wasShown) return; // игрок закрыл рекламу досрочно — попытка не засчитана
+                                    if (!wasShown) return;
                                     adsWatched++;
                                     if (adsWatched >= adsNeeded) {
                                         opt.hidden = false;
@@ -171,7 +193,7 @@ export function showOptions(options, clickHandler) {
                 watchNextAd();
             });
         } else {
-            const labelText = translateStoryText(opt.label);
+            const labelText = t(opt.label);
             btn.textContent = labelText;
             btn.addEventListener('click', function() {
                 if (clickHandler) clickHandler(opt.id, opt.label);
@@ -179,12 +201,19 @@ export function showOptions(options, clickHandler) {
         }
         optionsContainer.appendChild(btn);
     });
+    showOptionsContainer();
 }
 
 function formatTime(date) {
     return String(date.getHours()).padStart(2, '0') + ':' + String(date.getMinutes()).padStart(2, '0');
 }
 function formatDate(date) {
+    const lang = getCurrentLanguage();
+    if (lang === 'en') {
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        return `${days[date.getDay()]}, ${months[date.getMonth()]} ${date.getDate()}`;
+    }
     const days = ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'];
     const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
     return `${date.getDate()} ${months[date.getMonth()]}, ${days[date.getDay()]}`;
@@ -195,7 +224,8 @@ export function renderFinalScreen(messages) {
     messages.forEach(msg => {
         const div = document.createElement('div');
         div.className = 'message system';
-        div.textContent = msg.text;
+        const sourceText = msg.textKey || msg.text || '';
+        div.textContent = t(sourceText);
         messagesContainer.insertBefore(div, typingIndicator);
     });
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
@@ -224,7 +254,7 @@ export function showMiniTest(test, onAnswer) {
             chat.scrollTop = chat.scrollHeight;
         }
 
-        appendChatBubble('alisa', translateStoryText(test.intro || ''));
+        appendChatBubble('alisa', t(test.intro || ''));
 
         let idx = 0;
         let correctCount = 0;
@@ -240,7 +270,7 @@ export function showMiniTest(test, onAnswer) {
                 return;
             }
             const q = test.questions[idx];
-            appendChatBubble('alisa', translateStoryText(q.text));
+            appendChatBubble('alisa', t(q.text));
 
             const choicesWrap = document.createElement('div');
             choicesWrap.className = 'mini-test-choices';
