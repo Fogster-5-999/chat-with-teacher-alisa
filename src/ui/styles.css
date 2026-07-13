@@ -504,6 +504,12 @@ body.light-theme .option-btn:hover {
     font-size: 18px;
     opacity: 0.6;
 }
+.cost-badge {
+    font-size: 12px;
+    font-style: normal;
+    opacity: 0.75;
+    margin-left: 4px;
+}
 .option-btn:disabled {
     opacity: 0.5;
     pointer-events: none;
@@ -953,6 +959,57 @@ body.light-theme #day-transition-card {
     overflow: hidden;
 }
 
+/* Светлая тема для уведомлений */
+body.light-theme #push-notification {
+    background: rgba(255, 255, 255, 0.92);
+    border-color: rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+}
+body.light-theme #push-notif-name {
+    color: #1f2a3d;
+}
+body.light-theme #push-notif-text {
+    color: #3d4f6a;
+}
+
+/* Достижения */
+#achievements-modal .achievements-content {
+    max-width: 400px;
+}
+#achievements-list {
+    max-height: 50vh;
+    overflow-y: auto;
+    padding: 8px 0;
+}
+.achievement-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--divider-color);
+    font-size: 15px;
+}
+.achievement-item .ach-icon {
+    font-size: 24px;
+    width: 36px;
+    text-align: center;
+}
+.achievement-item .ach-name {
+    flex: 1;
+    color: var(--text-primary);
+}
+.achievement-item.locked .ach-name {
+    color: var(--text-secondary);
+    filter: blur(2px);
+    user-select: none;
+}
+.achievement-item .ach-status {
+    font-size: 18px;
+}
+body.light-theme .achievement-item.locked .ach-name {
+    filter: blur(3px);
+}
+
 /* ===== Адаптив ===== */
 @media (max-width: 440px) {
     #app {
@@ -967,3 +1024,80 @@ body.light-theme #day-transition-card {
     .option-btn { font-size: 14px; padding: 10px 14px; }
     .typing-indicator { font-size: 13px; padding: 6px 12px; }
 }
+
+/* ===== Мини‑тест (Day 2) ===== */
+.mini-test-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.mini-test-intro {
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 14px;
+    text-align: center;
+    padding: 6px 8px;
+}
+.mini-test-box {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.mini-test-question {
+    color: var(--text-secondary);
+    font-size: 14px;
+    padding: 8px 10px;
+    background: transparent;
+    text-align: center;
+}
+.mini-test-choices {
+    display: flex;
+    gap: 8px;
+    justify-content: space-between;
+}
+.mini-test-choice {
+    flex: 1;
+    text-align: center;
+    padding: 10px 8px;
+}
+
+/* Мини‑тест модал */
+.mini-test-modal {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 400;
+    background: rgba(5,8,10,0.4);
+}
+.mini-test-card {
+    width: 92%;
+    max-width: 420px;
+    background: var(--bg-app);
+    border-radius: 16px;
+    padding: 12px;
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.mini-test-chat {
+    max-height: 220px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 6px;
+}
+.mini-chat-bubble {
+    padding: 8px 10px;
+    border-radius: 12px;
+    font-size: 14px;
+    max-width: 86%;
+}
+.mini-chat-bubble.incoming { align-self: flex-start; background: var(--bg-message-incoming); color: var(--text-incoming); }
+.mini-chat-bubble.outgoing { align-self: flex-end; background: var(--bg-message-outgoing); color: var(--text-outgoing); }
+.mini-chat-bubble.system { align-self: center; background: transparent; color: var(--text-secondary); }
+.mini-test-controls { display: flex; gap: 8px; }

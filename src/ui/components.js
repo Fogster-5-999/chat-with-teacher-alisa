@@ -93,7 +93,7 @@ function renderPhotoContent(container, { photoUrl, blurred, prompt, isLocked }) 
     if (prompt) {
         const promptDiv = document.createElement('div');
         promptDiv.style.cssText = 'margin-top:6px; font-size:12px; color:var(--text-secondary); font-style:italic; text-align:center;';
-        promptDiv.textContent = '📷 ' + prompt;
+        promptDiv.textContent = '📷 ' + translateStoryText(prompt);
         wrap.appendChild(promptDiv);
     }
 
@@ -144,21 +144,31 @@ export function showOptions(options, clickHandler) {
         btn.className = 'option-btn';
         if (opt.hidden) {
             btn.classList.add('hidden-option');
-            btn.innerHTML = `<span>🔒 ${opt.label}</span><span class="lock-icon">🔒</span>`;
+            const costBadge = opt.cost && opt.cost > 1 ? ` <span class="cost-badge">📺×${opt.cost}</span>` : '';
+            btn.innerHTML = `<span>🔒 ${translateStoryText(opt.label)}${costBadge}</span><span class="lock-icon">🔒</span>`;
             btn.addEventListener('click', function(e) {
                 e.stopPropagation();
-                import('../engine/sdk.js').then(({ showAd }) => {
-                    showAd({
-                        callbacks: {
-                            onClose: (wasShown) => {
-                                if (wasShown) {
-                                    opt.hidden = false;
-                                    showOptions(options, clickHandler);
+                const adsNeeded = opt.cost && opt.cost > 0 ? opt.cost : 1;
+                let adsWatched = 0;
+                function watchNextAd() {
+                    import('../engine/sdk.js').then(({ showAd }) => {
+                        showAd({
+                            callbacks: {
+                                onClose: (wasShown) => {
+                                    if (!wasShown) return; // игрок закрыл рекламу досрочно — попытка не засчитана
+                                    adsWatched++;
+                                    if (adsWatched >= adsNeeded) {
+                                        opt.hidden = false;
+                                        showOptions(options, clickHandler);
+                                    } else {
+                                        watchNextAd();
+                                    }
                                 }
                             }
-                        }
+                        });
                     });
-                });
+                }
+                watchNextAd();
             });
         } else {
             const labelText = translateStoryText(opt.label);
@@ -189,4 +199,73 @@ export function renderFinalScreen(messages) {
         messagesContainer.insertBefore(div, typingIndicator);
     });
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+export function showMiniTest(test, onAnswer) {
+    return new Promise(resolve => {
+        // create modal overlay for mini-chat test
+        const overlay = document.createElement('div');
+        overlay.className = 'mini-test-modal';
+        overlay.innerHTML = `
+            <div class="mini-test-card">
+                <div class="mini-test-chat"></div>
+                <div class="mini-test-controls"></div>
+            </div>`;
+        document.getElementById('app').appendChild(overlay);
+
+        const chat = overlay.querySelector('.mini-test-chat');
+        const controls = overlay.querySelector('.mini-test-controls');
+
+        function appendChatBubble(sender, text) {
+            const d = document.createElement('div');
+            d.className = 'mini-chat-bubble ' + (sender === 'alisa' ? 'incoming' : 'outgoing');
+            d.textContent = text;
+            chat.appendChild(d);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        appendChatBubble('alisa', translateStoryText(test.intro || ''));
+
+        let idx = 0;
+        let correctCount = 0;
+
+        function renderQuestion() {
+            controls.innerHTML = '';
+            if (idx >= (test.questions || []).length) {
+                // finish
+                setTimeout(() => {
+                    overlay.remove();
+                    resolve(correctCount);
+                }, 300);
+                return;
+            }
+            const q = test.questions[idx];
+            appendChatBubble('alisa', translateStoryText(q.text));
+
+            const choicesWrap = document.createElement('div');
+            choicesWrap.className = 'mini-test-choices';
+            (q.choices || []).forEach((ch, i) => {
+                const b = document.createElement('button');
+                b.className = 'option-btn mini-test-choice';
+                b.textContent = ch;
+                b.addEventListener('click', function() {
+                    // show player's choice in mini-chat
+                    appendChatBubble('player', ch);
+                    // disable
+                    choicesWrap.querySelectorAll('button').forEach(x => x.disabled = true);
+                    const isCorrect = (i === q.correct);
+                    if (isCorrect) correctCount++;
+                    if (onAnswer) onAnswer(q, ch, isCorrect);
+                    setTimeout(() => {
+                        idx++;
+                        renderQuestion();
+                    }, 700);
+                });
+                choicesWrap.appendChild(b);
+            });
+            controls.appendChild(choicesWrap);
+        }
+
+        renderQuestion();
+    });
 }

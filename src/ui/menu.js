@@ -17,12 +17,16 @@ export function hideMenu() {
 }
 
 export function initMenu() {
-    // Обработчики кнопок сюжетов (пока только первая активна)
     menuButtons.forEach((btn, index) => {
         if (index === 0) {
             btn.addEventListener('click', () => {
                 hideMenu();
-                startGame('teacher'); // Запускаем основной сюжет
+                startGame('teacher');
+            });
+        } else if (index === 1) {
+            btn.addEventListener('click', () => {
+                hideMenu();
+                startGame('story2');
             });
         }
     });

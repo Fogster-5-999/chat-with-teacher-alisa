@@ -1,17 +1,35 @@
 import { playNotificationSound } from './audio.js';
-import { t } from '../data/translations.js';
+import { t, getCurrentLanguage } from '../data/translations.js';
 import { getConfig } from '../data/config.js';
-import { renderMessage, addDayDivider, showTyping, hideTyping, showNetworkStatus, hideNetworkStatus, showOptions, clearMessages, renderFinalScreen } from '../ui/components.js';
+import { renderMessage, addDayDivider, showTyping, hideTyping, showNetworkStatus, hideNetworkStatus, showOptions, clearMessages, renderFinalScreen, showMiniTest } from '../ui/components.js';
 import { GAME_SCRIPT } from '../data/story.js';
 import { getGameState, setGameState, getCurrentDate, setCurrentDate, getCurrentTime, setCurrentTime, resetCurrentTime, getNextMessageTime, saveGame, loadGame, resetGameState } from './state.js';
 
 export { getGameState, setGameState, getCurrentDate, setCurrentDate, getCurrentTime, setCurrentTime, resetCurrentTime, getNextMessageTime, saveGame, loadGame };
+
+function splitLongMessage(text, maxLength = 120) {
+    if (text.length <= maxLength) return [text];
+    const parts = [];
+    let current = '';
+    const sentences = text.match(/[^.!?]+[.!?]*/g) || [text];
+    for (let s of sentences) {
+        if ((current + s).length <= maxLength) {
+            current += s;
+        } else {
+            if (current) parts.push(current.trim());
+            current = s;
+        }
+    }
+    if (current) parts.push(current.trim());
+    return parts;
+}
 
 window.unlockPhoto = function() {
     const state = getGameState();
     state.flags.photoUnlocked = true;
     setGameState(state);
     saveGame();
+    checkAchievements();
 };
 
 function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
@@ -36,15 +54,41 @@ export function resetGame() {
     loadDay('day1');
 }
 
-function showFriendNotification(name, text, durationMs = 5000) {
+function showTopNotification(title, text, durationMs = 5000) {
     const el = document.getElementById('push-notification');
     if (!el) return;
-    document.getElementById('push-notif-name').textContent = 'Друг (' + name + ')';
+    document.getElementById('push-notif-name').textContent = title;
     document.getElementById('push-notif-text').textContent = text;
     el.classList.add('active');
     playNotificationSound();
     clearTimeout(el._timer);
     el._timer = setTimeout(() => el.classList.remove('active'), durationMs);
+}
+
+function showFriendNotification(name, text, durationMs = 5000) {
+    showTopNotification('Друг (' + name + ')', text, durationMs);
+}
+
+function checkAchievements() {
+    const meta = GAME_SCRIPT.achievementsMeta || [];
+    if (!meta.length) return;
+    const state = getGameState();
+    if (!state.achievements) state.achievements = [];
+    let changed = false;
+    meta.forEach(a => {
+        if (state.achievements.includes(a.id)) return;
+        if (a.condition(state)) {
+            state.achievements.push(a.id);
+            changed = true;
+            const lang = getCurrentLanguage();
+            const name = (a.name && (a.name[lang] || a.name.ru)) || a.id;
+            showTopNotification(t('achievement.title'), (a.icon || '🏆') + ' ' + name);
+        }
+    });
+    if (changed) {
+        setGameState(state);
+        saveGame();
+    }
 }
 
 export async function loadDay(dayKey, stageKey = null) {
@@ -132,18 +176,121 @@ export async function loadDay(dayKey, stageKey = null) {
         }
     }
 
+    if (dayData.conditionalMessages) {
+        const currentState = getGameState();
+        for (let condMsg of dayData.conditionalMessages) {
+            if (condMsg.condition(currentState)) {
+                messagesToShow.push({ sender: condMsg.sender, text: condMsg.text });
+            }
+        }
+    }
+
     for (let msg of messagesToShow) {
-        showTyping();
-        const delay = randomInt(4000, 10000);
-        await sleep(delay);
-        hideTyping();
-        const msgTime = getNextMessageTime();
-        const msgObj = { sender: msg.sender, text: msg.text, timestamp: msgTime.toISOString() };
-        const st = getGameState();
-        st.messages.push(msgObj);
-        setGameState(st);
-        renderMessage(msgObj);
-        if (msg.sender === 'alisa') playNotificationSound();
+        const textParts = splitLongMessage(msg.text);
+        for (let part of textParts) {
+            showTyping();
+            const delay = randomInt(4000, 10000);
+            await sleep(delay);
+            hideTyping();
+            const msgTime = getNextMessageTime();
+            const msgObj = { sender: msg.sender, text: part, timestamp: msgTime.toISOString() };
+            const st = getGameState();
+            st.messages.push(msgObj);
+            setGameState(st);
+            renderMessage(msgObj);
+            if (msg.sender === 'alisa') playNotificationSound();
+        }
+    }
+
+    // Мини-тест идёт сразу после первого сообщения дня 2, до фото и дальнейшего сюжета.
+    if (dayData.miniTest) {
+        const stMini = getGameState();
+        const miniKey = 'miniTest:' + dayKey;
+        if (!stMini.flags[miniKey]) {
+            const introMsgTime = getNextMessageTime();
+            const introMsg = { sender: 'alisa', text: dayData.miniTest.intro, timestamp: introMsgTime.toISOString() };
+            stMini.messages.push(introMsg);
+            setGameState(stMini);
+            renderMessage(introMsg);
+
+            const preOptions = [
+                { id: 'take_test', label: t('minitest.take') },
+                { id: 'decline_test', label: t('minitest.decline') },
+                { id: 'skip_ad', label: t('minitest.skip') }
+            ];
+
+            await new Promise(resolveChoice => {
+                showOptions(preOptions, async function(optId, optLabel) {
+                    document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+                    if (optId === 'take_test') {
+                        const correctCount = await showMiniTest(dayData.miniTest, () => {});
+                        const stRes = getGameState();
+                        stRes.flags[miniKey] = true;
+                        if (!stRes.achievements) stRes.achievements = [];
+                        const totalQuestions = (dayData.miniTest.questions || []).length;
+                        if (correctCount === totalQuestions) {
+                            stRes.achievements.push(dayData.miniTest.achievementId || 'mini_test');
+                            stRes.stats.success += (dayData.miniTest.successPoints || 3);
+                            showTopNotification('Алиса', dayData.miniTest.successMessage);
+                            if (window.updateStatsUI) window.updateStatsUI();
+                        } else {
+                            showTopNotification('Алиса', dayData.miniTest.failMessage);
+                        }
+                        if (dayKey === 'day2' && dayData.miniTest.followUpMessage) {
+                            const followUpTime = getNextMessageTime();
+                            const followUpMsg = { sender: 'alisa', text: dayData.miniTest.followUpMessage, timestamp: followUpTime.toISOString() };
+                            stRes.messages.push(followUpMsg);
+                            setGameState(stRes);
+                            renderMessage(followUpMsg);
+                        } else {
+                            setGameState(stRes);
+                        }
+                        await saveGame();
+                        await sleep(900);
+                        resolveChoice();
+                    } else if (optId === 'skip_ad') {
+                        import('../engine/sdk.js').then(({ showAd }) => {
+                            showAd({
+                                callbacks: {
+                                    onClose: async (wasShown) => {
+                                        const stRes = getGameState();
+                                        stRes.flags[miniKey] = true;
+                                        if (!stRes.achievements) stRes.achievements = [];
+                                        if (wasShown) {
+                                            stRes.achievements.push(dayData.miniTest.achievementId || 'mini_test');
+                                            stRes.stats.success += (dayData.miniTest.successPoints || 3);
+                                            showTopNotification('Алиса', dayData.miniTest.successMessage);
+                                            if (window.updateStatsUI) window.updateStatsUI();
+                                            if (dayKey === 'day2' && dayData.miniTest.followUpMessage) {
+                                                const followUpTime = getNextMessageTime();
+                                                const followUpMsg = { sender: 'alisa', text: dayData.miniTest.followUpMessage, timestamp: followUpTime.toISOString() };
+                                                stRes.messages.push(followUpMsg);
+                                                setGameState(stRes);
+                                                renderMessage(followUpMsg);
+                                            } else {
+                                                setGameState(stRes);
+                                            }
+                                            await saveGame();
+                                        }
+                                        await sleep(900);
+                                        resolveChoice();
+                                    }
+                                }
+                            });
+                        });
+                    } else if (optId === 'decline_test') {
+                        const stRes = getGameState();
+                        stRes.flags[miniKey] = true;
+                        setGameState(stRes);
+                        await saveGame();
+                        await sleep(700);
+                        resolveChoice();
+                    } else {
+                        resolveChoice();
+                    }
+                });
+            });
+        }
     }
 
     if (hasPhoto) {
@@ -165,7 +312,17 @@ export async function loadDay(dayKey, stageKey = null) {
         playNotificationSound();
     }
 
-    showOptions(optionsToShow, async function(optionId, optionLabel) {
+    let allOptions = [...optionsToShow];
+    if (dayData.conditionalOptions) {
+        const currentState = getGameState();
+        for (let condOpt of dayData.conditionalOptions) {
+            if (condOpt.condition(currentState)) {
+                allOptions.push(condOpt);
+            }
+        }
+    }
+
+    showOptions(allOptions, async function(optionId, optionLabel) {
         document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
 
         const playerTime = getNextMessageTime();
@@ -175,6 +332,18 @@ export async function loadDay(dayKey, stageKey = null) {
         setGameState(st);
         renderMessage(playerMsg);
         await sleep(1000);
+
+        if (dayData.flagsOnComplete && dayData.flagsOnComplete[optionId]) {
+            const st = getGameState();
+            Object.assign(st.flags, dayData.flagsOnComplete[optionId]);
+            setGameState(st);
+        }
+        if (typeof dayData.onComplete === 'function') {
+            const stOnComplete = getGameState();
+            dayData.onComplete(stOnComplete);
+            setGameState(stOnComplete);
+        }
+        checkAchievements();
 
         const reaction = reactions[optionId];
         if (reaction) {
@@ -202,6 +371,7 @@ export async function loadDay(dayKey, stageKey = null) {
             setGameState(st3);
             if (window.updateStatsUI) window.updateStatsUI();
         }
+        checkAchievements();
 
         await saveGame();
         const optionsEl = document.getElementById('options');
@@ -229,10 +399,23 @@ export async function loadDay(dayKey, stageKey = null) {
             }
         } else {
             if (nextDay) {
+                let next = null;
+                if (Array.isArray(nextDay)) {
+                    const st5 = getGameState();
+                    for (let rule of nextDay) {
+                        if (rule.condition && rule.condition(st5)) {
+                            next = rule.day;
+                            break;
+                        }
+                    }
+                    if (!next) next = nextDay.find(r => r.default)?.day || 'day2';
+                } else {
+                    next = nextDay;
+                }
                 const st5 = getGameState();
-                st5.currentDay = nextDay;
+                st5.currentDay = next;
                 setGameState(st5);
-                loadDay(nextDay);
+                loadDay(next);
             } else {
                 if (dayData.finalMessage) showFinalMessage(dayData);
                 else { 
@@ -250,6 +433,9 @@ function showFinalMessage(dayData) {
     hideNetworkStatus();
     hideTyping();
     const state = getGameState();
+    state.flags.gameEnded = true;
+    setGameState(state);
+    checkAchievements();
     const msgs = dayData.finalMessage.map(msg => ({
         sender: 'system',
         text: msg.text.replace(/\{\{success\}\}/g, state.stats.success)
@@ -267,6 +453,7 @@ function showFinalMessage(dayData) {
 function showEndGame() {
     hideNetworkStatus();
     hideTyping();
+    checkAchievements();
     renderFinalScreen([{ sender: 'system', text: t('game.ended') }]);
     const restartBtn = document.createElement('button');
     restartBtn.className = 'option-btn';

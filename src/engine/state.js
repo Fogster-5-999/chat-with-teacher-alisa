@@ -1,17 +1,26 @@
 import { saveGameData, loadGameData } from './sdk.js';
 
-let gameState = {
-    currentDay: 'day1',
-    stage: null,
-    stats: { success: 0, romance: 0, humor: 0 },
-    flags: {
+function getDefaultFlags() {
+    return {
         photoUnlocked: false,
         day5Stage1Done: false,
         day5Stage2Done: false,
         day5Stage3Done: false,
         gameEnded: false,
+        flirtWithTeacher: false,
+        helpedFriend: false,
+        wasRude: false,
+        allHonest: false,
+        secondChanceUsed: false,
         shownNotifs: {}
-    },
+    };
+}
+
+let gameState = {
+    currentDay: 'day1',
+    stage: null,
+    stats: { success: 0, romance: 0, humor: 0 },
+    flags: getDefaultFlags(),
     messages: []
 };
 
@@ -19,7 +28,14 @@ let currentDate = null;
 let currentTime = null;
 
 export function getGameState() { return gameState; }
-export function setGameState(newState) { gameState = { ...gameState, ...newState }; }
+export function setGameState(newState) {
+    gameState = {
+        ...gameState,
+        ...newState,
+        stats: { ...gameState.stats, ...(newState.stats || {}) },
+        flags: { ...getDefaultFlags(), ...gameState.flags, ...(newState.flags || {}) }
+    };
+}
 export function getCurrentDate() { return currentDate; }
 export function setCurrentDate(date) { currentDate = date; }
 export function getCurrentTime() { return currentTime; }
@@ -58,8 +74,8 @@ export async function loadGame() {
             const data = JSON.parse(saved.gameData);
             gameState.currentDay = data.currentDay || 'day1';
             gameState.stage = data.stage || null;
-            gameState.stats = data.stats || { success: 0, romance: 0, humor: 0 };
-            gameState.flags = data.flags || { photoUnlocked: false, day5Stage1Done: false, day5Stage2Done: false, day5Stage3Done: false, gameEnded: false, shownNotifs: {} };
+            gameState.stats = { success: 0, romance: 0, humor: 0, ...(data.stats || {}) };
+            gameState.flags = { ...getDefaultFlags(), ...(data.flags || {}) };
             if (!gameState.flags.shownNotifs) gameState.flags.shownNotifs = {};
             gameState.messages = data.messages || [];
             if (data.currentDate) currentDate = new Date(data.currentDate);
@@ -79,7 +95,7 @@ export function resetGameState() {
         currentDay: 'day1',
         stage: null,
         stats: { success: 0, romance: 0, humor: 0 },
-        flags: { photoUnlocked: false, day5Stage1Done: false, day5Stage2Done: false, day5Stage3Done: false, gameEnded: false, shownNotifs: {} },
+        flags: getDefaultFlags(),
         messages: []
     };
     currentDate = null;

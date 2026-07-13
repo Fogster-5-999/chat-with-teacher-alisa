@@ -1,4 +1,19 @@
 export const GAME_SCRIPT = {
+    achievementsMeta: [
+        { id: 'first_step', name: { ru: 'Первый шаг', en: 'First Step' }, icon: '👣', condition: (state) => state.flags.day1Completed === true },
+        { id: 'excellent', name: { ru: 'Отличник', en: 'Excellent Student' }, icon: '📚', condition: (state) => state.stats.success >= 50 },
+        { id: 'heartbreaker', name: { ru: 'Сердцеед', en: 'Heartbreaker' }, icon: '❤️', condition: (state) => state.stats.romance >= 50 },
+        { id: 'joker', name: { ru: 'Шутник', en: 'Joker' }, icon: '😂', condition: (state) => state.stats.humor >= 50 },
+        { id: 'collector', name: { ru: 'Коллекционер', en: 'Collector' }, icon: '🖼️', condition: (state) => state.flags.photoUnlocked === true },
+        { id: 'truth_seeker', name: { ru: 'Правдолюб', en: 'Truth Seeker' }, icon: '🔍', condition: (state) => state.flags.allHonest === true },
+        { id: 'day2_minitest_passed', name: { ru: 'Грамотей', en: 'Grammar Whiz' }, icon: '✏️', secret: true, condition: (state) => state.achievements.includes('day2_minitest_passed') },
+        { id: 'graduate', name: { ru: 'Выпускник', en: 'Graduate' }, icon: '🎓', condition: (state) => state.flags.gameEnded === true }
+    ],
+    paidContent: [
+        { id: 'story2', label: { ru: 'Сюжет #2 (скоро)', en: 'Story #2 (coming soon)' }, cost: 3, locked: true },
+        { id: 'story3', label: { ru: 'Сюжет #3 (скоро)', en: 'Story #3 (coming soon)' }, cost: 5, locked: true }
+    ],
+
     day1: {
         messages: [
             { sender: 'alisa', text: 'привет) не спишь?' },
@@ -26,17 +41,26 @@ export const GAME_SCRIPT = {
             'opt1_2': { success: 0, romance: 5, humor: 0 },
             'opt1_3': { success: -5, romance: 0, humor: 5 }
         },
-        nextDay: 'day2'
+        nextDay: [
+            { condition: (state) => state.flags.flirtWithTeacher === true, day: 'day2_flirt' },
+            { condition: (state) => state.flags.studiedHard === true, day: 'day2_study' },
+            { default: true, day: 'day2' }
+        ],
+        flagsOnComplete: {
+            opt1_1: { studiedHard: true },
+            opt1_2: { flirtWithTeacher: true },
+            opt1_3: { joked: true }
+        },
+        onComplete: (state) => { state.flags.day1Completed = true; }
     },
     day2: {
         messages: [
-            { sender: 'alisa', text: 'привет) ну чё, совесть проснулась? я вчера ждала твои предложения, но так и не дождалась 😅' },
-            { sender: 'alisa', text: 'ладно, не буду пилить, у меня сегодня настроение норм. кстати, меня сегодня фоткали для стенда «учитель года». получилось так себе, но скину тебе, поржать' },
-            { sender: 'alisa', text: 'качество ужасное, если хочешь разглядеть - нажми на фото, там реклама секундная, зато потом видно всё' }
+            { sender: 'alisa', text: 'привет) я так и не дождалась сданного теста, а домашка у тебя всё ещё пустая. ну и как, у тебя вообще есть что сказать?' }
         ],
         hasPhoto: true,
         photoBlurred: true,
         photoUrl: 'res/chat1.png',
+        photoPrompt: null,
         options: [
             { id: 'opt2_1', label: 'ух ты, вы тут совсем не как училка. классное фото, честно.', type: 'good' },
             { id: 'opt2_2', label: 'ого, а вы так улыбаетесь? теперь хочется на урок прийти пораньше 😏', type: 'flirt' },
@@ -57,6 +81,115 @@ export const GAME_SCRIPT = {
             'opt2_1': { success: 5, romance: 3, humor: 0 },
             'opt2_2': { success: 2, romance: 8, humor: 0 },
             'opt2_3': { success: 0, romance: 0, humor: 10 }
+        },
+        nextDay: 'day3',
+        conditionalMessages: [
+            {
+                condition: (state) => state.flags.flirtWithTeacher === true,
+                sender: 'alisa',
+                text: 'кстати, ты вчера так мило написал, я думала об этом весь день 😊'
+            },
+            {
+                condition: (state) => state.flags.flirtWithTeacher === false,
+                sender: 'alisa',
+                text: 'интересно, почему ты такой серьёзный?'
+            }
+        ],
+        miniTest: {
+            intro: 'раз уж ты не сделал домашку, давай прямо сейчас проверим твой английский в чате. ответь на 3 вопроса и я сразу пойму, насколько ты готов',
+            followUpMessage: 'ладно, не буду пилить, у меня сегодня настроение норм. кстати, меня сегодня фоткали для стенда «учитель года». получилось так себе, но скину тебе, поржать',
+            questions: [
+                { id: 'q1', text: 'Вставь правильное слово: ___ I a student? (Am / Is / Are)', choices: ['Am', 'Is', 'Are'], correct: 0 },
+                { id: 'q2', text: 'Вставь правильное слово: She ___ at home. (Am / Is / Are)', choices: ['Am', 'Is', 'Are'], correct: 1 },
+                { id: 'q3', text: 'Вставь правильное слово: They ___ going to school. (Am / Is / Are)', choices: ['Am', 'Is', 'Are'], correct: 2 }
+            ],
+            achievementId: 'day2_minitest_passed',
+            successPoints: 3,
+            successMessage: 'Отлично! За 3 правильных ответа — уникальное достижение и +3 к Успеваемости.',
+            failMessage: 'Хмм… есть ошибки. Алиса расстроилась, но сюжет продолжается.'
+        }
+    },
+    day2_flirt: {
+        messages: [
+            { sender: 'alisa', text: 'привет) ты всё ещё думаешь обо мне? я заметила 😏' },
+            { sender: 'alisa', text: 'ладно, давай без этих школьных формальностей. у меня сегодня есть пара часов, можем просто поболтать. ты как?' },
+            { sender: 'alisa', text: 'кстати, меня сегодня фоткали для стенда «учитель года». если хочешь, скину фото, но оно размытое — придётся посмотреть рекламу, чтобы разглядеть 😅' }
+        ],
+        hasPhoto: true,
+        photoBlurred: true,
+        photoUrl: 'res/chat1_flirt.png',
+        photoPrompt: null,
+        options: [
+            { id: 'opt2f_1', label: 'я тоже думал о тебе) давай просто поговорим, без этой всей школьной тягомотины', type: 'flirt' },
+            { id: 'opt2f_2', label: 'ты серьёзно? я думал, я один такой странный, что запал на училку', type: 'flirt' },
+            { id: 'opt2f_3', label: 'фото? конечно, давай! но я без рекламы, у меня нет денег 😂', type: 'meme' },
+            { id: 'opt2f_4', label: 'посмотрю фото без размытия', type: 'flirt', hidden: true, cost: 1 }
+        ],
+        reactions: {
+            'opt2f_1': [
+                { sender: 'alisa', text: 'вот это поворот) я тоже устала от «Сергеевны». давай просто Алиса.' }
+            ],
+            'opt2f_2': [
+                { sender: 'alisa', text: 'хаха, ты первый ученик, который так прямо говорит. мне это нравится 😊' }
+            ],
+            'opt2f_3': [
+                { sender: 'alisa', text: 'ахах, бедный студент) ладно, я скину тебе фото, но смотреть будешь через рекламу — это единственный способ разблокировать чёткость' }
+            ],
+            'opt2f_4': [
+                { sender: 'alisa', text: 'ну ты и хитрец) но раз ты готов смотреть рекламу, лови фото без размытия. надеюсь, я не разочарую 😉' },
+                { sender: 'system', text: '✅ Фото разблокировано! +5 к Романтике' }
+            ]
+        },
+        stats: {
+            'opt2f_1': { success: 0, romance: 8, humor: 0 },
+            'opt2f_2': { success: 0, romance: 10, humor: 0 },
+            'opt2f_3': { success: 0, romance: 0, humor: 5 },
+            'opt2f_4': { success: 0, romance: 5, humor: 0 }
+        },
+        flagsOnComplete: {
+            opt2f_4: { photoUnlocked: true }
+        },
+        nextDay: 'day3'
+    },
+    day2_study: {
+        messages: [
+            { sender: 'alisa', text: 'привет) я рада, что ты серьёзно настроен. давай прямо сейчас разберём тему, пока у меня есть окно.' },
+            { sender: 'alisa', text: 'кстати, меня сегодня фоткали для стенда «учитель года». если хочешь — скину, но оно размытое. не парься, если не хочешь смотреть.' }
+        ],
+        hasPhoto: true,
+        photoBlurred: true,
+        photoUrl: 'res/chat1_study.png',
+        photoPrompt: null,
+        options: [
+            { id: 'opt2s_1', label: 'давай, я готов учиться! объясни мне Present Perfect, я реально хочу понять', type: 'good' },
+            { id: 'opt2s_2', label: 'спасибо, что не бросаешь. я боюсь, что не сдам экзамены', type: 'good' },
+            { id: 'opt2s_3', label: 'а можно мне скинуть шпаргалку? ну, я серьёзно, без шуток 😅', type: 'meme' },
+            { id: 'opt2s_4', label: 'хочу посмотреть фото без размытия', type: 'good', hidden: true, cost: 1 }
+        ],
+        reactions: {
+            'opt2s_1': [
+                { sender: 'alisa', text: 'отлично! тогда слушай: Present Perfect — это действие, которое произошло в прошлом, но результат важен сейчас.' },
+                { sender: 'alisa', text: 'пример: I have seen this film. Я видел этот фильм (и помню его). запомнил?' }
+            ],
+            'opt2s_2': [
+                { sender: 'alisa', text: 'не бойся, я помогу. у тебя всё получится, если будешь стараться. а я буду рядом.' }
+            ],
+            'opt2s_3': [
+                { sender: 'alisa', text: 'шпаргалка? я тебя умоляю) давай лучше разберёмся, а то ты потом ничего не вспомнишь на экзамене' }
+            ],
+            'opt2s_4': [
+                { sender: 'alisa', text: 'о, ты хочешь увидеть меня крупным планом? ну смотри, если готов к рекламе 😊' },
+                { sender: 'system', text: '✅ Фото разблокировано! +3 к Успеваемости' }
+            ]
+        },
+        stats: {
+            'opt2s_1': { success: 10, romance: 0, humor: 0 },
+            'opt2s_2': { success: 5, romance: 5, humor: 0 },
+            'opt2s_3': { success: -3, romance: 0, humor: 5 },
+            'opt2s_4': { success: 3, romance: 0, humor: 0 }
+        },
+        flagsOnComplete: {
+            opt2s_4: { photoUnlocked: true }
         },
         nextDay: 'day3'
     },
@@ -79,14 +212,41 @@ export const GAME_SCRIPT = {
             ],
             'opt3_3': [
                 { sender: 'alisa', text: 'ха-ха, собака с уроками - сильный аргумент. но у меня нет фото кафе, потому что я сижу и пью, а не снимаю для сторис. но если тебе так интересно, приходи и посмотри сам. только без мемов на этот раз, договорились? и кстати, если ты реально придёшь, я дам тебе шпаргалку, которую никому не даю. но это секрет.' }
+            ],
+            'opt3_extra_flirt': [
+                { sender: 'alisa', text: 'вау... ты серьёзно? я... я даже не знаю, что сказать. давай встретимся и поговорим? я не против 😳' },
+                { sender: 'system', text: '💖 Ты решился! +5 к Романтике и открыта новая ветка.' }
             ]
         },
+        conditionalOptions: [
+            {
+                condition: (state) => state.flags.flirtWithTeacher === true && state.stats.romance > 10,
+                id: 'opt3_extra_flirt',
+                label: 'я хочу пригласить тебя на свидание, но боюсь...',
+                type: 'flirt',
+                hidden: true,
+                cost: 2
+            }
+        ],
         stats: {
             'opt3_1': { success: 10, romance: 5, humor: 0 },
             'opt3_2': { success: 3, romance: 10, humor: 0 },
-            'opt3_3': { success: 5, romance: 0, humor: 10 }
+            'opt3_3': { success: 5, romance: 0, humor: 10 },
+            'opt3_extra_flirt': { success: 0, romance: 5, humor: 0 }
         },
-        nextDay: 'day4'
+        nextDay: 'day4',
+        conditionalMessages: [
+            {
+                condition: (state) => state.flags.helpedFriend === true,
+                sender: 'alisa',
+                text: 'ты правда помог своему другу, это очень по-человечески. я это ценю.'
+            },
+            {
+                condition: (state) => state.flags.wasRude === true,
+                sender: 'alisa',
+                text: 'сегодня ты звучишь слишком резко, не хотелось бы, чтобы это стало привычкой.'
+            }
+        ]
     },
     day4: {
         messages: [
@@ -115,7 +275,19 @@ export const GAME_SCRIPT = {
             'opt4_2': { success: 5, romance: 12, humor: 0 },
             'opt4_3': { success: 3, romance: 5, humor: 10 }
         },
-        nextDay: 'day5_1'
+        nextDay: 'day5_1',
+        conditionalMessages: [
+            {
+                condition: (state) => state.flags.allHonest === true,
+                sender: 'alisa',
+                text: 'мне нравится, что ты не притворяешься. с тобой честно и спокойно.'
+            },
+            {
+                condition: (state) => state.stats.romance > 10,
+                sender: 'alisa',
+                text: 'ты всё ещё так тепло смотришь на меня, словно не хочешь отпускать этот разговор.'
+            }
+        ]
     },
     day5_1: {
         friendNotification: {
@@ -129,7 +301,8 @@ export const GAME_SCRIPT = {
             { id: 's1_1', label: 'слушай, я не парюсь. мы просто сидели в кафе, я учил английский. ну и что?', type: 'good' },
             { id: 's1_2', label: 'если честно, мне плевать, кто что скажет. я пришёл, потому что хотел увидеть тебя', type: 'flirt', hidden: true },
             { id: 's1_3', label: 'блин, реально? катастрофа. может, скажем, что ты просто помогала мне из жалости?', type: 'good', hidden: true },
-            { id: 's1_4', label: 'ха, теперь я звезда школы! скажем, что ты сидела грустная, я подошёл спросить про уроки', type: 'meme' }
+            { id: 's1_4', label: 'ха, теперь я звезда школы! скажем, что ты сидела грустная, я подошёл спросить про уроки', type: 'meme' },
+            { id: 's1_5', label: 'я хочу замять эту историю окончательно и пообещать больше так не рисковать', type: 'good', hidden: true, cost: 2 }
         ],
         reactions: {
             's1_1': [
@@ -143,13 +316,18 @@ export const GAME_SCRIPT = {
             ],
             's1_4': [
                 { sender: 'alisa', text: 'ох, ты и шутник… мне бы твою уверенность. ладно, пусть думают, что хотят. но если кто-то из учителей спросит, давай придерживаться версии про дополнительные занятия. а то твои «крутая училка» меня только подставят.' }
+            ],
+            's1_5': [
+                { sender: 'alisa', text: 'я сделаю это для тебя. но в следующий раз — без таких рисков, договорились? ты мне дорог.' },
+                { sender: 'system', text: '✅ Скандал замят! +3 к Успеваемости, +2 к Романтике.' }
             ]
         },
         stats: {
             's1_1': { success: 5, romance: 2, humor: 0 },
             's1_2': { success: 0, romance: 10, humor: 0 },
             's1_3': { success: -5, romance: 0, humor: 0 },
-            's1_4': { success: 0, romance: 0, humor: 10 }
+            's1_4': { success: 0, romance: 0, humor: 10 },
+            's1_5': { success: 3, romance: 2, humor: 0 }
         },
         nextDay: 'day5_2'
     },
@@ -226,10 +404,12 @@ export const GAME_SCRIPT = {
         hasPhoto: true,
         photoBlurred: true,
         photoUrl: 'res/chat2.png',
+        photoPrompt: null,
         options: [
             { id: 'opt6_1', label: 'привет) я тоже думал о тебе. давай встретимся, просто поговорим. во сколько?', type: 'good' },
             { id: 'opt6_2', label: 'честно? немного боюсь. но приду, если ты хочешь', type: 'flirt', hidden: true },
-            { id: 'opt6_3', label: 'парк, скамейка, книга - прям сцена из фильма) приду, конечно', type: 'meme' }
+            { id: 'opt6_3', label: 'парк, скамейка, книга - прям сцена из фильма) приду, конечно', type: 'meme' },
+            { id: 'opt6_4', label: 'я хочу сказать тебе что-то важное, но мне нужно набраться смелости...', type: 'flirt', hidden: true, cost: 2 }
         ],
         reactions: {
             'opt6_1': [
@@ -240,12 +420,20 @@ export const GAME_SCRIPT = {
             ],
             'opt6_3': [
                 { sender: 'alisa', text: 'ахах, нет, проверять не буду. но если захочешь - могу устроить тебе мини-экзамен прямо на скамейке) шучу. жду завтра в 17:00. приходи, будет интересно.' }
+            ],
+            'opt6_4': [
+                { sender: 'alisa', text: 'я... я тоже чувствую что-то к тебе. это странно, но я не могу это отрицать. давай попробуем?' },
+                { sender: 'system', text: '❤️ Признание принято! +10 к Романтике. Ты открыл особую концовку.' }
             ]
         },
         stats: {
             'opt6_1': { success: 5, romance: 8, humor: 0 },
             'opt6_2': { success: 0, romance: 12, humor: 0 },
-            'opt6_3': { success: 3, romance: 5, humor: 10 }
+            'opt6_3': { success: 3, romance: 5, humor: 10 },
+            'opt6_4': { success: 0, romance: 10, humor: 0 }
+        },
+        flagsOnComplete: {
+            opt6_4: { earlyConfession: true }
         },
         nextDay: 'day7'
     },

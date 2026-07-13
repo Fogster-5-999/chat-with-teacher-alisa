@@ -1,14 +1,12 @@
 import { initSDK } from './engine/sdk.js';
-import { initAudio, unlockAudio } from './engine/audio.js';
-import { loadGame, loadDay, resetGame, getGameState, setGameState } from './engine/core.js';
+import { initAudio, unlockAudio, playNotificationSound } from './engine/audio.js';
+import { loadGame, loadDay, resetGame, getGameState, setGameState, getCurrentDate, setCurrentDate, getCurrentTime, setCurrentTime, resetCurrentTime, getNextMessageTime, saveGame, loadConfig } from './engine/core.js';
 import { renderAllMessages } from './ui/components.js';
 import { showMenu, initMenu } from './ui/menu.js';
 import { initSettings, openSettings } from './ui/settings.js';
 import { initLightbox, openLightbox } from './ui/lightbox.js';
-import { t, setLanguage } from './data/translations.js';
-import { getConfig, setConfig, loadConfig } from './data/config.js';
-import { GAME_SCRIPT } from './data/story.js';
-import { getCurrentLanguage } from './data/translations.js';
+import { t, setLanguage, getCurrentLanguage } from './data/translations.js';
+import { getConfig, setConfig } from './data/config.js';
 
 window.updateStatsUI = function() {
     const state = getGameState();
@@ -83,8 +81,6 @@ export function applyLanguage() {
     if (profileJob) profileJob.textContent = t('profile.job');
     const profileBio = document.querySelector('#profile-info-list .profile-info-row:nth-child(2) .profile-info-label');
     if (profileBio) profileBio.textContent = t('profile.bio');
-    const profileUser = document.querySelector('#profile-info-list .profile-info-row:nth-child(3) .profile-info-label');
-    if (profileUser) profileUser.textContent = '@alisa_sergeevna';
     const profileSub1 = document.querySelector('#profile-info-list .profile-info-row:nth-child(1) .profile-info-sub');
     if (profileSub1) profileSub1.textContent = t('profile.job_sub');
     const profileSub2 = document.querySelector('#profile-info-list .profile-info-row:nth-child(2) .profile-info-sub');
@@ -94,12 +90,17 @@ export function applyLanguage() {
     if (state && state.messages && state.messages.length > 0) {
         renderAllMessages(state.messages);
     }
-}
 
-export function startGame(storyId) {
-    if (storyId === 'teacher') {
-        loadSaveAndStart();
-    }
+    const dayTransitionLabel = document.getElementById('day-transition-label');
+    if (dayTransitionLabel) dayTransitionLabel.textContent = t('day.new');
+    const resetBtn = document.getElementById('reset-progress-btn');
+    if (resetBtn) resetBtn.textContent = t('settings.reset_btn');
+    const pushNotifName = document.getElementById('push-notif-name');
+    if (pushNotifName) pushNotifName.textContent = t('notification.alisa');
+    const achievementsTitle = document.querySelector('#achievements-modal h2');
+    if (achievementsTitle) achievementsTitle.textContent = t('achievements.title');
+    const achievementsBtn = document.getElementById('open-achievements-btn');
+    if (achievementsBtn) achievementsBtn.textContent = t('settings.achievements_open');
 }
 
 async function loadSaveAndStart() {
@@ -128,14 +129,8 @@ async function loadSaveAndStart() {
     }
 }
 
-function showEndGame() {
-    // fallback
-}
-
 document.addEventListener('DOMContentLoaded', async function() {
     loadConfig();
-    applyTheme();
-    applyLanguage();
     await initSDK();
     initAudio();
     initMenu();
@@ -151,29 +146,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             if (profileModal) profileModal.classList.add('active');
         });
     }
-    const headerAvatarImg = document.getElementById('avatar-img');
-    if (headerAvatarImg) {
-        headerAvatarImg.src = 'res/ava.png';
-        headerAvatarImg.classList.add('has-photo');
-        headerAvatarImg.style.display = 'block';
-    }
-    const profileAvatarImg = document.getElementById('profile-avatar-img');
-    if (profileAvatarImg) {
-        profileAvatarImg.src = 'res/ava.png';
-        profileAvatarImg.classList.add('has-photo');
-        profileAvatarImg.style.display = 'block';
-    }
-    const avatarEmoji = document.getElementById('avatar-emoji');
-    if (avatarEmoji) avatarEmoji.classList.add('hidden');
-    const profileAvatarEmoji = document.getElementById('profile-avatar-emoji');
-    if (profileAvatarEmoji) profileAvatarEmoji.classList.add('hidden');
-    const closeProfileBtn = document.getElementById('close-profile');
-    if (closeProfileBtn) {
-        closeProfileBtn.addEventListener('click', () => {
-            const profileModal = document.getElementById('profile-modal');
-            if (profileModal) profileModal.classList.remove('active');
-        });
-    }
+    
     const musicToggle = document.getElementById('music-toggle');
     if (musicToggle) {
         musicToggle.addEventListener('click', () => {
@@ -184,6 +157,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     document.addEventListener('click', () => {
         import('./engine/audio.js').then(({ unlockAudio }) => unlockAudio());
     }, { once: false });
+
+    applyTheme(); // Применяем тему после загрузки конфигурации
+    applyLanguage(); // Применяем язык после загрузки конфигурации
 
     showMenu();
 });

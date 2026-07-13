@@ -1,14 +1,15 @@
-import { t, setLanguage } from '../data/translations.js';
+import { t, setLanguage, getCurrentLanguage } from '../data/translations.js';
 import { getConfig, setConfig } from '../data/config.js';
 import { applyTheme, applyLanguage } from '../app.js';
 import { resetGameState } from '../engine/state.js';
+import { getGameState } from '../engine/core.js';
+import { GAME_SCRIPT } from '../data/story.js';
 
 const settingsModal = document.getElementById('settings-modal');
 const closeSettingsBtn = document.getElementById('close-settings');
 
 export function openSettings() {
     settingsModal.classList.add('active');
-    // Обновляем состояние кнопок в соответствии с текущими настройками
     updateSettingsUI();
 }
 
@@ -22,7 +23,6 @@ export function initSettings() {
         if (e.target === settingsModal) closeSettings();
     });
 
-    // Обработчики кнопок языка
     document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const lang = btn.dataset.lang;
@@ -32,12 +32,10 @@ export function initSettings() {
             setConfig(config);
             applyLanguage();
             updateSettingsUI();
-            // Закрываем настройки после выбора
             closeSettings();
         });
     });
 
-    // Обработчики темы
     document.querySelectorAll('.theme-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const theme = btn.dataset.theme;
@@ -50,7 +48,6 @@ export function initSettings() {
         });
     });
 
-    // Обработчики звука
     document.querySelectorAll('.sound-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const sound = btn.dataset.sound === 'on';
@@ -72,20 +69,54 @@ export function initSettings() {
             }
         });
     }
+
+    const achievementsBtn = document.getElementById('open-achievements-btn');
+    if (achievementsBtn) {
+        achievementsBtn.addEventListener('click', openAchievementsModal);
+    }
+    document.getElementById('close-achievements')?.addEventListener('click', closeAchievementsModal);
+    document.getElementById('achievements-modal')?.addEventListener('click', (e) => {
+        if (e.target === e.currentTarget) closeAchievementsModal();
+    });
 }
 
 function updateSettingsUI() {
     const config = getConfig();
-    // Язык
     document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.lang === config.language);
     });
-    // Тема
     document.querySelectorAll('.theme-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.theme === config.theme);
     });
-    // Звук
     document.querySelectorAll('.sound-btn').forEach(btn => {
         btn.classList.toggle('active', (btn.dataset.sound === 'on') === config.sound);
     });
+}
+
+function openAchievementsModal() {
+    const modal = document.getElementById('achievements-modal');
+    const list = document.getElementById('achievements-list');
+    if (!modal || !list) return;
+    const state = getGameState();
+    const meta = GAME_SCRIPT.achievementsMeta || [];
+    const unlocked = state.achievements || [];
+    list.innerHTML = '';
+    meta.forEach(ach => {
+        const isUnlocked = unlocked.includes(ach.id);
+        const div = document.createElement('div');
+        div.className = 'achievement-item' + (isUnlocked ? ' unlocked' : ' locked');
+        const icon = ach.icon || '🏆';
+        const name = isUnlocked ? (ach.name?.[getCurrentLanguage()] || ach.name?.ru || ach.id) : (ach.secret ? '🔒 Скрыто' : '🔒 Секретно');
+        div.innerHTML = `
+            <span class="ach-icon">${isUnlocked ? icon : '🔒'}</span>
+            <span class="ach-name">${isUnlocked ? name : 'Скрыто'}</span>
+            <span class="ach-status">${isUnlocked ? '✅' : ''}</span>
+        `;
+        list.appendChild(div);
+    });
+    modal.classList.add('active');
+}
+
+function closeAchievementsModal() {
+    document.getElementById('achievements-modal')?.classList.remove('active');
 }
