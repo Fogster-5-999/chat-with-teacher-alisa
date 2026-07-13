@@ -49,7 +49,8 @@ export const translations = {
         'story_title_2': 'Сюжет #2',
         'story_title_3': 'Сюжет #3',
         'story_soon': 'Скоро появится',
-        'badge_soon': 'Скоро'
+        'badge_soon': 'Скоро',
+        'day.new': 'День'
     },
     en: {
         'menu.title': '📱 Chat Story',
@@ -98,7 +99,7 @@ export const translations = {
         'photo.hint_locked': '👆 Tap the photo to unlock (ad required)',
         'photo.hint_unlocked': '👆 Tap the photo to view closer',
         'photo.error': '📷 Photo not added (',
-        'day.new': 'New day',
+        'day.new': 'Day',
         'friend.prefix': 'Friend (',
         'notif.alisa': 'Alisa',
         'achievements.title': 'Achievements',

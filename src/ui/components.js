@@ -11,13 +11,13 @@ let _savedOptions = null;
 let _savedHandler = null;
 
 export function renderMessage(msgObj) {
-    const { sender, textKey, text, timestamp, isHtml, type, photoUrl, blurred, prompt, isLocked } = msgObj;
+    const { sender, textKey, text, timestamp, isHtml, type, photoUrl, isLocked } = msgObj;
     const date = new Date(timestamp);
     const div = document.createElement('div');
     div.className = 'message ' + (sender === 'alisa' ? 'incoming' : sender === 'system' ? 'system' : 'outgoing');
 
     if (type === 'photo') {
-        renderPhotoContent(div, { photoUrl, blurred, prompt, isLocked });
+        renderPhotoContent(div, { photoUrl, isLocked });
     } else {
         const contentSpan = document.createElement('span');
         const translated = t(textKey || '');
@@ -84,11 +84,16 @@ export function hideNetworkStatus() {
     networkStatus.style.display = 'none';
 }
 
-function renderPhotoContent(container, { photoUrl, blurred, prompt, isLocked }) {
+function renderPhotoContent(container, { photoUrl, isLocked }) {
     const wrap = document.createElement('div');
+    wrap.style.position = 'relative';
+    wrap.style.display = 'inline-block';
+    wrap.style.width = '100%';
+
     const img = document.createElement('img');
     img.style.width = '100%';
     img.style.borderRadius = '12px';
+    img.style.display = 'block';
     img.className = isLocked ? 'blurred-photo' : 'unblurred';
     img.onerror = function() {
         img.style.display = 'none';
@@ -101,51 +106,64 @@ function renderPhotoContent(container, { photoUrl, blurred, prompt, isLocked }) 
     img.src = normalizedUrl;
     wrap.appendChild(img);
 
-    if (prompt) {
-        const promptDiv = document.createElement('div');
-        promptDiv.style.cssText = 'margin-top:6px; font-size:12px; color:var(--text-secondary); font-style:italic; text-align:center;';
-        promptDiv.textContent = '📷 ' + t(prompt);
-        wrap.appendChild(promptDiv);
-    }
-
-    const hintDiv = document.createElement('div');
-    hintDiv.style.cssText = 'margin-top:8px; font-size:13px; color:var(--text-secondary); text-align:center;';
-    hintDiv.textContent = isLocked
-        ? t('photo.hint_locked')
-        : t('photo.hint_unlocked');
-    wrap.appendChild(hintDiv);
-
-    container.appendChild(wrap);
-
     if (isLocked) {
-        img.addEventListener('click', function unlockHandler(e) {
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+            position:absolute; top:0; left:0; width:100%; height:100%;
+            display:flex; align-items:center; justify-content:center;
+            cursor:pointer; z-index:2;
+            color:#fff; font-size:14px; font-weight:600;
+            text-shadow:0 1px 4px rgba(0,0,0,0.7);
+            user-select:none; pointer-events:none;
+        `;
+        overlay.textContent = 'Открыть за рекламу';
+        wrap.appendChild(overlay);
+
+        wrap.addEventListener('click', function unlockHandler(e) {
             e.stopPropagation();
-            import('../engine/sdk.js').then(({ showAd }) => {
-                showAd({
-                    callbacks: {
-                        onClose: (wasShown) => {
-                            if (wasShown) {
-                                if (window.unlockPhoto) window.unlockPhoto();
+            if (overlay.parentNode) overlay.parentNode.removeChild(overlay);
+            import('../engine/sdk.js').then(({ getSDK }) => {
+                const ysdk = getSDK();
+                if (ysdk && ysdk.adv) {
+                    ysdk.adv.showRewardedVideo({
+                        callbacks: {
+                            onRewarded: () => {
                                 img.classList.remove('blurred-photo');
                                 img.classList.add('unblurred');
-                                hintDiv.textContent = t('photo.hint_unlocked');
-                                img.removeEventListener('click', unlockHandler);
-                                img.addEventListener('click', function(e2) {
+
+                                import('../engine/state.js').then(({ getGameState, setGameState, saveGame }) => {
+                                    const st = getGameState();
+                                    st.flags.photoUnlocked = true;
+                                    st.stats.romance += 1;
+                                    setGameState(st);
+                                    saveGame();
+                                    if (window.updateStatsUI) window.updateStatsUI();
+                                });
+
+                                import('../engine/core.js').then(({ checkAchievements }) => {
+                                    checkAchievements();
+                                });
+
+                                wrap.removeEventListener('click', unlockHandler);
+                                wrap.addEventListener('click', function(e2) {
                                     e2.stopPropagation();
                                     openLightbox(normalizedUrl);
                                 });
-                            }
+                            },
+                            onClose: () => {}
                         }
-                    }
-                });
+                    });
+                }
             });
         });
     } else {
-        img.addEventListener('click', function(e) {
+        wrap.addEventListener('click', function(e) {
             e.stopPropagation();
             openLightbox(normalizedUrl);
         });
     }
+
+    container.appendChild(wrap);
 }
 
 export function hideOptions() {

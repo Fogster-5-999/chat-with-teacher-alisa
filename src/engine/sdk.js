@@ -34,6 +34,20 @@ export async function initSDK() {
                     };
                     closeBtn.addEventListener('click', handler);
                     if (callbacks?.onOpen) callbacks.onOpen();
+                },
+                showRewardedVideo: ({ callbacks }) => {
+                    console.log('Показываем rewarded video (эмуляция)');
+                    const overlay = document.getElementById('ad-overlay');
+                    overlay.classList.add('active');
+                    const closeBtn = document.getElementById('close-ad-btn');
+                    const handler = () => {
+                        overlay.classList.remove('active');
+                        closeBtn.removeEventListener('click', handler);
+                        if (callbacks?.onRewarded) callbacks.onRewarded();
+                        if (callbacks?.onClose) callbacks.onClose();
+                    };
+                    closeBtn.addEventListener('click', handler);
+                    if (callbacks?.onOpen) callbacks.onOpen();
                 }
             },
             features: {

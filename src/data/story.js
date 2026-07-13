@@ -121,8 +121,7 @@ export const GAME_SCRIPT = {
         options: [
             { id: 'opt2f_1', label: 'я тоже думал о тебе) давай просто поговорим, без этой всей школьной тягомотины', type: 'flirt' },
             { id: 'opt2f_2', label: 'ты серьёзно? я думал, я один такой странный, что запал на училку', type: 'flirt' },
-            { id: 'opt2f_3', label: 'фото? конечно, давай! но я без рекламы, у меня нет денег 😂', type: 'meme' },
-            { id: 'opt2f_4', label: 'посмотрю фото без размытия', type: 'flirt', hidden: true, cost: 1 }
+            { id: 'opt2f_3', label: 'фото? конечно, давай! но я без рекламы, у меня нет денег 😂', type: 'meme' }
         ],
         reactions: {
             'opt2f_1': [
@@ -133,20 +132,12 @@ export const GAME_SCRIPT = {
             ],
             'opt2f_3': [
                 { sender: 'alisa', text: 'ахах, бедный студент) ладно, я скину тебе фото, но смотреть будешь через рекламу — это единственный способ разблокировать чёткость' }
-            ],
-            'opt2f_4': [
-                { sender: 'alisa', text: 'ну ты и хитрец) но раз ты готов смотреть рекламу, лови фото без размытия. надеюсь, я не разочарую 😉' },
-                { sender: 'system', text: '✅ Фото разблокировано! +5 к Романтике' }
             ]
         },
         stats: {
             'opt2f_1': { success: 0, romance: 8, humor: 0 },
             'opt2f_2': { success: 0, romance: 10, humor: 0 },
-            'opt2f_3': { success: 0, romance: 0, humor: 5 },
-            'opt2f_4': { success: 0, romance: 5, humor: 0 }
-        },
-        flagsOnComplete: {
-            opt2f_4: { photoUnlocked: true }
+            'opt2f_3': { success: 0, romance: 0, humor: 5 }
         },
         nextDay: 'day3'
     },
@@ -162,8 +153,7 @@ export const GAME_SCRIPT = {
         options: [
             { id: 'opt2s_1', label: 'давай, я готов учиться! объясни мне Present Perfect, я реально хочу понять', type: 'good' },
             { id: 'opt2s_2', label: 'спасибо, что не бросаешь. я боюсь, что не сдам экзамены', type: 'good' },
-            { id: 'opt2s_3', label: 'а можно мне скинуть шпаргалку? ну, я серьёзно, без шуток 😅', type: 'meme' },
-            { id: 'opt2s_4', label: 'хочу посмотреть фото без размытия', type: 'good', hidden: true, cost: 1 }
+            { id: 'opt2s_3', label: 'а можно мне скинуть шпаргалку? ну, я серьёзно, без шуток 😅', type: 'meme' }
         ],
         reactions: {
             'opt2s_1': [
@@ -175,20 +165,12 @@ export const GAME_SCRIPT = {
             ],
             'opt2s_3': [
                 { sender: 'alisa', text: 'шпаргалка? я тебя умоляю) давай лучше разберёмся, а то ты потом ничего не вспомнишь на экзамене' }
-            ],
-            'opt2s_4': [
-                { sender: 'alisa', text: 'о, ты хочешь увидеть меня крупным планом? ну смотри, если готов к рекламе 😊' },
-                { sender: 'system', text: '✅ Фото разблокировано! +3 к Успеваемости' }
             ]
         },
         stats: {
             'opt2s_1': { success: 10, romance: 0, humor: 0 },
             'opt2s_2': { success: 5, romance: 5, humor: 0 },
-            'opt2s_3': { success: -3, romance: 0, humor: 5 },
-            'opt2s_4': { success: 3, romance: 0, humor: 0 }
-        },
-        flagsOnComplete: {
-            opt2s_4: { photoUnlocked: true }
+            'opt2s_3': { success: -3, romance: 0, humor: 5 }
         },
         nextDay: 'day3'
     },

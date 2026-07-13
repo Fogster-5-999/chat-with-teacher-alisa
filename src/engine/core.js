@@ -1,19 +1,10 @@
 import { playNotificationSound } from './audio.js';
 import { t, getCurrentLanguage } from '../data/translations.js';
-import { getConfig } from '../data/config.js';
 import { renderMessage, addDayDivider, showTyping, hideTyping, showNetworkStatus, hideNetworkStatus, showOptions, hideOptions, clearMessages, renderFinalScreen, showMiniTest } from '../ui/components.js';
 import { GAME_SCRIPT } from '../data/story.js';
 import { getGameState, setGameState, getCurrentDate, setCurrentDate, getCurrentTime, setCurrentTime, resetCurrentTime, getNextMessageTime, saveGame, loadGame, resetGameState } from './state.js';
 
 export { getGameState, setGameState, getCurrentDate, setCurrentDate, getCurrentTime, setCurrentTime, resetCurrentTime, getNextMessageTime, saveGame, loadGame };
-
-window.unlockPhoto = function() {
-    const state = getGameState();
-    state.flags.photoUnlocked = true;
-    setGameState(state);
-    saveGame();
-    checkAchievements();
-};
 
 function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
 function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
@@ -23,12 +14,13 @@ async function showDayTransition(dayKey) {
     const label = document.getElementById('day-transition-label');
     if (!overlay || !label) return;
 
-    const title = dayKey === 'day1' ? t('day.new') : `${t('day.new')} ${dayKey.replace('day', '')}`;
+    const num = dayKey.replace('day', '').replace(/_.*$/, '');
+    const title = `${t('day.new')} ${num}`;
     label.textContent = title;
     overlay.classList.add('active');
-    await sleep(220);
+    await sleep(1800);
     overlay.classList.remove('active');
-    await sleep(180);
+    await sleep(400);
 }
 
 export function resetGame() {
@@ -37,26 +29,31 @@ export function resetGame() {
     loadDay('day1');
 }
 
-function showTopNotification(title, text, durationMs = 5000) {
+function showTopNotification(title, text, durationMs = 5000, icon) {
     const el = document.getElementById('push-notification');
     if (!el) return;
+    const iconEl = document.getElementById('push-notif-icon');
+    if (iconEl && icon) iconEl.textContent = icon;
     document.getElementById('push-notif-name').textContent = title;
     document.getElementById('push-notif-text').textContent = text;
     el.classList.add('active');
     playNotificationSound();
     clearTimeout(el._timer);
-    el._timer = setTimeout(() => el.classList.remove('active'), durationMs);
+    el._timer = setTimeout(() => {
+        el.classList.remove('active');
+        if (iconEl) iconEl.textContent = '💬';
+    }, durationMs);
 }
 
 function showFriendNotification(name, text, durationMs = 5000) {
-    showTopNotification(t('friend.prefix') + name + ')', text, durationMs);
+    showTopNotification(name, text, durationMs, '👤');
 }
 
 // ================================================================
 // АЧИВКИ: сверяем состояние со списком GAME_SCRIPT.achievementsMeta
 // и разблокируем всё новое, что подходит под условие.
 // ================================================================
-function checkAchievements() {
+export function checkAchievements() {
     const meta = GAME_SCRIPT.achievementsMeta || [];
     if (!meta.length) return;
     const state = getGameState();
@@ -69,7 +66,7 @@ function checkAchievements() {
             changed = true;
             const lang = getCurrentLanguage();
             const name = (a.name && (a.name[lang] || a.name.ru)) || a.id;
-            showTopNotification(t('achievement.title'), (a.icon || '🏆') + ' ' + name);
+            showTopNotification(t('achievement.title'), name, 5000, a.icon || '🏆');
         }
     });
     if (changed) {
@@ -116,7 +113,6 @@ export async function loadDay(dayKey, stageKey = null) {
     let hasPhoto = false;
     let photoUrl = '';
     let photoBlurred = true;
-    let photoPrompt = null;
     let friendNotification = null;
 
     if (dayKey === 'day5') {
@@ -148,7 +144,6 @@ export async function loadDay(dayKey, stageKey = null) {
         hasPhoto = dayData.hasPhoto || false;
         photoUrl = dayData.photoUrl || '';
         photoBlurred = dayData.photoBlurred !== undefined ? dayData.photoBlurred : true;
-        photoPrompt = dayData.photoPrompt || null;
         friendNotification = dayData.friendNotification || null;
     }
 
@@ -289,8 +284,6 @@ export async function loadDay(dayKey, stageKey = null) {
             sender: 'alisa',
             type: 'photo',
             photoUrl,
-            blurred: photoBlurred,
-            prompt: photoPrompt,
             isLocked: isLocked,
             timestamp: new Date().toISOString()
         };
