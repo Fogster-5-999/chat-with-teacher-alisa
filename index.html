@@ -11,7 +11,6 @@
 </head>
 <body>
     <div id="app">
-        <!-- Главное меню -->
         <div id="menu-screen" class="screen active">
             <div id="main-menu" class="menu-overlay">
                 <button class="top-lang-btn" id="top-lang-btn">
@@ -24,10 +23,11 @@
                 </button>
 
                 <div class="menu-hero">
-                    <img src="res/ava.png" alt="Алиса" class="hero-avatar" />
-                    <div class="hero-overlay">
-                        <h1 class="hero-title" data-i18n="menu.hero_title">ЧАТ С УЧИТЕЛЬНИЦЕЙ</h1>
-                        <span class="hero-subtitle" data-i18n="menu.hero_subtitle">Алисой</span>
+                    <div class="hero-avatar" id="menu-hero-avatar"></div>
+                    <div class="hero-fade"></div>
+                    <div class="hero-title-container">
+                        <h1 class="hero-title-main" data-i18n="menu.hero_title">ЧАТ С УЧИТЕЛЬНИЦЕЙ</h1>
+                        <span class="hero-title-sub" data-i18n="menu.hero_subtitle">Алисой</span>
                     </div>
                 </div>
 
@@ -76,21 +76,20 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="menu-bottom-actions">
-                    <button id="menu-achievements-btn" class="menu-tab-btn">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34M12 2a4 4 0 0 1 4 4v5a4 4 0 0 1-4 4 4 4 0 0 1-4-4V6a4 4 0 0 1 4-4z"/></svg>
-                        <span class="tab-label" data-i18n="menu.achievements">Достижения</span>
-                    </button>
-                    <button id="menu-settings-btn" class="menu-tab-btn">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-                        <span class="tab-label" data-i18n="menu.settings">Настройки</span>
-                    </button>
-                </div>
+            <div class="menu-bottom-actions">
+                <button id="menu-achievements-btn" class="menu-tab-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34M12 2a4 4 0 0 1 4 4v5a4 4 0 0 1-4 4 4 4 0 0 1-4-4V6a4 4 0 0 1 4-4z"/></svg>
+                    <span class="tab-label" data-i18n="menu.achievements">Достижения</span>
+                </button>
+                <button id="menu-settings-btn" class="menu-tab-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    <span class="tab-label" data-i18n="menu.settings">Настройки</span>
+                </button>
             </div>
         </div>
 
-        <!-- Основной экран игры (чат) -->
         <div id="game-screen" class="screen">
             <div id="header">
                 <div id="avatar">
@@ -137,39 +136,75 @@
             <div id="options"></div>
         </div>
 
-        <!-- Модалка настроек -->
         <div id="settings-modal" class="modal">
             <div class="modal-content">
                 <div class="modal-header">
                     <h2 data-i18n="settings.title">Настройки</h2>
-                    <button class="close-modal" id="close-settings">✕</button>
+                    <button class="close-modal" id="close-settings">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
                 </div>
                 <div class="settings-list">
                     <div class="setting-item">
-                        <span class="setting-label" data-i18n="settings.theme">Тема</span>
+                        <div class="settings-section-title">
+                            <svg class="settings-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                            </svg>
+                            <span data-i18n="settings.theme">Тема</span>
+                        </div>
                         <div class="setting-control">
-                            <button class="theme-btn active" data-theme="dark">🌙 Тёмная</button>
-                            <button class="theme-btn" data-theme="light">☀️ Светлая</button>
+                            <button class="theme-btn active" data-theme="dark" data-i18n="settings.theme_dark">🌙 Тёмная</button>
+                            <button class="theme-btn" data-theme="light" data-i18n="settings.theme_light">☀️ Светлая</button>
                         </div>
                     </div>
                     <div class="setting-item">
-                        <span class="setting-label" data-i18n="settings.sound">Звук уведомлений</span>
+                        <div class="settings-section-title">
+                            <svg class="settings-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5"/><path d="M18 2l3 3-9 9-4 1 1-4 9-9z"/>
+                            </svg>
+                            <span data-i18n="settings.sound">Звук уведомлений</span>
+                        </div>
                         <div class="setting-control">
-                            <button class="sound-btn active" data-sound="on">🔊 Вкл</button>
-                            <button class="sound-btn" data-sound="off">🔇 Выкл</button>
+                            <button class="sound-btn active" data-sound="on" data-i18n="settings.sound_on">🔊 Вкл</button>
+                            <button class="sound-btn" data-sound="off" data-i18n="settings.sound_off">🔇 Выкл</button>
                         </div>
                     </div>
                     <div class="setting-item">
-                        <span class="setting-label" data-i18n="settings.reset">Сбросить прогресс</span>
+                        <div class="settings-section-title">
+                            <svg class="settings-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                            </svg>
+                            <span data-i18n="settings.reset">Сбросить прогресс</span>
+                        </div>
                         <div class="setting-control">
-                            <button id="reset-progress-btn" class="reset-btn" data-i18n="settings.reset">🔄 Сбросить</button>
+                            <button id="reset-progress-btn" class="reset-btn" data-i18n="settings.reset">🔄 Сбросить прогресс</button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Модалка профиля -->
+        <div id="achievements-modal" class="modal">
+            <div class="modal-content achievements-content">
+                <div class="modal-header">
+                    <div class="modal-header-left">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6M18 9h1.5a2.5 2.5 0 0 0 0-5H18M4 22h16M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34M12 2a4 4 0 0 1 4 4v5a4 4 0 0 1-4 4 4 4 0 0 1-4-4V6a4 4 0 0 1 4-4z"/>
+                        </svg>
+                        <h2 data-i18n="achievements.title">Достижения</h2>
+                    </div>
+                    <button class="close-modal" id="close-achievements">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+                <div id="achievements-list"></div>
+            </div>
+        </div>
+
         <div id="profile-modal">
             <div id="profile-header">
                 <button id="close-profile" aria-label="Назад">←</button>
@@ -210,7 +245,6 @@
             </div>
         </div>
 
-        <!-- Лайтбокс для фото -->
         <div id="photo-lightbox">
             <button id="lightbox-close" aria-label="Закрыть">✕</button>
             <img id="lightbox-img" src="" alt="" />
@@ -222,7 +256,6 @@
             </div>
         </div>
 
-        <!-- Оверлей рекламы -->
         <div id="ad-overlay">
             <div class="ad-spinner"></div>
             <div data-i18n="ad.loading">Показываем рекламу...</div>
@@ -230,7 +263,6 @@
             <button id="close-ad-btn" style="margin-top:20px; padding:10px 30px; border:none; border-radius:30px; background:#4d7b8f; color:#fff; font-size:16px; cursor:pointer;">Закрыть</button>
         </div>
 
-        <!-- Push-уведомление -->
         <div id="push-notification">
             <div id="push-notif-icon">💬</div>
             <div id="push-notif-body">

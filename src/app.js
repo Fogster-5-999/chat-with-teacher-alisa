@@ -3,6 +3,7 @@ import { initAudio } from './engine/audio.js';
 import { getGameState } from './engine/core.js';
 import { showMenu, initMenu } from './ui/menu.js';
 import { initSettings, openSettings } from './ui/settings.js';
+import { initAchievements } from './ui/achievements.js';
 import { initLightbox } from './ui/lightbox.js';
 import { loadConfig } from './data/config.js';
 import { applyTheme, applyLanguage } from './engine/game.js';
@@ -22,6 +23,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     initAudio();
     initMenu();
     initSettings();
+    initAchievements();
     initLightbox();
 
     const settingsBtn = document.getElementById('settings-btn-game');

@@ -13,7 +13,11 @@ export const translations = {
         'settings.title': 'Настройки',
         'settings.language': 'Язык',
         'settings.theme': 'Тема',
+        'settings.theme_dark': 'Тёмная',
+        'settings.theme_light': 'Светлая',
         'settings.sound': 'Звук уведомлений',
+        'settings.sound_on': 'Вкл',
+        'settings.sound_off': 'Выкл',
         'settings.reset': 'Сбросить прогресс',
         'settings.reset_confirm': 'Сбросить весь прогресс и вернуться к первому дню?',
         'profile.title': 'Профиль',
@@ -38,7 +42,10 @@ export const translations = {
         'menu.story1_title': 'Алиса ❤️',
         'menu.story1_status': 'Учитель английского языка',
         'menu.story1_btn': 'Начать переписку',
-        'menu.story1_unread': '💬 2 новых сообщения'
+        'menu.story1_unread': '💬 2 новых сообщения',
+        'achievements.title': 'Достижения',
+        'achievements.unlocked': 'Открыто',
+        'achievements.locked': 'Скрыто'
     },
     en: {
         'menu.title': '📱 Chat Story',
@@ -54,8 +61,12 @@ export const translations = {
         'settings.title': 'Settings',
         'settings.language': 'Language',
         'settings.theme': 'Theme',
-        'settings.sound': 'Notification sound',
-        'settings.reset': 'Reset progress',
+        'settings.theme_dark': 'Dark',
+        'settings.theme_light': 'Light',
+        'settings.sound': 'Notification Sound',
+        'settings.sound_on': 'On',
+        'settings.sound_off': 'Off',
+        'settings.reset': 'Reset Progress',
         'settings.reset_confirm': 'Reset all progress and return to the first day?',
         'profile.title': 'Profile',
         'profile.name': 'Alisa Sergeyevna',
@@ -85,7 +96,10 @@ export const translations = {
         'photo.error': '📷 Photo not added (',
         'day.new': 'New day',
         'friend.prefix': 'Friend (',
-        'notif.alisa': 'Alisa'
+        'notif.alisa': 'Alisa',
+        'achievements.title': 'Achievements',
+        'achievements.unlocked': 'Unlocked',
+        'achievements.locked': 'Hidden'
     }
 };
 

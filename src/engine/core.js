@@ -219,10 +219,10 @@ export async function loadDay(dayKey, stageKey = null) {
                         if (correctCount === totalQuestions) {
                             stRes.achievements.push(dayData.miniTest.achievementId || 'mini_test');
                             stRes.stats.success += (dayData.miniTest.successPoints || 3);
-                            showTopNotification(t('notif.alisa'), dayData.miniTest.successMessage);
+                            showTopNotification(t('notif.alisa'), t(dayData.miniTest.successMessage));
                             if (window.updateStatsUI) window.updateStatsUI();
                         } else {
-                            showTopNotification(t('notif.alisa'), dayData.miniTest.failMessage);
+                            showTopNotification(t('notif.alisa'), t(dayData.miniTest.failMessage));
                         }
                         if (dayKey === 'day2' && dayData.miniTest.followUpMessage) {
                             const followUpTime = getNextMessageTime();
@@ -247,7 +247,7 @@ export async function loadDay(dayKey, stageKey = null) {
                                         if (wasShown) {
                                             stRes.achievements.push(dayData.miniTest.achievementId || 'mini_test');
                                             stRes.stats.success += (dayData.miniTest.successPoints || 3);
-                                            showTopNotification(t('notif.alisa'), dayData.miniTest.successMessage);
+                                            showTopNotification(t('notif.alisa'), t(dayData.miniTest.successMessage));
                                             if (window.updateStatsUI) window.updateStatsUI();
                                             if (dayKey === 'day2' && dayData.miniTest.followUpMessage) {
                                                 const followUpTime = getNextMessageTime();

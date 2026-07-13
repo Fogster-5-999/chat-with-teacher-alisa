@@ -2,6 +2,7 @@ import { t, setLanguage, getCurrentLanguage } from '../data/translations.js';
 import { getConfig, setConfig } from '../data/config.js';
 import { startGame, applyLanguage } from '../engine/game.js';
 import { openSettings } from './settings.js';
+import { openAchievements } from './achievements.js';
 
 const menuScreen = document.getElementById('menu-screen');
 const gameScreen = document.getElementById('game-screen');
@@ -41,9 +42,7 @@ export function initMenu() {
         });
     });
 
-    document.getElementById('menu-achievements-btn').addEventListener('click', () => {
-        console.log('Достижения — скоро');
-    });
+    document.getElementById('menu-achievements-btn').addEventListener('click', openAchievements);
 
     document.getElementById('menu-settings-btn').addEventListener('click', openSettings);
 }
