@@ -324,6 +324,24 @@ export async function loadDay(dayKey, stageKey = null) {
         renderMessage(playerMsg);
         await sleep(1000);
 
+        if (Math.random() < 0.25) {
+            const outgoing = document.querySelectorAll('#messages > .message.outgoing');
+            const lastMsg = outgoing.length ? outgoing[outgoing.length - 1] : null;
+            if (lastMsg) {
+                const reaction = document.createElement('span');
+                reaction.className = 'message-reaction';
+                reaction.textContent = '❤️';
+                lastMsg.appendChild(reaction);
+            }
+            const st = getGameState();
+            const msgs = st.messages;
+            if (msgs.length > 0) {
+                msgs[msgs.length - 1].liked = true;
+                setGameState(st);
+                saveGame();
+            }
+        }
+
         if (dayData.flagsOnComplete && dayData.flagsOnComplete[optionId]) {
             const st = getGameState();
             Object.assign(st.flags, dayData.flagsOnComplete[optionId]);

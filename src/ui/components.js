@@ -34,6 +34,13 @@ export function renderMessage(msgObj) {
         div.appendChild(timeSpan);
     }
 
+    if (msgObj.liked) {
+        const reaction = document.createElement('span');
+        reaction.className = 'message-reaction';
+        reaction.textContent = '❤️';
+        div.appendChild(reaction);
+    }
+
     messagesContainer.insertBefore(div, typingIndicator);
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
