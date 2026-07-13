@@ -156,6 +156,7 @@ export function reRenderSavedOptions() {
 }
 
 export function showOptions(options, clickHandler) {
+    hideTyping();
     if (options && options.length > 0) {
         _savedOptions = [...options];
         _savedHandler = clickHandler;

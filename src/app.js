@@ -1,10 +1,11 @@
 import { initSDK } from './engine/sdk.js';
 import { initAudio } from './engine/audio.js';
-import { getGameState } from './engine/core.js';
+import { saveGame } from './engine/core.js';
+import { hideOptions } from './ui/components.js';
 import { showMenu, initMenu } from './ui/menu.js';
 import { initSettings, openSettings } from './ui/settings.js';
 import { initAchievements } from './ui/achievements.js';
-import { initLightbox } from './ui/lightbox.js';
+import { initLightbox, openLightbox } from './ui/lightbox.js';
 import { loadConfig } from './data/config.js';
 import { applyTheme, applyLanguage, updateCoreStatsUI } from './engine/game.js';
 
@@ -46,6 +47,14 @@ document.addEventListener('DOMContentLoaded', async function() {
     if (avatarEmoji) avatarEmoji.classList.add('hidden');
     const profileAvatarEmoji = document.getElementById('profile-avatar-emoji');
     if (profileAvatarEmoji) profileAvatarEmoji.classList.add('hidden');
+    const profileAvatarLarge = document.getElementById('profile-avatar-large');
+    if (profileAvatarLarge) {
+        profileAvatarLarge.addEventListener('click', () => {
+            const img = document.getElementById('profile-avatar-img');
+            if (img && img.src) openLightbox(img.src);
+        });
+    }
+
     const closeProfileBtn = document.getElementById('close-profile');
     if (closeProfileBtn) {
         closeProfileBtn.addEventListener('click', () => {
@@ -53,6 +62,17 @@ document.addEventListener('DOMContentLoaded', async function() {
             if (profileModal) profileModal.classList.remove('active');
         });
     }
+    const backBtn = document.getElementById('back-btn');
+    if (backBtn) {
+        backBtn.addEventListener('click', async () => {
+            await saveGame();
+            hideOptions();
+            const profileModal = document.getElementById('profile-modal');
+            if (profileModal) profileModal.classList.remove('active');
+            showMenu();
+        });
+    }
+
     const musicToggle = document.getElementById('music-toggle');
     if (musicToggle) {
         musicToggle.addEventListener('click', () => {

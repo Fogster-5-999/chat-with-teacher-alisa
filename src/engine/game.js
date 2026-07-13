@@ -126,6 +126,7 @@ function loadStory2() {
 
 async function loadSaveAndStart() {
     const hasSave = await loadGame();
+    updateCoreStatsUI();
     const state = getGameState();
     if (state.messages.length > 0) renderAllMessages(state.messages);
     if (hasSave && !state.flags.gameEnded) {
