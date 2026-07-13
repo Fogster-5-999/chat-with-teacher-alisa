@@ -6,7 +6,6 @@ export const GAME_SCRIPT = {
         { id: 'joker', name: { ru: 'Шутник', en: 'Joker' }, icon: '😂', condition: (state) => state.stats.humor >= 50 },
         { id: 'collector', name: { ru: 'Коллекционер', en: 'Collector' }, icon: '🖼️', condition: (state) => state.flags.photoUnlocked === true },
         { id: 'truth_seeker', name: { ru: 'Правдолюб', en: 'Truth Seeker' }, icon: '🔍', condition: (state) => state.flags.allHonest === true },
-        { id: 'day2_minitest_passed', name: { ru: 'Грамотей', en: 'Grammar Whiz' }, icon: '✏️', secret: true, condition: (state) => state.achievements.includes('day2_minitest_passed') },
         { id: 'graduate', name: { ru: 'Выпускник', en: 'Graduate' }, icon: '🎓', condition: (state) => state.flags.gameEnded === true }
     ],
     paidContent: [
@@ -118,7 +117,7 @@ export const GAME_SCRIPT = {
         hasPhoto: true,
         photoBlurred: true,
         photoUrl: 'res/chat1_flirt.png',
-        photoPrompt: null,
+        photoPrompt: 'Алиса стоит у окна в классе, лёгкая улыбка, распущенные волосы, бежевый свитер, закатный свет, выглядит очень тепло и по-человечески.',
         options: [
             { id: 'opt2f_1', label: 'я тоже думал о тебе) давай просто поговорим, без этой всей школьной тягомотины', type: 'flirt' },
             { id: 'opt2f_2', label: 'ты серьёзно? я думал, я один такой странный, что запал на училку', type: 'flirt' },
@@ -159,7 +158,7 @@ export const GAME_SCRIPT = {
         hasPhoto: true,
         photoBlurred: true,
         photoUrl: 'res/chat1_study.png',
-        photoPrompt: null,
+        photoPrompt: 'Алиса стоит у доски, в руках указка, строгий, но добрый взгляд, тёмная одежда, школа, естественное освещение.',
         options: [
             { id: 'opt2s_1', label: 'давай, я готов учиться! объясни мне Present Perfect, я реально хочу понять', type: 'good' },
             { id: 'opt2s_2', label: 'спасибо, что не бросаешь. я боюсь, что не сдам экзамены', type: 'good' },
@@ -404,7 +403,7 @@ export const GAME_SCRIPT = {
         hasPhoto: true,
         photoBlurred: true,
         photoUrl: 'res/chat2.png',
-        photoPrompt: null,
+        photoPrompt: 'Фото сделано с телефона, в парке. Осенние листья, скамейка, на ней лежит раскрытая книга. На заднем плане видна девушка в бежевом пальто, она смотрит вдаль. Свет мягкий, закатный. Настроение уютное и немного меланхоличное.',
         options: [
             { id: 'opt6_1', label: 'привет) я тоже думал о тебе. давай встретимся, просто поговорим. во сколько?', type: 'good' },
             { id: 'opt6_2', label: 'честно? немного боюсь. но приду, если ты хочешь', type: 'flirt', hidden: true },

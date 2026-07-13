@@ -7,23 +7,6 @@ import { getGameState, setGameState, getCurrentDate, setCurrentDate, getCurrentT
 
 export { getGameState, setGameState, getCurrentDate, setCurrentDate, getCurrentTime, setCurrentTime, resetCurrentTime, getNextMessageTime, saveGame, loadGame };
 
-function splitLongMessage(text, maxLength = 120) {
-    if (text.length <= maxLength) return [text];
-    const parts = [];
-    let current = '';
-    const sentences = text.match(/[^.!?]+[.!?]*/g) || [text];
-    for (let s of sentences) {
-        if ((current + s).length <= maxLength) {
-            current += s;
-        } else {
-            if (current) parts.push(current.trim());
-            current = s;
-        }
-    }
-    if (current) parts.push(current.trim());
-    return parts;
-}
-
 window.unlockPhoto = function() {
     const state = getGameState();
     state.flags.photoUnlocked = true;
@@ -69,6 +52,10 @@ function showFriendNotification(name, text, durationMs = 5000) {
     showTopNotification('Друг (' + name + ')', text, durationMs);
 }
 
+// ================================================================
+// АЧИВКИ: сверяем состояние со списком GAME_SCRIPT.achievementsMeta
+// и разблокируем всё новое, что подходит под условие.
+// ================================================================
 function checkAchievements() {
     const meta = GAME_SCRIPT.achievementsMeta || [];
     if (!meta.length) return;
@@ -186,20 +173,17 @@ export async function loadDay(dayKey, stageKey = null) {
     }
 
     for (let msg of messagesToShow) {
-        const textParts = splitLongMessage(msg.text);
-        for (let part of textParts) {
-            showTyping();
-            const delay = randomInt(4000, 10000);
-            await sleep(delay);
-            hideTyping();
-            const msgTime = getNextMessageTime();
-            const msgObj = { sender: msg.sender, text: part, timestamp: msgTime.toISOString() };
-            const st = getGameState();
-            st.messages.push(msgObj);
-            setGameState(st);
-            renderMessage(msgObj);
-            if (msg.sender === 'alisa') playNotificationSound();
-        }
+        showTyping();
+        const delay = randomInt(4000, 10000);
+        await sleep(delay);
+        hideTyping();
+        const msgTime = getNextMessageTime();
+        const msgObj = { sender: msg.sender, text: msg.text, timestamp: msgTime.toISOString() };
+        const st = getGameState();
+        st.messages.push(msgObj);
+        setGameState(st);
+        renderMessage(msgObj);
+        if (msg.sender === 'alisa') playNotificationSound();
     }
 
     // Мини-тест идёт сразу после первого сообщения дня 2, до фото и дальнейшего сюжета.

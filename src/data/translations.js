@@ -16,8 +16,6 @@ export const translations = {
         'settings.sound': 'Звук уведомлений',
         'settings.reset': 'Сбросить прогресс',
         'settings.reset_confirm': 'Сбросить весь прогресс и вернуться к первому дню?',
-        'settings.achievements': 'Достижения',
-        'settings.achievements_open': '🏆 Достижения',
         'profile.title': 'Профиль',
         'profile.name': 'Алиса Сергеевна',
         'profile.status': 'была сегодня',
@@ -32,23 +30,7 @@ export const translations = {
         'minitest.take': 'Пройти тест',
         'minitest.decline': 'Отказаться',
         'minitest.skip': 'Пропустить (посмотреть рекламу)',
-        'achievement.title': '🏆 Достижение',
-        'achievements.title': '🏆 Достижения',
-        'achievements.secret': 'Скрыто',
-        'achievements.unlocked': 'Получено',
-        'achievements.close': 'Закрыть',
-        'notification.alisa': 'Алиса',
-        'notification.friend': 'Друг',
-        'photo.tap_unlock': '👆 Нажми на фото, чтобы открыть (потребуется реклама)',
-        'photo.tap_view': '👆 Нажми на фото, чтобы рассмотреть поближе',
-        'photo.placeholder': '📷 фото не добавлено',
-        'day.new': 'Новый день',
-        'day.number': 'День {{n}}',
-        'theme.dark': '🌙 Тёмная',
-        'theme.light': '☀️ Светлая',
-        'sound.on': '🔊 Вкл',
-        'sound.off': '🔇 Выкл',
-        'settings.reset_btn': '🔄 Сбросить'
+        'achievement.title': '🏆 Достижение'
     },
     en: {
         'menu.title': '📱 Chat Story',
@@ -67,8 +49,6 @@ export const translations = {
         'settings.sound': 'Notification sound',
         'settings.reset': 'Reset progress',
         'settings.reset_confirm': 'Reset all progress and return to the first day?',
-        'settings.achievements': 'Achievements',
-        'settings.achievements_open': '🏆 Achievements',
         'profile.title': 'Profile',
         'profile.name': 'Alisa Sergeyevna',
         'profile.status': 'was online today',
@@ -83,23 +63,7 @@ export const translations = {
         'minitest.take': 'Take the test',
         'minitest.decline': 'Decline',
         'minitest.skip': 'Skip (watch ad)',
-        'achievement.title': '🏆 Achievement',
-        'achievements.title': '🏆 Achievements',
-        'achievements.secret': 'Secret',
-        'achievements.unlocked': 'Unlocked',
-        'achievements.close': 'Close',
-        'notification.alisa': 'Alisa',
-        'notification.friend': 'Friend',
-        'photo.tap_unlock': '👆 Tap the photo to unlock (ad required)',
-        'photo.tap_view': '👆 Tap the photo to view closer',
-        'photo.placeholder': '📷 photo not added',
-        'day.new': 'New day',
-        'day.number': 'Day {{n}}',
-        'theme.dark': '🌙 Dark',
-        'theme.light': '☀️ Light',
-        'sound.on': '🔊 On',
-        'sound.off': '🔇 Off',
-        'settings.reset_btn': '🔄 Reset'
+        'achievement.title': '🏆 Achievement'
     }
 };
 
@@ -145,6 +109,7 @@ const storyTextMap = {
 };
 
 // Дополнительные переводы для мини‑теста Day2
+storyTextMap.en['раз уж ты не сделал домашку, ответь на 3 вопроса прямо здесь'] = 'Since you didn\'t do your homework, answer 3 questions right here.';
 storyTextMap.en['раз уж ты не сделал домашку, давай прямо сейчас проверим твой английский в чате. ответь на 3 вопроса и я сразу пойму, насколько ты готов'] = "since you didn't do your homework, let's check your english right here in chat. answer 3 questions and I'll immediately see how ready you are";
 storyTextMap.en['Вставь правильное слово: ___ I a student? (Am / Is / Are)'] = 'Fill in the correct word: ___ I a student? (Am / Is / Are)';
 storyTextMap.en['Вставь правильное слово: She ___ at home. (Am / Is / Are)'] = 'Fill in the correct word: She ___ at home. (Am / Is / Are)';
@@ -248,6 +213,10 @@ storyTextMap.en["🎬 Игра завершена. Спасибо за прох�
 storyTextMap.en["📊 Итоговые шкалы: Успеваемость: {{success}}, Романтика: {{romance}}, Юмор: {{humor}}"] = "📊 Final stats: Grades: {{success}}, Romance: {{romance}}, Humor: {{humor}}";
 storyTextMap.en["Ты прошёл все 7 дней. Каким будет твой финал - зависит только от тебя."] = "You made it through all 7 days. What your ending looks like is entirely up to you.";
 
+storyTextMap.en['Алиса стоит у окна в классе, лёгкая улыбка, распущенные волосы, бежевый свитер, закатный свет, выглядит очень тепло и по-человечески.'] = 'Alice standing by the classroom window, a light smile, hair down, beige sweater, sunset light, looking very warm and human.';
+storyTextMap.en['Алиса стоит у доски, в руках указка, строгий, но добрый взгляд, тёмная одежда, школа, естественное освещение.'] = 'Alice standing by the blackboard, holding a pointer, a stern but kind look, dark clothes, school, natural lighting.';
+storyTextMap.en['Фото сделано с телефона, в парке. Осенние листья, скамейка, на ней лежит раскрытая книга. На заднем плане видна девушка в бежевом пальто, она смотрит вдаль. Свет мягкий, закатный. Настроение уютное и немного меланхоличное.'] = 'Photo taken on a phone, in a park. Autumn leaves, a bench with an open book lying on it. In the background, a girl in a beige coat looking off into the distance. Soft, sunset light. A cozy, slightly melancholic mood.';
+
 export function getCurrentLanguage() {
     return currentLang;
 }
@@ -256,31 +225,8 @@ export function setLanguage(lang) {
     if (translations[lang]) currentLang = lang;
 }
 
-export function t(key, vars = {}) {
-    let text = translations[currentLang]?.[key] ?? translations.ru?.[key] ?? key;
-    Object.entries(vars).forEach(([name, value]) => {
-        text = text.replace(new RegExp(`\\{\\{${name}\\}\\}`, 'g'), String(value));
-    });
-    return text;
-}
-
-const dateLocales = {
-    ru: {
-        days: ['воскресенье', 'понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота'],
-        months: ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря']
-    },
-    en: {
-        days: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-        months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-    }
-};
-
-export function formatLocalizedDate(date) {
-    const locale = dateLocales[currentLang] || dateLocales.ru;
-    if (currentLang === 'en') {
-        return `${locale.days[date.getDay()]}, ${locale.months[date.getMonth()]} ${date.getDate()}`;
-    }
-    return `${date.getDate()} ${locale.months[date.getMonth()]}, ${locale.days[date.getDay()]}`;
+export function t(key) {
+    return translations[currentLang]?.[key] || key;
 }
 
 export function translateStoryText(text) {
