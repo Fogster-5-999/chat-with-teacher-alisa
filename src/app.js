@@ -1,6 +1,6 @@
 import { initSDK } from './engine/sdk.js';
 import { initAudio } from './engine/audio.js';
-import { saveGame } from './engine/core.js';
+import { saveGame, pauseGameSession } from './engine/core.js';
 import { hideOptions } from './ui/components.js';
 import { showMenu, initMenu } from './ui/menu.js';
 import { initSettings, openSettings } from './ui/settings.js';
@@ -65,6 +65,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const backBtn = document.getElementById('back-btn');
     if (backBtn) {
         backBtn.addEventListener('click', async () => {
+            pauseGameSession();
             await saveGame();
             hideOptions();
             const profileModal = document.getElementById('profile-modal');

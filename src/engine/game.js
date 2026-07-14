@@ -1,6 +1,6 @@
 import { getConfig, MAX_STATS } from '../data/config.js';
 import { t, setLanguage } from '../data/translations.js';
-import { getGameState, setGameState, loadGame, loadDay, resetGame } from './core.js';
+import { getGameState, setGameState, loadGame, loadDay, resetGame, beginGameSession, hasActiveGameSession, isGameSessionCurrent, resumeGameSession } from './core.js';
 import { resetGameState } from './state.js';
 import { renderAllMessages, reRenderSavedOptions } from '../ui/components.js';
 import { GAME_SCRIPT } from '../data/story.js';
@@ -94,14 +94,21 @@ export function updateCoreStatsUI() {
 
 export function startGame(storyId) {
     updateCoreStatsUI();
+    if (hasActiveGameSession()) {
+        resumeGameSession();
+        reRenderSavedOptions();
+        return;
+    }
+
+    const sessionId = beginGameSession();
     if (storyId === 'teacher') {
-        loadSaveAndStart();
+        loadSaveAndStart(sessionId);
     } else if (storyId === 'story2') {
-        loadStory2();
+        loadStory2(sessionId);
     }
 }
 
-function loadStory2() {
+function loadStory2(sessionId) {
     const state = getGameState();
     state.currentDay = 'day1_story2';
     state.stage = null;
@@ -112,11 +119,12 @@ function loadStory2() {
     freshState.currentDay = 'day1_story2';
     freshState.flags.gameEnded = false;
     setGameState(freshState);
-    loadDay('day1_story2');
+    loadDay('day1_story2', null, sessionId);
 }
 
-async function loadSaveAndStart() {
+async function loadSaveAndStart(sessionId) {
     const hasSave = await loadGame();
+    if (!isGameSessionCurrent(sessionId)) return;
     updateCoreStatsUI();
     const state = getGameState();
     if (state.messages.length > 0) renderAllMessages(state.messages);
@@ -129,15 +137,15 @@ async function loadSaveAndStart() {
                 if (GAME_SCRIPT['day5'].nextDay) {
                     state.currentDay = GAME_SCRIPT['day5'].nextDay;
                     setGameState(state);
-                    loadDay(state.currentDay);
+                    loadDay(state.currentDay, null, sessionId);
                 }
                 return;
             }
-            loadDay('day5', stageKey);
+            loadDay('day5', stageKey, sessionId);
         } else {
-            loadDay(state.currentDay);
+            loadDay(state.currentDay, null, sessionId);
         }
     } else {
-        loadDay('day1');
+        loadDay('day1', null, sessionId);
     }
 }

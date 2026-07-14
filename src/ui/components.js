@@ -170,6 +170,15 @@ export function hideOptions() {
     optionsContainer.style.display = 'none';
 }
 
+// Keep this separate from hideOptions(): the menu temporarily hides a valid
+// pending choice, while a selected/obsolete choice must not be resurrected.
+export function clearOptions() {
+    _savedOptions = null;
+    _savedHandler = null;
+    optionsContainer.innerHTML = '';
+    hideOptions();
+}
+
 function showOptionsContainer() {
     optionsContainer.style.display = 'flex';
 }

@@ -1,15 +1,63 @@
 import { playNotificationSound } from './audio.js';
 import { t, getCurrentLanguage } from '../data/translations.js';
-import { renderMessage, addDayDivider, showTyping, hideTyping, showNetworkStatus, hideNetworkStatus, showOptions, hideOptions, clearMessages, renderFinalScreen, showMiniTest } from '../ui/components.js';
+import { renderMessage, addDayDivider, showTyping, hideTyping, showNetworkStatus, hideNetworkStatus, showOptions, clearOptions, clearMessages, renderFinalScreen, showMiniTest } from '../ui/components.js';
 import { GAME_SCRIPT } from '../data/story.js';
 import { getGameState, setGameState, getCurrentDate, setCurrentDate, getCurrentTime, setCurrentTime, resetCurrentTime, getNextMessageTime, saveGame, loadGame, resetGameState } from './state.js';
 
 export { getGameState, setGameState, getCurrentDate, setCurrentDate, getCurrentTime, setCurrentTime, resetCurrentTime, getNextMessageTime, saveGame, loadGame };
 
-function sleep(ms) { return new Promise(resolve => setTimeout(resolve, ms)); }
+// A single scenario may be active at a time.  The menu does not destroy the
+// chat DOM, so pausing the scenario is safer than starting the current day
+// from scratch when the player returns to it.
+let gameSession = null;
+let nextSessionId = 1;
+
+export function beginGameSession() {
+    if (gameSession) return gameSession.id;
+    gameSession = { id: nextSessionId++, paused: false, resumeWaiters: [] };
+    return gameSession.id;
+}
+
+export function hasActiveGameSession() {
+    return gameSession !== null;
+}
+
+export function isGameSessionCurrent(sessionId) {
+    return gameSession?.id === sessionId;
+}
+
+export function pauseGameSession() {
+    if (gameSession) gameSession.paused = true;
+}
+
+export function resumeGameSession() {
+    if (!gameSession) return;
+    gameSession.paused = false;
+    const waiters = gameSession.resumeWaiters.splice(0);
+    waiters.forEach(resolve => resolve());
+}
+
+export function cancelGameSession() {
+    if (!gameSession) return;
+    const waiters = gameSession.resumeWaiters.splice(0);
+    gameSession = null;
+    waiters.forEach(resolve => resolve());
+}
+
+async function waitForActiveSession(sessionId) {
+    while (isGameSessionCurrent(sessionId) && gameSession.paused) {
+        await new Promise(resolve => gameSession.resumeWaiters.push(resolve));
+    }
+    return isGameSessionCurrent(sessionId);
+}
+
+async function sleep(ms, sessionId) {
+    await new Promise(resolve => setTimeout(resolve, ms));
+    return waitForActiveSession(sessionId);
+}
 function randomInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
-async function showDayTransition(dayKey) {
+async function showDayTransition(dayKey, sessionId) {
     const overlay = document.getElementById('day-transition-overlay');
     const label = document.getElementById('day-transition-label');
     if (!overlay || !label) return;
@@ -18,15 +66,16 @@ async function showDayTransition(dayKey) {
     const title = `${t('day.new')} ${num}`;
     label.textContent = title;
     overlay.classList.add('active');
-    await sleep(1800);
+    if (!await sleep(1800, sessionId)) return false;
     overlay.classList.remove('active');
-    await sleep(400);
+    return sleep(400, sessionId);
 }
 
 export function resetGame() {
+    cancelGameSession();
     resetGameState();
     clearMessages();
-    loadDay('day1');
+    loadDay('day1', null, beginGameSession());
 }
 
 function showTopNotification(title, text, durationMs = 5000, icon) {
@@ -75,7 +124,8 @@ export function checkAchievements() {
     }
 }
 
-export async function loadDay(dayKey, stageKey = null) {
+export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSession()) {
+    if (!isGameSessionCurrent(sessionId)) return;
     const state = getGameState();
     if (state.flags.gameEnded) return;
     const dayData = GAME_SCRIPT[dayKey];
@@ -99,9 +149,9 @@ export async function loadDay(dayKey, stageKey = null) {
 
     showNetworkStatus();
     const initialDelay = (dayKey === 'day1' && stageKey === null) ? 5000 : 12000;
-    await sleep(initialDelay);
+    if (!await sleep(initialDelay, sessionId)) return;
     hideNetworkStatus();
-    await showDayTransition(dayKey);
+    if (!await showDayTransition(dayKey, sessionId)) return;
 
     addDayDivider(currentDate);
 
@@ -127,7 +177,7 @@ export async function loadDay(dayKey, stageKey = null) {
             } else showEndGame();
             return;
         }
-        messagesToShow = stage.messages;
+        messagesToShow = [...stage.messages];
         optionsToShow = stage.options;
         reactions = stage.reactions;
         statsMap = stage.stats;
@@ -136,7 +186,7 @@ export async function loadDay(dayKey, stageKey = null) {
         st.stage = stageKey;
         setGameState(st);
     } else {
-        messagesToShow = dayData.messages;
+        messagesToShow = [...dayData.messages];
         optionsToShow = dayData.options;
         reactions = dayData.reactions;
         statsMap = dayData.stats;
@@ -158,7 +208,7 @@ export async function loadDay(dayKey, stageKey = null) {
         }
     }
 
-    hideOptions();
+    clearOptions();
 
     if (dayData.conditionalMessages) {
         const currentState = getGameState();
@@ -172,7 +222,7 @@ export async function loadDay(dayKey, stageKey = null) {
     for (let msg of messagesToShow) {
         showTyping();
         const delay = randomInt(4000, 10000);
-        await sleep(delay);
+        if (!await sleep(delay, sessionId)) return;
         hideTyping();
         const msgTime = getNextMessageTime();
         const msgObj = { sender: msg.sender, textKey: msg.textKey || msg.text, timestamp: msgTime.toISOString() };
@@ -186,7 +236,7 @@ export async function loadDay(dayKey, stageKey = null) {
     // Мини-тест идёт сразу после первого сообщения дня 2, до фото и дальнейшего сюжета.
     if (dayData.miniTest) {
         hideTyping();
-        await sleep(500);
+        if (!await sleep(500, sessionId)) return;
         const stMini = getGameState();
         const miniKey = 'miniTest:' + dayKey;
         if (!stMini.flags[miniKey]) {
@@ -229,7 +279,7 @@ export async function loadDay(dayKey, stageKey = null) {
                             setGameState(stRes);
                         }
                         await saveGame();
-                        await sleep(900);
+                        if (!await sleep(900, sessionId)) return;
                         resolveChoice();
                     } else if (optId === 'skip_ad') {
                         import('../engine/sdk.js').then(({ showAd }) => {
@@ -255,7 +305,7 @@ export async function loadDay(dayKey, stageKey = null) {
                                             }
                                             await saveGame();
                                         }
-                                        await sleep(900);
+                                        if (!await sleep(900, sessionId)) return;
                                         resolveChoice();
                                     }
                                 }
@@ -266,7 +316,7 @@ export async function loadDay(dayKey, stageKey = null) {
                         stRes.flags[miniKey] = true;
                         setGameState(stRes);
                         await saveGame();
-                        await sleep(700);
+                        if (!await sleep(700, sessionId)) return;
                         resolveChoice();
                     } else {
                         resolveChoice();
@@ -277,7 +327,7 @@ export async function loadDay(dayKey, stageKey = null) {
     }
 
     if (hasPhoto) {
-        await sleep(1500);
+        if (!await sleep(1500, sessionId)) return;
         const st = getGameState();
         const isLocked = photoBlurred && !st.flags.photoUnlocked;
         const photoMsg = {
@@ -304,7 +354,7 @@ export async function loadDay(dayKey, stageKey = null) {
     }
 
     hideTyping();
-    await sleep(600);
+    if (!await sleep(600, sessionId)) return;
 
     showOptions(allOptions, async function(optionId, optionLabel) {
         document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
@@ -315,7 +365,7 @@ export async function loadDay(dayKey, stageKey = null) {
         st.messages.push(playerMsg);
         setGameState(st);
         renderMessage(playerMsg);
-        await sleep(1000);
+        if (!await sleep(1000, sessionId)) return;
 
         if (Math.random() < 0.25) {
             const outgoing = document.querySelectorAll('#messages > .message.outgoing');
@@ -352,7 +402,7 @@ export async function loadDay(dayKey, stageKey = null) {
             for (let msg of reaction) {
                 showTyping();
                 const delay = randomInt(4000, 10000);
-                await sleep(delay);
+                if (!await sleep(delay, sessionId)) return;
                 hideTyping();
                 const msgTime = getNextMessageTime();
                 const msgObj = { sender: msg.sender, textKey: msg.textKey || msg.text, timestamp: msgTime.toISOString() };
@@ -376,9 +426,8 @@ export async function loadDay(dayKey, stageKey = null) {
         checkAchievements();
 
         await saveGame();
-        const optionsEl = document.getElementById('options');
-        if (optionsEl) optionsEl.innerHTML = '';
-        await sleep(3000);
+        clearOptions();
+        if (!await sleep(3000, sessionId)) return;
 
         if (dayKey === 'day5') {
             const st4 = getGameState();
