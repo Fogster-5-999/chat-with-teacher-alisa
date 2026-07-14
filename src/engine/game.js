@@ -93,21 +93,12 @@ export function updateCoreStatsUI() {
 }
 
 export function startGame(storyId) {
-    const menuScreen = document.getElementById('menu-screen');
-    const gameScreen = document.getElementById('game-screen');
-    menuScreen.classList.add('screen-exit');
-    setTimeout(() => {
-        menuScreen.classList.remove('active', 'screen-exit');
-        gameScreen.classList.add('active');
-        updateCoreStatsUI();
-        requestAnimationFrame(() => gameScreen.classList.add('screen-enter'));
-        setTimeout(() => gameScreen.classList.remove('screen-enter'), 380);
-        if (storyId === 'teacher') {
-            loadSaveAndStart();
-        } else if (storyId === 'story2') {
-            loadStory2();
-        }
-    }, 320);
+    updateCoreStatsUI();
+    if (storyId === 'teacher') {
+        loadSaveAndStart();
+    } else if (storyId === 'story2') {
+        loadStory2();
+    }
 }
 
 function loadStory2() {

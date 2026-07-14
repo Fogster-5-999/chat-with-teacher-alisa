@@ -12,7 +12,7 @@
     height: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    background: linear-gradient(180deg, #0a0e1a 0%, #110b22 30%, #1a0f2e 60%, #0d1220 100%);
+    background: var(--menu-overlay-bg);
     position: relative;
     scroll-behavior: smooth;
 }
@@ -39,12 +39,12 @@
     align-items: center;
     gap: 8px;
     padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--lang-btn-bg);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid var(--lang-btn-border);
     border-radius: 100px;
-    color: #d0d5e0;
+    color: var(--lang-btn-color);
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
@@ -82,19 +82,15 @@
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    filter: brightness(0.55) saturate(1.1) blur(1.5px);
+    filter: var(--hero-avatar-filter);
 }
 
 .hero-fade {
     position: absolute;
     inset: 0;
-    background: linear-gradient(0deg, rgba(10, 14, 26, 0.85) 10%, transparent 60%);
+    background: var(--hero-fade-bg);
     pointer-events: none;
     z-index: 1;
-}
-
-body.light-theme .hero-fade {
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #f5f7fa 90%);
 }
 
 .hero-title-container {
@@ -131,7 +127,7 @@ body:not(.light-theme) .hero-title-main {
     font-family: 'Marck Script', cursive;
     font-size: 34px;
     font-weight: 400;
-    color: var(--color-accent);
+    color: var(--hero-sub-color);
     text-align: center;
     text-shadow: 0 2px 12px rgba(255, 107, 157, 0.3);
     letter-spacing: 1px;
@@ -149,18 +145,18 @@ body:not(.light-theme) .hero-title-main {
 .story-card {
     display: flex;
     flex-direction: column;
-    background: #151025;
+    background: var(--story-card-bg);
     border-radius: 20px;
     overflow: hidden;
-    border: 1px solid rgba(138, 43, 226, 0.15);
-    box-shadow: 0 0 15px rgba(138, 43, 226, 0.2);
+    border: 1px solid var(--story-card-border);
+    box-shadow: var(--story-card-shadow);
     transition: transform 0.25s ease, box-shadow 0.3s ease;
     position: relative;
 }
 
 .story-card:not(.locked):hover {
     transform: translateY(-3px);
-    box-shadow: 0 0 25px rgba(138, 43, 226, 0.35);
+    box-shadow: var(--story-card-shadow-hover);
 }
 
 .story-card-preview {
@@ -192,13 +188,13 @@ body:not(.light-theme) .hero-title-main {
 .story-card-name {
     font-size: 18px;
     font-weight: 700;
-    color: #f0f2f8;
+    color: var(--card-name-color);
     margin: 0;
 }
 
 .story-card-status {
     font-size: 13px;
-    color: #8892a8;
+    color: var(--card-status-color);
     margin-bottom: 10px;
 }
 
@@ -227,9 +223,11 @@ body:not(.light-theme) .hero-title-main {
 }
 
 .story-card.locked {
-    background: #0e0b18;
-    border-color: rgba(255, 255, 255, 0.06);
-    box-shadow: none;
+    background: var(--card-locked-bg);
+    border-color: var(--card-locked-border);
+    backdrop-filter: var(--card-locked-backdrop);
+    -webkit-backdrop-filter: var(--card-locked-backdrop);
+    box-shadow: var(--card-locked-shadow);
     opacity: 0.7;
     pointer-events: none;
 }
@@ -238,11 +236,12 @@ body:not(.light-theme) .hero-title-main {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #0e0b18;
+    background: var(--card-locked-preview-bg);
+    border-bottom: var(--card-locked-preview-border);
 }
 
 .story-card-lock-icon {
-    color: rgba(255, 255, 255, 0.15);
+    color: var(--card-locked-icon-color);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -255,12 +254,12 @@ body:not(.light-theme) .hero-title-main {
     top: 12px;
     right: 12px;
     padding: 4px 14px;
-    background: rgba(138, 43, 226, 0.25);
+    background: var(--card-badge-bg);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
-    border: 1px solid rgba(138, 43, 226, 0.3);
+    border: 1px solid var(--card-badge-border);
     border-radius: 100px;
-    color: #b07cff;
+    color: var(--card-badge-color);
     font-size: 12px;
     font-weight: 600;
     letter-spacing: 0.3px;
@@ -268,17 +267,17 @@ body:not(.light-theme) .hero-title-main {
 }
 
 .story-card.locked .story-card-name {
-    color: rgba(255, 255, 255, 0.3);
+    color: var(--card-locked-name-color);
 }
 
 .story-card.locked .story-card-status {
-    color: rgba(255, 255, 255, 0.2);
+    color: var(--card-locked-status-color);
 }
 
 .story-unread-badge {
     font-size: 0.85rem;
     font-weight: 500;
-    color: #ff85a2;
+    color: var(--unread-color);
     margin-top: 8px;
     margin-bottom: 12px;
     display: flex;
@@ -312,8 +311,8 @@ body:not(.light-theme) .hero-title-main {
     z-index: 9999999;
     border-bottom-left-radius: 24px;
     border-bottom-right-radius: 24px;
-    background: #110d26;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    background: var(--menu-bottom-bg);
+    border-top: 1px solid var(--menu-bottom-border);
 }
 
 .menu-tab-btn {
@@ -328,7 +327,7 @@ body:not(.light-theme) .hero-title-main {
     background: none;
     border: none;
     outline: none;
-    color: rgba(255, 255, 255, 0.4);
+    color: var(--tab-color);
     transition: all 0.2s ease;
 }
 
@@ -354,97 +353,4 @@ body:not(.light-theme) .hero-title-main {
     white-space: nowrap;
 }
 
-body.light-theme .menu-overlay {
-    background: linear-gradient(180deg, #f0f2f8 0%, #f8f0f6 30%, #f0f0ff 60%, #f5f7fa 100%);
-}
 
-body.light-theme .hero-avatar {
-    filter: brightness(0.85) saturate(0.9);
-}
-
-body.light-theme .hero-title-sub {
-    color: #c9406a;
-}
-
-body.light-theme .story-card {
-    background: rgba(255, 255, 255, 0.7);
-    border-color: rgba(0, 0, 0, 0.08);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-}
-
-body.light-theme .story-card:not(.locked):hover {
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-}
-
-body.light-theme .story-card-name {
-    color: #1a1a2e;
-}
-
-body.light-theme .story-card-status {
-    color: #5a5a7a;
-}
-
-body.light-theme .story-card.locked {
-    background: rgba(255, 255, 255, 0.65);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.02);
-}
-
-body.light-theme .story-card.locked .story-card-preview {
-    background: rgba(255, 255, 255, 0.4);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-body.light-theme .story-card.locked .story-card-name {
-    color: rgba(0, 0, 0, 0.3);
-}
-
-body.light-theme .story-card.locked .story-card-status {
-    color: rgba(0, 0, 0, 0.3);
-}
-
-body.light-theme .story-card.locked .story-card-lock-icon {
-    color: rgba(60, 50, 80, 0.6);
-}
-
-body.light-theme .story-card-badge {
-    background: rgba(138, 43, 226, 0.12);
-    border-color: rgba(138, 43, 226, 0.2);
-    color: #7a3bb8;
-}
-
-body.light-theme .story-unread-badge {
-    color: #c9406a;
-}
-
-body.light-theme .menu-bottom-actions {
-    background: #ffffff;
-    border-top: 1px solid rgba(0, 0, 0, 0.06);
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.02);
-}
-
-body.light-theme .menu-tab-btn {
-    color: rgba(0, 0, 0, 0.4);
-}
-
-body.light-theme .menu-tab-btn:hover {
-    color: #ff85a2;
-}
-
-body.light-theme .menu-tab-btn:hover svg {
-    filter: drop-shadow(0 0 8px rgba(255, 133, 162, 0.4));
-}
-
-body.light-theme .top-lang-btn {
-    background: rgba(0, 0, 0, 0.05);
-    border-color: rgba(0, 0, 0, 0.08);
-    color: #333;
-}
-
-body.light-theme .top-lang-btn:hover {
-    background: rgba(0, 0, 0, 0.1);
-    border-color: rgba(201, 64, 106, 0.3);
-    color: #1e1548;
-}

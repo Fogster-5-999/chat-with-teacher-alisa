@@ -2,53 +2,287 @@
 
 :root {
     --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+    /* app chrome */
     --bg-app: #111827;
-    --bg-header: rgba(16, 24, 39, 0.82);
+    --bg-header: rgba(15, 12, 28, 0.7);
     --bg-messages: rgba(17, 24, 39, 0.74);
     --bg-input: rgba(19, 27, 43, 0.9);
-    --bg-message-incoming: rgba(39, 55, 77, 0.8);
+
+    /* messages */
+    --bg-message-incoming: rgba(28, 24, 48, 0.6);
     --bg-message-outgoing: linear-gradient(135deg, #4f8fbf, #7a5ad2);
     --text-primary: #f5f7fb;
     --text-secondary: #9db0c5;
-    --text-incoming: #f5f7fb;
+    --text-incoming: #ffffff;
     --text-outgoing: #ffffff;
+    --message-time-incoming: rgba(255, 255, 255, 0.4);
+    --message-time-outgoing: rgba(255, 255, 255, 0.7);
+    --incoming-border: rgba(255, 255, 255, 0.05);
+    --incoming-color: #ffffff;
+
+    /* borders / dividers */
     --border-color: rgba(255,255,255,0.16);
     --shadow-color: rgba(0,0,0,0.35);
-    --avatar-gradient: linear-gradient(135deg, #4f8fbf, #7a5ad2);
     --divider-color: rgba(255,255,255,0.12);
+    --divider-bg: rgba(255, 255, 255, 0.05);
+    --divider-border: rgba(255, 255, 255, 0.04);
+    --divider-text-color: rgba(255, 255, 255, 0.4);
+
+    /* avatar */
+    --avatar-gradient: linear-gradient(135deg, #4f8fbf, #7a5ad2);
+    --avatar-shadow: 0 0 12px rgba(138, 43, 226, 0.3);
+    --avatar-badge-border: rgba(15, 12, 28, 0.9);
+
+    /* modals */
     --modal-bg: rgba(15, 23, 42, 0.82);
     --modal-header-bg: rgba(15, 23, 42, 0.92);
+    --page-title-color: #f0f2f8;
+
+    /* profile */
     --profile-bg: rgba(10, 15, 24, 0.92);
     --profile-cover-bg: rgba(17, 24, 39, 0.9);
     --profile-row-bg: rgba(17, 24, 39, 0.72);
+    --profile-avatar-border: rgba(255, 255, 255, 0.1);
+    --profile-label-color: #f0f2f8;
+    --profile-sub-color: rgba(255, 255, 255, 0.4);
+    --profile-cover-border: rgba(255, 255, 255, 0.06);
+
+    /* glass */
     --glass-bg: rgba(255,255,255,0.08);
     --glass-border: rgba(255,255,255,0.16);
     --glass-shadow: 0 12px 36px rgba(0,0,0,0.28);
+
+    /* menu */
+    --menu-overlay-bg: linear-gradient(180deg, #0a0e1a 0%, #110b22 30%, #1a0f2e 60%, #0d1220 100%);
+    --hero-avatar-filter: brightness(0.55) saturate(1.1) blur(1.5px);
+    --hero-fade-bg: linear-gradient(0deg, rgba(10, 14, 26, 0.85) 10%, transparent 60%);
+    --lang-btn-bg: rgba(255, 255, 255, 0.08);
+    --lang-btn-border: rgba(255, 255, 255, 0.12);
+    --lang-btn-color: #d0d5e0;
+    --hero-sub-color: #ff6b9d;
+    --story-card-bg: #151025;
+    --story-card-border: rgba(138, 43, 226, 0.15);
+    --story-card-shadow: 0 0 15px rgba(138, 43, 226, 0.2);
+    --story-card-shadow-hover: 0 0 25px rgba(138, 43, 226, 0.35);
+    --card-name-color: #f0f2f8;
+    --card-status-color: #8892a8;
+    --card-badge-bg: rgba(138, 43, 226, 0.25);
+    --card-badge-border: rgba(138, 43, 226, 0.3);
+    --card-badge-color: #b07cff;
+    --card-locked-bg: #0e0b18;
+    --card-locked-border: rgba(255, 255, 255, 0.06);
+    --card-locked-preview-bg: #0e0b18;
+    --card-locked-preview-border: none;
+    --card-locked-backdrop: none;
+    --card-locked-shadow: none;
+    --card-locked-name-color: rgba(255, 255, 255, 0.3);
+    --card-locked-status-color: rgba(255, 255, 255, 0.2);
+    --card-locked-icon-color: rgba(255, 255, 255, 0.15);
+    --unread-color: #ff85a2;
+    --menu-bottom-bg: #110d26;
+    --menu-bottom-border: rgba(255, 255, 255, 0.05);
+    --tab-color: rgba(255, 255, 255, 0.4);
+
+    /* game screen */
+    --game-screen-bg: url('../../../res/dark.png');
+    --game-screen-overlay: rgba(10, 8, 20, 0.4);
+    --header-border: rgba(255, 255, 255, 0.06);
+    --contact-name-color: #ffffff;
+    --status-color: rgba(255, 255, 255, 0.5);
+    --btn-bg: rgba(255, 255, 255, 0.06);
+    --btn-border: rgba(255, 255, 255, 0.08);
+    --btn-color: rgba(255, 255, 255, 0.6);
+
+    /* typing */
+    --typing-bg: rgba(28, 24, 48, 0.6);
+    --typing-border: rgba(255, 255, 255, 0.05);
+    --typing-color: rgba(255, 255, 255, 0.5);
+
+    /* options panel */
+    --options-bg: rgba(15, 12, 28, 0.75);
+    --options-border: rgba(255, 255, 255, 0.06);
+    --option-btn-bg: rgba(255, 255, 255, 0.06);
+    --option-btn-border: rgba(255, 255, 255, 0.08);
+    --option-btn-color: #f0f2f8;
+    --option-btn-hover-bg: rgba(255, 255, 255, 0.12);
+    --option-btn-hover-border: rgba(138, 43, 226, 0.3);
+    --option-btn-hover-shadow: 0 0 20px rgba(138, 43, 226, 0.3);
+    --hidden-option-bg: rgba(255, 255, 255, 0.03);
+
+    /* profile modal in game */
+    --profile-bg-image: url('../../../res/dark.png');
+    --profile-overlay: rgba(10, 8, 20, 0.5);
+    --profile-header-bg: rgba(15, 12, 28, 0.7);
+    --profile-header-border: rgba(255, 255, 255, 0.06);
+    --profile-cover-bg-inner: rgba(15, 12, 28, 0.4);
+    --profile-row-border: rgba(255, 255, 255, 0.05);
+    --profile-row-bg-inner: rgba(15, 12, 28, 0.3);
+
+    /* photo lightbox */
+    --photo-lightbox-bg: rgba(5, 8, 10, 0.75);
+    --lightbox-btn-bg: rgba(5, 8, 10, 0.5);
+    --lightbox-btn-border: rgba(255,255,255,0.12);
+    --lightbox-btn-color: rgba(255,255,255,0.7);
+
+    /* day transition */
+    --day-overlay-bg: rgba(0, 0, 0, 0.35);
+    --day-card-bg: linear-gradient(135deg, rgba(180, 80, 255, 0.35), rgba(120, 40, 200, 0.25));
+    --day-card-color: #ffffff;
+    --day-card-border: rgba(200, 140, 255, 0.25);
+    --day-card-shadow: 0 8px 32px rgba(120, 40, 200, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+
+    /* stats bar */
+    --stat-bg: rgba(18, 16, 32, 0.6);
+    --stat-label-color: rgba(255, 255, 255, 0.6);
+    --stat-value-color: #ffffff;
+    --stat-progress-bg: rgba(255, 255, 255, 0.12);
+
+    /* mini test */
+    --minitest-card-bg: rgba(15, 12, 28, 0.85);
+    --minitest-card-border: rgba(255, 255, 255, 0.08);
+    --minitest-bubble-bg: rgba(28, 24, 48, 0.6);
+    --minitest-bubble-border: rgba(255, 255, 255, 0.05);
+
+    /* misc */
+    --message-reaction-bg: rgba(15, 12, 28, 0.8);
+    --message-reaction-border: rgba(255, 255, 255, 0.06);
+    --placeholder-bg: rgba(28, 24, 48, 0.6);
+    --placeholder-border: rgba(255, 255, 255, 0.1);
+    --network-status-color: #8ba9b9;
 }
 
 body.light-theme {
     --bg-app: #f3f6fb;
-    --bg-header: rgba(255,255,255,0.76);
+    --bg-header: rgba(255,255,255,0.8);
     --bg-messages: rgba(248,251,255,0.72);
     --bg-input: rgba(255,255,255,0.82);
-    --bg-message-incoming: rgba(255,255,255,0.72);
+
+    --bg-message-incoming: rgba(255,255,255,0.75);
     --bg-message-outgoing: linear-gradient(135deg, #5aa7ff, #8c6dfc);
     --text-primary: #1f2a3d;
     --text-secondary: #5f748f;
-    --text-incoming: #1f2a3d;
+    --text-incoming: #1a1636;
     --text-outgoing: #ffffff;
+    --message-time-incoming: rgba(0, 0, 0, 0.4);
+    --message-time-outgoing: rgba(255, 255, 255, 0.7);
+    --incoming-border: rgba(0, 0, 0, 0.08);
+    --incoming-color: #1a1636;
+
     --border-color: rgba(108, 132, 168, 0.16);
     --shadow-color: rgba(79, 116, 162, 0.16);
-    --avatar-gradient: linear-gradient(135deg, #87c8ff, #9f7dff);
     --divider-color: rgba(108, 132, 168, 0.14);
+    --divider-bg: rgba(0, 0, 0, 0.04);
+    --divider-border: rgba(0, 0, 0, 0.06);
+    --divider-text-color: rgba(0, 0, 0, 0.35);
+
+    --avatar-gradient: linear-gradient(135deg, #87c8ff, #9f7dff);
+    --avatar-shadow: 0 0 12px rgba(138, 43, 226, 0.15);
+    --avatar-badge-border: rgba(255, 255, 255, 0.9);
+
     --modal-bg: rgba(255,255,255,0.7);
     --modal-header-bg: rgba(255,255,255,0.84);
+    --page-title-color: #1a1636;
+
     --profile-bg: rgba(243,246,251,0.95);
     --profile-cover-bg: rgba(255,255,255,0.86);
+    --profile-cover-border: rgba(0, 0, 0, 0.06);
     --profile-row-bg: rgba(255,255,255,0.74);
+    --profile-avatar-border: rgba(0, 0, 0, 0.1);
+    --profile-label-color: #1a1636;
+    --profile-sub-color: rgba(0, 0, 0, 0.35);
+
     --glass-bg: rgba(255,255,255,0.6);
     --glass-border: rgba(255,255,255,0.7);
     --glass-shadow: 0 15px 35px rgba(95, 116, 143, 0.16);
+
+    --menu-overlay-bg: linear-gradient(180deg, #f0f2f8 0%, #f8f0f6 30%, #f0f0ff 60%, #f5f7fa 100%);
+    --hero-avatar-filter: brightness(0.85) saturate(0.9);
+    --hero-fade-bg: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #f5f7fa 90%);
+    --lang-btn-bg: rgba(0, 0, 0, 0.05);
+    --lang-btn-border: rgba(0, 0, 0, 0.08);
+    --lang-btn-color: #333;
+    --hero-sub-color: #c9406a;
+    --story-card-bg: rgba(255, 255, 255, 0.7);
+    --story-card-border: rgba(0, 0, 0, 0.08);
+    --story-card-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    --story-card-shadow-hover: 0 15px 35px rgba(0, 0, 0, 0.1);
+    --card-name-color: #1a1a2e;
+    --card-status-color: #5a5a7a;
+    --card-badge-bg: rgba(138, 43, 226, 0.12);
+    --card-badge-border: rgba(138, 43, 226, 0.2);
+    --card-badge-color: #7a3bb8;
+    --card-locked-bg: rgba(255, 255, 255, 0.65);
+    --card-locked-border: rgba(255, 255, 255, 0.6);
+    --card-locked-preview-bg: rgba(255, 255, 255, 0.4);
+    --card-locked-preview-border: 1px solid rgba(0, 0, 0, 0.05);
+    --card-locked-backdrop: blur(15px);
+    --card-locked-shadow: 0 8px 25px rgba(0, 0, 0, 0.02);
+    --card-locked-name-color: rgba(0, 0, 0, 0.3);
+    --card-locked-status-color: rgba(0, 0, 0, 0.3);
+    --card-locked-icon-color: rgba(60, 50, 80, 0.6);
+    --unread-color: #c9406a;
+    --menu-bottom-bg: #ffffff;
+    --menu-bottom-border: rgba(0, 0, 0, 0.06);
+    --tab-color: rgba(0, 0, 0, 0.4);
+
+    --game-screen-bg: url('../../../res/white.png');
+    --game-screen-overlay: rgba(255, 255, 255, 0.15);
+    --header-border: rgba(0, 0, 0, 0.06);
+    --contact-name-color: #1a1636;
+    --status-color: #5f748f;
+    --btn-bg: rgba(0, 0, 0, 0.04);
+    --btn-border: rgba(0, 0, 0, 0.08);
+    --btn-color: rgba(0, 0, 0, 0.4);
+
+    --typing-bg: rgba(255, 255, 255, 0.75);
+    --typing-border: rgba(0, 0, 0, 0.08);
+    --typing-color: rgba(0, 0, 0, 0.4);
+
+    --options-bg: rgba(255, 255, 255, 0.8);
+    --options-border: rgba(0, 0, 0, 0.06);
+    --option-btn-bg: rgba(0, 0, 0, 0.04);
+    --option-btn-border: rgba(0, 0, 0, 0.06);
+    --option-btn-color: #1f2a3d;
+    --option-btn-hover-bg: rgba(0, 0, 0, 0.08);
+    --option-btn-hover-border: rgba(90, 167, 255, 0.3);
+    --option-btn-hover-shadow: 0 8px 20px rgba(90, 167, 255, 0.18);
+    --hidden-option-bg: rgba(255, 255, 255, 0.03);
+
+    --profile-bg-image: url('../../../res/white.png');
+    --profile-overlay: rgba(255, 255, 255, 0.2);
+    --profile-header-bg: rgba(255, 255, 255, 0.8);
+    --profile-header-border: rgba(0, 0, 0, 0.06);
+    --profile-cover-bg-inner: rgba(255, 255, 255, 0.3);
+    --profile-row-border: rgba(0, 0, 0, 0.04);
+    --profile-row-bg-inner: rgba(255, 255, 255, 0.3);
+
+    --photo-lightbox-bg: rgba(240, 242, 248, 0.8);
+    --lightbox-btn-bg: rgba(255,255,255,0.6);
+    --lightbox-btn-border: rgba(0,0,0,0.08);
+    --lightbox-btn-color: rgba(0,0,0,0.5);
+
+    --day-overlay-bg: rgba(255, 255, 255, 0.2);
+    --day-card-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.75), rgba(240, 245, 255, 0.6));
+    --day-card-color: #1f2a3d;
+    --day-card-border: rgba(255, 255, 255, 0.5);
+    --day-card-shadow: 0 8px 32px rgba(79, 116, 162, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+
+    --stat-bg: rgba(255, 255, 255, 0.65);
+    --stat-label-color: rgba(26, 22, 54, 0.55);
+    --stat-value-color: #1a1636;
+    --stat-progress-bg: rgba(26, 22, 54, 0.1);
+
+    --minitest-card-bg: rgba(255, 255, 255, 0.82);
+    --minitest-card-border: rgba(0, 0, 0, 0.06);
+    --minitest-bubble-bg: rgba(255, 255, 255, 0.75);
+    --minitest-bubble-border: rgba(0, 0, 0, 0.08);
+
+    --message-reaction-bg: rgba(255, 255, 255, 0.85);
+    --message-reaction-border: rgba(0, 0, 0, 0.06);
+    --placeholder-bg: rgba(28, 24, 48, 0.6);
+    --placeholder-border: rgba(255, 255, 255, 0.1);
+    --network-status-color: #8ba9b9;
 }
 
 * {
@@ -116,7 +350,7 @@ body.light-theme::before {
 }
 
 .screen {
-    display: none;
+    display: flex;
     flex-direction: column;
     height: 100%;
     width: 100%;
@@ -124,29 +358,14 @@ body.light-theme::before {
     top: 0;
     left: 0;
     background: var(--bg-app);
+    transform: translateX(100%);
+    transition: transform 0.28s ease;
+    visibility: hidden;
 }
 
 .screen.active {
-    display: flex;
-}
-
-@keyframes screenExit {
-    from { transform: scale(1) translateY(0); opacity: 1; }
-    to { transform: scale(0.96) translateY(-10px); opacity: 0; }
-}
-
-.screen-exit {
-    animation: screenExit 0.3s ease forwards;
-    pointer-events: none;
-}
-
-@keyframes screenEnter {
-    from { transform: translateY(30px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-
-.screen-enter {
-    animation: screenEnter 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    transform: translateX(0);
+    visibility: visible;
 }
 
 .modal {
