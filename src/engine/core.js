@@ -2,7 +2,7 @@ import { playNotificationSound } from './audio.js';
 import { t, getCurrentLanguage } from '../data/translations.js';
 import { renderMessage, addDayDivider, showTyping, hideTyping, showNetworkStatus, hideNetworkStatus, showOptions, clearOptions, clearMessages, renderFinalScreen, showMiniTest } from '../ui/components.js';
 import { GAME_SCRIPT } from '../data/story.js';
-import { getGameState, setGameState, getCurrentDate, setCurrentDate, getCurrentTime, setCurrentTime, resetCurrentTime, getNextMessageTime, saveGame, loadGame, resetGameState } from './state.js';
+import { getGameState, setGameState, getCurrentDate, setCurrentDate, getCurrentTime, setCurrentTime, resetCurrentTime, getNextMessageTime, saveGame, loadGame, resetGameState, setFlag, setFlags, hasShownNotification, markNotificationShown, applyStatChanges } from './state.js';
 
 export { getGameState, setGameState, getCurrentDate, setCurrentDate, getCurrentTime, setCurrentTime, resetCurrentTime, getNextMessageTime, saveGame, loadGame };
 
@@ -198,11 +198,9 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
     }
 
     if (friendNotification) {
-        const st = getGameState();
         const notifKey = dayKey + (stageKey ? ':' + stageKey : '');
-        if (!st.flags.shownNotifs[notifKey]) {
-            st.flags.shownNotifs[notifKey] = true;
-            setGameState(st);
+        if (!hasShownNotification(notifKey)) {
+            markNotificationShown(notifKey);
             saveGame();
             showFriendNotification(friendNotification.name, friendNotification.text);
         }
@@ -258,12 +256,12 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
                     if (optId === 'take_test') {
                         const correctCount = await showMiniTest(dayData.miniTest, () => {});
                         const stRes = getGameState();
-                        stRes.flags[miniKey] = true;
+                        setFlag(miniKey, true);
                         if (!stRes.achievements) stRes.achievements = [];
                         const totalQuestions = (dayData.miniTest.questions || []).length;
                         if (correctCount === totalQuestions) {
                             stRes.achievements.push(dayData.miniTest.achievementId || 'mini_test');
-                            stRes.stats.success += (dayData.miniTest.successPoints || 3);
+                            applyStatChanges({ success: dayData.miniTest.successPoints || 3 });
                             showTopNotification(t('notif.alisa'), t(dayData.miniTest.successMessage));
                             if (window.updateStatsUI) window.updateStatsUI();
                         } else {
@@ -287,11 +285,11 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
                                 callbacks: {
                                     onClose: async (wasShown) => {
                                         const stRes = getGameState();
-                                        stRes.flags[miniKey] = true;
+                                        setFlag(miniKey, true);
                                         if (!stRes.achievements) stRes.achievements = [];
                                         if (wasShown) {
                                             stRes.achievements.push(dayData.miniTest.achievementId || 'mini_test');
-                                            stRes.stats.success += (dayData.miniTest.successPoints || 3);
+                                            applyStatChanges({ success: dayData.miniTest.successPoints || 3 });
                                             showTopNotification(t('notif.alisa'), t(dayData.miniTest.successMessage));
                                             if (window.updateStatsUI) window.updateStatsUI();
                                             if (dayKey === 'day2' && dayData.miniTest.followUpMessage) {
@@ -312,9 +310,7 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
                             });
                         });
                     } else if (optId === 'decline_test') {
-                        const stRes = getGameState();
-                        stRes.flags[miniKey] = true;
-                        setGameState(stRes);
+                        setFlag(miniKey, true);
                         await saveGame();
                         if (!await sleep(700, sessionId)) return;
                         resolveChoice();
@@ -386,9 +382,7 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
         }
 
         if (dayData.flagsOnComplete && dayData.flagsOnComplete[optionId]) {
-            const st = getGameState();
-            Object.assign(st.flags, dayData.flagsOnComplete[optionId]);
-            setGameState(st);
+            setFlags(dayData.flagsOnComplete[optionId]);
         }
         if (typeof dayData.onComplete === 'function') {
             const stOnComplete = getGameState();
@@ -416,11 +410,7 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
 
         const stat = statsMap[optionId];
         if (stat) {
-            const st3 = getGameState();
-            st3.stats.success += stat.success;
-            st3.stats.romance += stat.romance;
-            st3.stats.humor += stat.humor;
-            setGameState(st3);
+            applyStatChanges({ success: stat.success, romance: stat.romance, humor: stat.humor });
             if (window.updateStatsUI) window.updateStatsUI();
         }
         checkAchievements();
@@ -432,15 +422,15 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
         if (dayKey === 'day5') {
             const st4 = getGameState();
             if (stageKey === 'stage1') {
-                st4.flags.day5Stage1Done = true;
+                setFlag('day5Stage1Done', true);
                 setGameState(st4);
                 loadDay('day5', 'stage2');
             } else if (stageKey === 'stage2') {
-                st4.flags.day5Stage2Done = true;
+                setFlag('day5Stage2Done', true);
                 setGameState(st4);
                 loadDay('day5', 'stage3');
             } else if (stageKey === 'stage3') {
-                st4.flags.day5Stage3Done = true;
+                setFlag('day5Stage3Done', true);
                 setGameState(st4);
                 if (dayData.nextDay) {
                     st4.currentDay = dayData.nextDay;
@@ -470,9 +460,7 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
             } else {
                 if (dayData.finalMessage) showFinalMessage(dayData);
                 else { 
-                    const st6 = getGameState();
-                    st6.flags.gameEnded = true;
-                    setGameState(st6);
+                    setFlag('gameEnded', true);
                     showEndGame(); 
                 }
             }
@@ -484,8 +472,7 @@ function showFinalMessage(dayData) {
     hideNetworkStatus();
     hideTyping();
     const state = getGameState();
-    state.flags.gameEnded = true;
-    setGameState(state);
+    setFlag('gameEnded', true);
     checkAchievements();
     const msgs = dayData.finalMessage.map(msg => ({
         sender: 'system',

@@ -36,6 +36,36 @@ export function setGameState(newState) {
         flags: { ...getDefaultFlags(), ...gameState.flags, ...(newState.flags || {}) }
     };
 }
+export function getFlag(key) { return gameState.flags[key]; }
+export function setFlag(key, value) { gameState.flags[key] = value; return value; }
+export function setFlags(flags) { Object.assign(gameState.flags, flags); return gameState.flags; }
+export function hasShownNotification(key) {
+    const notifs = gameState.flags.shownNotifs;
+    return notifs && typeof notifs === 'object' ? !!notifs[key] : false;
+}
+export function markNotificationShown(key) {
+    if (!gameState.flags.shownNotifs || typeof gameState.flags.shownNotifs !== 'object') {
+        gameState.flags.shownNotifs = {};
+    }
+    gameState.flags.shownNotifs[key] = true;
+    return true;
+}
+export function applyStatChanges(changes) {
+    if (!gameState.stats || typeof gameState.stats !== 'object') {
+        gameState.stats = { success: 0, romance: 0, humor: 0 };
+    }
+    const validKeys = ['success', 'romance', 'humor'];
+    for (const key of validKeys) {
+        const delta = changes[key];
+        if (typeof delta === 'number') {
+            if (typeof gameState.stats[key] !== 'number') {
+                gameState.stats[key] = 0;
+            }
+            gameState.stats[key] += delta;
+        }
+    }
+    return gameState.stats;
+}
 export function getCurrentDate() { return currentDate; }
 export function setCurrentDate(date) { currentDate = date; }
 export function getCurrentTime() { return currentTime; }
