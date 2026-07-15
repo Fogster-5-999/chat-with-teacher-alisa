@@ -2,7 +2,7 @@ import { playNotificationSound } from './audio.js';
 import { t, getCurrentLanguage } from '../data/translations.js';
 import { renderMessage, addDayDivider, showTyping, hideTyping, showNetworkStatus, hideNetworkStatus, showOptions, clearOptions, clearMessages, renderFinalScreen, showMiniTest } from '../ui/components.js';
 import { GAME_SCRIPT } from '../data/story.js';
-import { getGameState, setGameState, getCurrentDate, setCurrentDate, getCurrentTime, setCurrentTime, resetCurrentTime, getNextMessageTime, saveGame, loadGame, resetGameState, setFlag, setFlags, hasShownNotification, markNotificationShown, applyStatChanges, appendMessage, updateLastMessage } from './state.js';
+import { getGameState, setGameState, getCurrentDate, setCurrentDate, getCurrentTime, setCurrentTime, resetCurrentTime, getNextMessageTime, saveGame, loadGame, resetGameState, setFlag, setFlags, hasShownNotification, markNotificationShown, applyStatChanges, appendMessage, updateLastMessage, setCurrentDay, setStage } from './state.js';
 
 export { getGameState, setGameState, getCurrentDate, setCurrentDate, getCurrentTime, setCurrentTime, resetCurrentTime, getNextMessageTime, saveGame, loadGame };
 
@@ -170,9 +170,7 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
         const stage = dayData[stageKey];
         if (!stage) {
             if (dayData.nextDay) {
-                const st = getGameState();
-                st.currentDay = dayData.nextDay;
-                setGameState(st);
+                setCurrentDay(dayData.nextDay);
                 loadDay(dayData.nextDay);
             } else showEndGame();
             return;
@@ -182,9 +180,7 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
         reactions = stage.reactions;
         statsMap = stage.stats;
         friendNotification = stage.friendNotification || null;
-        const st = getGameState();
-        st.stage = stageKey;
-        setGameState(st);
+        setStage(stageKey);
     } else {
         messagesToShow = [...dayData.messages];
         optionsToShow = dayData.options;
@@ -421,8 +417,7 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
                 setFlag('day5Stage3Done', true);
                 setGameState(st4);
                 if (dayData.nextDay) {
-                    st4.currentDay = dayData.nextDay;
-                    setGameState(st4);
+                    setCurrentDay(dayData.nextDay);
                     loadDay(dayData.nextDay);
                 } else showEndGame();
             }
@@ -441,9 +436,7 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
                 } else {
                     next = nextDay;
                 }
-                const st5 = getGameState();
-                st5.currentDay = next;
-                setGameState(st5);
+                setCurrentDay(next);
                 loadDay(next);
             } else {
                 if (dayData.finalMessage) showFinalMessage(dayData);

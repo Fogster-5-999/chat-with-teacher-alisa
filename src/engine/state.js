@@ -90,6 +90,16 @@ export function updateLastMessage(partialProps) {
     return lastMsg;
 }
 
+export function setCurrentDay(day) {
+    gameState.currentDay = day;
+    return gameState.currentDay;
+}
+
+export function setStage(stage) {
+    gameState.stage = stage;
+    return gameState.stage;
+}
+
 export function getCurrentDate() { return currentDate; }
 export function setCurrentDate(date) { currentDate = date; }
 export function getCurrentTime() { return currentTime; }
