@@ -2,7 +2,7 @@ import { playNotificationSound } from './audio.js';
 import { t, getCurrentLanguage } from '../data/translations.js';
 import { renderMessage, addDayDivider, showTyping, hideTyping, showNetworkStatus, hideNetworkStatus, showOptions, clearOptions, clearMessages, renderFinalScreen, showMiniTest } from '../ui/components.js';
 import { GAME_SCRIPT } from '../data/story.js';
-import { getGameState, setGameState, getCurrentDate, setCurrentDate, getCurrentTime, setCurrentTime, resetCurrentTime, getNextMessageTime, saveGame, loadGame, resetGameState, setFlag, setFlags, hasShownNotification, markNotificationShown, applyStatChanges } from './state.js';
+import { getGameState, setGameState, getCurrentDate, setCurrentDate, getCurrentTime, setCurrentTime, resetCurrentTime, getNextMessageTime, saveGame, loadGame, resetGameState, setFlag, setFlags, hasShownNotification, markNotificationShown, applyStatChanges, appendMessage, updateLastMessage } from './state.js';
 
 export { getGameState, setGameState, getCurrentDate, setCurrentDate, getCurrentTime, setCurrentTime, resetCurrentTime, getNextMessageTime, saveGame, loadGame };
 
@@ -224,9 +224,7 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
         hideTyping();
         const msgTime = getNextMessageTime();
         const msgObj = { sender: msg.sender, textKey: msg.textKey || msg.text, timestamp: msgTime.toISOString() };
-        const st = getGameState();
-        st.messages.push(msgObj);
-        setGameState(st);
+        appendMessage(msgObj);
         renderMessage(msgObj);
         if (msg.sender === 'alisa') playNotificationSound();
     }
@@ -240,8 +238,7 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
         if (!stMini.flags[miniKey]) {
             const introMsgTime = getNextMessageTime();
             const introMsg = { sender: 'alisa', textKey: dayData.miniTest.intro, timestamp: introMsgTime.toISOString() };
-            stMini.messages.push(introMsg);
-            setGameState(stMini);
+            appendMessage(introMsg);
             renderMessage(introMsg);
 
             const preOptions = [
@@ -270,7 +267,7 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
                         if (dayKey === 'day2' && dayData.miniTest.followUpMessage) {
                             const followUpTime = getNextMessageTime();
                             const followUpMsg = { sender: 'alisa', textKey: dayData.miniTest.followUpMessage, timestamp: followUpTime.toISOString() };
-                            stRes.messages.push(followUpMsg);
+                            appendMessage(followUpMsg);
                             setGameState(stRes);
                             renderMessage(followUpMsg);
                         } else {
@@ -295,7 +292,7 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
                                             if (dayKey === 'day2' && dayData.miniTest.followUpMessage) {
                                                 const followUpTime = getNextMessageTime();
                                                 const followUpMsg = { sender: 'alisa', textKey: dayData.miniTest.followUpMessage, timestamp: followUpTime.toISOString() };
-                                                stRes.messages.push(followUpMsg);
+                                                appendMessage(followUpMsg);
                                                 setGameState(stRes);
                                                 renderMessage(followUpMsg);
                                             } else {
@@ -333,8 +330,7 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
             isLocked: isLocked,
             timestamp: new Date().toISOString()
         };
-        st.messages.push(photoMsg);
-        setGameState(st);
+        appendMessage(photoMsg);
         renderMessage(photoMsg);
         playNotificationSound();
     }
@@ -357,9 +353,7 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
 
         const playerTime = getNextMessageTime();
         const playerMsg = { sender: 'player', textKey: optionId, timestamp: playerTime.toISOString() };
-        const st = getGameState();
-        st.messages.push(playerMsg);
-        setGameState(st);
+        appendMessage(playerMsg);
         renderMessage(playerMsg);
         if (!await sleep(1000, sessionId)) return;
 
@@ -372,11 +366,7 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
                 reaction.textContent = '❤️';
                 lastMsg.appendChild(reaction);
             }
-            const st = getGameState();
-            const msgs = st.messages;
-            if (msgs.length > 0) {
-                msgs[msgs.length - 1].liked = true;
-                setGameState(st);
+            if (updateLastMessage({ liked: true })) {
                 saveGame();
             }
         }
@@ -400,9 +390,7 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
                 hideTyping();
                 const msgTime = getNextMessageTime();
                 const msgObj = { sender: msg.sender, textKey: msg.textKey || msg.text, timestamp: msgTime.toISOString() };
-                const st2 = getGameState();
-                st2.messages.push(msgObj);
-                setGameState(st2);
+                appendMessage(msgObj);
                 renderMessage(msgObj);
                 if (msg.sender === 'alisa') playNotificationSound();
             }

@@ -66,6 +66,30 @@ export function applyStatChanges(changes) {
     }
     return gameState.stats;
 }
+
+export function appendMessage(message) {
+    if (!Array.isArray(gameState.messages)) {
+        gameState.messages = [];
+    }
+    gameState.messages.push(message);
+    return message;
+}
+
+export function updateLastMessage(partialProps) {
+    if (!Array.isArray(gameState.messages) || gameState.messages.length === 0) {
+        return null;
+    }
+    const lastMsg = gameState.messages[gameState.messages.length - 1];
+    if (!lastMsg || typeof lastMsg !== 'object') {
+        return null;
+    }
+    if (!partialProps || typeof partialProps !== 'object') {
+        return lastMsg;
+    }
+    Object.assign(lastMsg, partialProps);
+    return lastMsg;
+}
+
 export function getCurrentDate() { return currentDate; }
 export function setCurrentDate(date) { currentDate = date; }
 export function getCurrentTime() { return currentTime; }
