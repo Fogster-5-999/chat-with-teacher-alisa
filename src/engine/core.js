@@ -2,7 +2,7 @@ import { playNotificationSound } from './audio.js';
 import { t, getCurrentLanguage } from '../data/translations.js';
 import { renderMessage, addDayDivider, showTyping, hideTyping, showNetworkStatus, hideNetworkStatus, showOptions, clearOptions, clearMessages, renderFinalScreen, showMiniTest } from '../ui/components.js';
 import { GAME_SCRIPT } from '../data/story.js';
-import { getGameState, setGameState, getCurrentDate, setCurrentDate, getCurrentTime, setCurrentTime, resetCurrentTime, getNextMessageTime, saveGame, loadGame, resetGameState, setFlag, setFlags, hasShownNotification, markNotificationShown, applyStatChanges, appendMessage, updateLastMessage, setCurrentDay, setStage } from './state.js';
+import { getGameState, setGameState, getCurrentDate, setCurrentDate, getCurrentTime, setCurrentTime, resetCurrentTime, getNextMessageTime, saveGame, loadGame, resetGameState, setFlag, setFlags, hasShownNotification, markNotificationShown, applyStatChanges, appendMessage, updateLastMessage, setCurrentDay, setDayProgress } from './state.js';
 
 export { getGameState, setGameState, getCurrentDate, setCurrentDate, getCurrentTime, setCurrentTime, resetCurrentTime, getNextMessageTime, saveGame, loadGame };
 
@@ -165,33 +165,15 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
     let photoBlurred = true;
     let friendNotification = null;
 
-    if (dayKey === 'day5') {
-        if (!stageKey) stageKey = 'stage1';
-        const stage = dayData[stageKey];
-        if (!stage) {
-            if (dayData.nextDay) {
-                setCurrentDay(dayData.nextDay);
-                loadDay(dayData.nextDay);
-            } else showEndGame();
-            return;
-        }
-        messagesToShow = [...stage.messages];
-        optionsToShow = stage.options;
-        reactions = stage.reactions;
-        statsMap = stage.stats;
-        friendNotification = stage.friendNotification || null;
-        setStage(stageKey);
-    } else {
-        messagesToShow = [...dayData.messages];
-        optionsToShow = dayData.options;
-        reactions = dayData.reactions;
-        statsMap = dayData.stats;
-        nextDay = dayData.nextDay;
-        hasPhoto = dayData.hasPhoto || false;
-        photoUrl = dayData.photoUrl || '';
-        photoBlurred = dayData.photoBlurred !== undefined ? dayData.photoBlurred : true;
-        friendNotification = dayData.friendNotification || null;
-    }
+    messagesToShow = [...dayData.messages];
+    optionsToShow = dayData.options;
+    reactions = dayData.reactions;
+    statsMap = dayData.stats;
+    nextDay = dayData.nextDay;
+    hasPhoto = dayData.hasPhoto || false;
+    photoUrl = dayData.photoUrl || '';
+    photoBlurred = dayData.photoBlurred !== undefined ? dayData.photoBlurred : true;
+    friendNotification = dayData.friendNotification || null;
 
     if (friendNotification) {
         const notifKey = dayKey + (stageKey ? ':' + stageKey : '');
@@ -213,7 +195,8 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
         }
     }
 
-    for (let msg of messagesToShow) {
+    for (let i = 0; i < messagesToShow.length; i++) {
+        const msg = messagesToShow[i];
         showTyping();
         const delay = randomInt(4000, 10000);
         if (!await sleep(delay, sessionId)) return;
@@ -222,6 +205,11 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
         const msgObj = { sender: msg.sender, textKey: msg.textKey || msg.text, timestamp: msgTime.toISOString() };
         appendMessage(msgObj);
         renderMessage(msgObj);
+        setDayProgress(dayKey, {
+            phase: 'messages',
+            messageIndex: i + 1
+        });
+        await saveGame();
         if (msg.sender === 'alisa') playNotificationSound();
     }
 
@@ -403,47 +391,27 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
         clearOptions();
         if (!await sleep(3000, sessionId)) return;
 
-        if (dayKey === 'day5') {
-            const st4 = getGameState();
-            if (stageKey === 'stage1') {
-                setFlag('day5Stage1Done', true);
-                setGameState(st4);
-                loadDay('day5', 'stage2');
-            } else if (stageKey === 'stage2') {
-                setFlag('day5Stage2Done', true);
-                setGameState(st4);
-                loadDay('day5', 'stage3');
-            } else if (stageKey === 'stage3') {
-                setFlag('day5Stage3Done', true);
-                setGameState(st4);
-                if (dayData.nextDay) {
-                    setCurrentDay(dayData.nextDay);
-                    loadDay(dayData.nextDay);
-                } else showEndGame();
-            }
-        } else {
-            if (nextDay) {
-                let next = null;
-                if (Array.isArray(nextDay)) {
-                    const st5 = getGameState();
-                    for (let rule of nextDay) {
-                        if (rule.condition && rule.condition(st5)) {
-                            next = rule.day;
-                            break;
-                        }
+        if (nextDay) {
+            let next = null;
+            if (Array.isArray(nextDay)) {
+                const st5 = getGameState();
+                for (let rule of nextDay) {
+                    if (rule.condition && rule.condition(st5)) {
+                        next = rule.day;
+                        break;
                     }
-                    if (!next) next = nextDay.find(r => r.default)?.day || 'day2';
-                } else {
-                    next = nextDay;
                 }
-                setCurrentDay(next);
-                loadDay(next);
+                if (!next) next = nextDay.find(r => r.default)?.day || 'day2';
             } else {
-                if (dayData.finalMessage) showFinalMessage(dayData);
-                else { 
-                    setFlag('gameEnded', true);
-                    showEndGame(); 
-                }
+                next = nextDay;
+            }
+            setCurrentDay(next);
+            loadDay(next);
+        } else {
+            if (dayData.finalMessage) showFinalMessage(dayData);
+            else { 
+                setFlag('gameEnded', true);
+                showEndGame(); 
             }
         }
     });

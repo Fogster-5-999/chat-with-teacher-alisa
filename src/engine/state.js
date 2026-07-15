@@ -21,7 +21,8 @@ let gameState = {
     stage: null,
     stats: { success: 0, romance: 0, humor: 0 },
     flags: getDefaultFlags(),
-    messages: []
+    messages: [],
+    progress: {}
 };
 
 let currentDate = null;
@@ -100,6 +101,27 @@ export function setStage(stage) {
     return gameState.stage;
 }
 
+export function getDayProgress(dayKey) {
+    const p = gameState.progress;
+    if (!p || typeof p !== 'object') return null;
+    return p[dayKey] || null;
+}
+
+export function setDayProgress(dayKey, updates) {
+    if (!gameState.progress || typeof gameState.progress !== 'object') {
+        gameState.progress = {};
+    }
+    if (!gameState.progress[dayKey] || typeof gameState.progress[dayKey] !== 'object') {
+        gameState.progress[dayKey] = {
+            phase: null,
+            messageIndex: 0,
+            selectedOption: null
+        };
+    }
+    Object.assign(gameState.progress[dayKey], updates);
+    return gameState.progress[dayKey];
+}
+
 export function getCurrentDate() { return currentDate; }
 export function setCurrentDate(date) { currentDate = date; }
 export function getCurrentTime() { return currentTime; }
@@ -125,6 +147,7 @@ export async function saveGame() {
         stats: gameState.stats,
         flags: gameState.flags,
         messages: gameState.messages,
+        progress: gameState.progress,
         currentDate: currentDate ? currentDate.toISOString() : null,
         currentTime: currentTime ? currentTime.toISOString() : null
     };
@@ -142,6 +165,7 @@ export async function loadGame() {
             gameState.flags = { ...getDefaultFlags(), ...(data.flags || {}) };
             if (!gameState.flags.shownNotifs) gameState.flags.shownNotifs = {};
             gameState.messages = data.messages || [];
+            gameState.progress = (data.progress && typeof data.progress === 'object') ? data.progress : {};
             if (data.currentDate) currentDate = new Date(data.currentDate);
             else currentDate = null;
             if (data.currentTime) currentTime = new Date(data.currentTime);
@@ -160,7 +184,8 @@ export function resetGameState() {
         stage: null,
         stats: { success: 0, romance: 0, humor: 0 },
         flags: getDefaultFlags(),
-        messages: []
+        messages: [],
+        progress: {}
     };
     currentDate = null;
     currentTime = null;
