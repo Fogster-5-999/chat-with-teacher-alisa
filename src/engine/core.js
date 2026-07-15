@@ -2,7 +2,7 @@ import { playNotificationSound } from './audio.js';
 import { t, getCurrentLanguage } from '../data/translations.js';
 import { renderMessage, addDayDivider, showTyping, hideTyping, showNetworkStatus, hideNetworkStatus, showOptions, clearOptions, clearMessages, renderFinalScreen, showMiniTest } from '../ui/components.js';
 import { GAME_SCRIPT } from '../data/story.js';
-import { getGameState, setGameState, getCurrentDate, setCurrentDate, getCurrentTime, setCurrentTime, resetCurrentTime, getNextMessageTime, saveGame, loadGame, resetGameState, setFlag, setFlags, hasShownNotification, markNotificationShown, applyStatChanges, appendMessage, updateLastMessage, setCurrentDay, setDayProgress } from './state.js';
+import { getGameState, setGameState, getCurrentDate, setCurrentDate, getCurrentTime, setCurrentTime, resetCurrentTime, getNextMessageTime, saveGame, loadGame, resetGameState, setFlag, setFlags, hasShownNotification, markNotificationShown, applyStatChanges, appendMessage, updateLastMessage, setCurrentDay, setDayProgress, getDayProgress } from './state.js';
 
 export { getGameState, setGameState, getCurrentDate, setCurrentDate, getCurrentTime, setCurrentTime, resetCurrentTime, getNextMessageTime, saveGame, loadGame };
 
@@ -134,26 +134,34 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
         return;
     }
 
-    let currentDate = getCurrentDate();
-    if (!currentDate) {
-        const now = new Date();
-        currentDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 20, 0, 0, 0);
-    } else {
-        currentDate = new Date(currentDate);
-        currentDate.setDate(currentDate.getDate() + 1);
-        const hours = randomInt(8, 23);
-        currentDate.setHours(hours, randomInt(0, 59), 0, 0);
+    const existingDayProgress = getDayProgress(dayKey);
+    const isResumingDay = existingDayProgress !== null;
+
+    if (!isResumingDay) {
+        let currentDate = getCurrentDate();
+        if (!currentDate) {
+            const now = new Date();
+            currentDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 20, 0, 0, 0);
+        } else {
+            currentDate = new Date(currentDate);
+            currentDate.setDate(currentDate.getDate() + 1);
+            const hours = randomInt(8, 23);
+            currentDate.setHours(hours, randomInt(0, 59), 0, 0);
+        }
+        setCurrentDate(currentDate);
+        resetCurrentTime();
+
+        showNetworkStatus();
+        const initialDelay = (dayKey === 'day1' && stageKey === null) ? 5000 : 12000;
+        if (!await sleep(initialDelay, sessionId)) return;
+        hideNetworkStatus();
+        if (!await showDayTransition(dayKey, sessionId)) return;
+
+        addDayDivider(currentDate);
+
+        setDayProgress(dayKey, { phase: 'started', messageIndex: 0 });
+        await saveGame();
     }
-    setCurrentDate(currentDate);
-    resetCurrentTime();
-
-    showNetworkStatus();
-    const initialDelay = (dayKey === 'day1' && stageKey === null) ? 5000 : 12000;
-    if (!await sleep(initialDelay, sessionId)) return;
-    hideNetworkStatus();
-    if (!await showDayTransition(dayKey, sessionId)) return;
-
-    addDayDivider(currentDate);
 
     let messagesToShow = [];
     let optionsToShow = [];
@@ -195,7 +203,12 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
         }
     }
 
-    for (let i = 0; i < messagesToShow.length; i++) {
+    let startMessageIndex = 0;
+    if (existingDayProgress && existingDayProgress.phase === 'messages' && Number.isInteger(existingDayProgress.messageIndex) && existingDayProgress.messageIndex >= 0) {
+        startMessageIndex = Math.min(existingDayProgress.messageIndex, messagesToShow.length);
+    }
+
+    for (let i = startMessageIndex; i < messagesToShow.length; i++) {
         const msg = messagesToShow[i];
         showTyping();
         const delay = randomInt(4000, 10000);
@@ -332,6 +345,34 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
     hideTyping();
     if (!await sleep(600, sessionId)) return;
 
+    if (existingDayProgress && existingDayProgress.phase === 'completed') {
+        clearOptions();
+        if (nextDay) {
+            let next = null;
+            if (Array.isArray(nextDay)) {
+                const st = getGameState();
+                for (let rule of nextDay) {
+                    if (rule.condition && rule.condition(st)) {
+                        next = rule.day;
+                        break;
+                    }
+                }
+                if (!next) next = nextDay.find(r => r.default)?.day || 'day2';
+            } else {
+                next = nextDay;
+            }
+            setCurrentDay(next);
+            loadDay(next);
+        } else {
+            if (dayData.finalMessage) showFinalMessage(dayData);
+            else {
+                setFlag('gameEnded', true);
+                showEndGame();
+            }
+        }
+        return;
+    }
+
     showOptions(allOptions, async function(optionId, optionLabel) {
         document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
 
@@ -350,9 +391,7 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
                 reaction.textContent = '❤️';
                 lastMsg.appendChild(reaction);
             }
-            if (updateLastMessage({ liked: true })) {
-                saveGame();
-            }
+            updateLastMessage({ liked: true });
         }
 
         if (dayData.flagsOnComplete && dayData.flagsOnComplete[optionId]) {
@@ -363,8 +402,6 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
             dayData.onComplete(stOnComplete);
             setGameState(stOnComplete);
         }
-        checkAchievements();
-
         const reaction = reactions[optionId];
         if (reaction) {
             for (let msg of reaction) {
@@ -385,8 +422,12 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
             applyStatChanges({ success: stat.success, romance: stat.romance, humor: stat.humor });
             if (window.updateStatsUI) window.updateStatsUI();
         }
+        setDayProgress(dayKey, {
+            phase: 'completed',
+            selectedOption: optionId,
+            messageIndex: messagesToShow.length
+        });
         checkAchievements();
-
         await saveGame();
         clearOptions();
         if (!await sleep(3000, sessionId)) return;
