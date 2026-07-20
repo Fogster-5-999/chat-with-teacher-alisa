@@ -152,7 +152,7 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
         resetCurrentTime();
 
         showNetworkStatus();
-        const initialDelay = (dayKey === 'day1' && stageKey === null) ? 5000 : 12000;
+        const initialDelay = randomInt(4000, 7000);
         if (!await sleep(initialDelay, sessionId)) return;
         hideNetworkStatus();
         if (!await showDayTransition(dayKey, sessionId)) return;
@@ -211,7 +211,7 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
     for (let i = startMessageIndex; i < messagesToShow.length; i++) {
         const msg = messagesToShow[i];
         showTyping();
-        const delay = randomInt(4000, 10000);
+        const delay = randomInt(3000, 6000);
         if (!await sleep(delay, sessionId)) return;
         hideTyping();
         const msgTime = getNextMessageTime();
@@ -343,7 +343,7 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
     }
 
     hideTyping();
-    if (!await sleep(600, sessionId)) return;
+    if (!await sleep(400, sessionId)) return;
 
     if (existingDayProgress && existingDayProgress.phase === 'completed') {
         clearOptions();
@@ -406,7 +406,7 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
         if (reaction) {
             for (let msg of reaction) {
                 showTyping();
-                const delay = randomInt(4000, 10000);
+                const delay = randomInt(3000, 7000);
                 if (!await sleep(delay, sessionId)) return;
                 hideTyping();
                 const msgTime = getNextMessageTime();
@@ -430,7 +430,7 @@ export async function loadDay(dayKey, stageKey = null, sessionId = beginGameSess
         checkAchievements();
         await saveGame();
         clearOptions();
-        if (!await sleep(3000, sessionId)) return;
+        if (!await sleep(2000, sessionId)) return;
 
         if (nextDay) {
             let next = null;
