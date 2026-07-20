@@ -1,0 +1,147 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "opencode/deepseek-v4-flash-free",
+  "agent": {
+    "orchestrator": {
+      "description": "Routes tasks between user and specialized sub-agents. Splits work, delegates, merges results.",
+      "mode": "primary",
+      "model": "opencode/deepseek-v4-flash-free",
+      "temperature": 0.2,
+      "permission": {
+        "read": "allow",
+        "edit": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "bash": "allow",
+        "task": "allow",
+        "webfetch": "allow",
+        "websearch": "allow",
+        "question": "allow",
+        "todowrite": "allow"
+      },
+      "prompt": "{file:./.openforge/agents/orchestrator.md}"
+    },
+    "planner": {
+      "description": "Breaks tasks into ordered steps, estimates complexity and risks.",
+      "mode": "subagent",
+      "model": "opencode/deepseek-v4-flash-free",
+      "temperature": 0.2,
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "edit": "deny",
+        "bash": "deny"
+      },
+      "prompt": "{file:./.openforge/agents/planner.md}"
+    },
+    "architect": {
+      "description": "Designs architecture, dependency graph, API contracts, folder structure.",
+      "mode": "subagent",
+      "model": "opencode/deepseek-v4-flash-free",
+      "temperature": 0.3,
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "edit": "deny",
+        "bash": "deny",
+        "webfetch": "allow"
+      },
+      "prompt": "{file:./.openforge/agents/architect.md}"
+    },
+    "logic": {
+      "description": "Implements algorithms, backend, engine, game logic, and data processing.",
+      "mode": "subagent",
+      "model": "opencode/deepseek-v4-flash-free",
+      "temperature": 0.2,
+      "permission": {
+        "read": "allow",
+        "edit": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "bash": "allow"
+      },
+      "prompt": "{file:./.openforge/agents/logic.md}"
+    },
+    "ui": {
+      "description": "Builds HTML, CSS, React, Vue components, animations, accessibility.",
+      "mode": "subagent",
+      "model": "opencode/north-mini-code-free",
+      "temperature": 0.4,
+      "permission": {
+        "read": "allow",
+        "edit": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "bash": "allow"
+      },
+      "prompt": "{file:./.openforge/agents/ui.md}"
+    },
+    "qa": {
+      "description": "Finds bugs, edge cases, race conditions, regressions. Suggests fix code patches.",
+      "mode": "subagent",
+      "model": "opencode/deepseek-v4-flash-free",
+      "temperature": 0.05,
+      "permission": {
+        "read": "allow",
+        "edit": "deny",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "bash": "deny"
+      },
+      "prompt": "{file:./.openforge/agents/qa.md}"
+    },
+    "performance": {
+      "description": "Analyzes render, FPS, memory, bundle size, caching, network performance.",
+      "mode": "subagent",
+      "model": "opencode/mimo-v2.5-free",
+      "temperature": 0.1,
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "edit": "deny",
+        "bash": "deny"
+      },
+      "prompt": "{file:./.openforge/agents/performance.md}"
+    },
+    "security": {
+      "description": "Audits for XSS, SQL injection, secrets exposure, auth flaws, dependency risks.",
+      "mode": "subagent",
+      "model": "opencode/mimo-v2.5-free",
+      "temperature": 0.1,
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "edit": "deny",
+        "bash": "deny"
+      },
+      "prompt": "{file:./.openforge/agents/security.md}"
+    },
+    "documentation": {
+      "description": "Updates README, architecture docs, migration guides, API references, changelogs.",
+      "mode": "subagent",
+      "model": "opencode/mimo-v2.5-free",
+      "temperature": 0.3,
+      "permission": {
+        "read": "allow",
+        "edit": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "list": "allow",
+        "bash": "allow"
+      },
+      "prompt": "{file:./.openforge/agents/documentation.md}"
+    }
+  }
+}
