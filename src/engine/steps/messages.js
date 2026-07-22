@@ -15,11 +15,22 @@ export default {
   type: 'messages',
   async handler(ctx, step) {
     const list = step.list || [];
-    for (const msgStep of list) {
+
+    // Count consecutive messages already in chat (dedup after page reload)
+    const existing = ctx.store.getState().messages;
+    const existingSet = new Set(existing.map(m => `${m.sender}\0${m.textKey}`));
+    let skip = 0;
+    for (const msg of list) {
+      if (existingSet.has(`${msg.sender}\0${msg.textKey}`)) skip++;
+      else break;
+    }
+
+    // Show only remaining (not yet shown) messages
+    for (let i = skip; i < list.length; i++) {
       const result = await messageHandler.handler(ctx, {
-        ...msgStep,
+        ...list[i],
         type: 'message',
-        typingDelay: step.typingDelay || msgStep.typingDelay
+        typingDelay: step.typingDelay || list[i].typingDelay
       });
       if (result === false) return false;
     }

@@ -56,8 +56,8 @@ export class DayRunner {
     const dayState = state.dayStates[dayKey] || {};
     let startIndex = dayState.stepIndex || 0;
 
-    // Handle resume: skip already executed steps
-    const isResuming = startIndex > 0 && startIndex <= steps.length;
+    // Handle resume: day has any phase = already started (prevents day transition replay)
+    const isResuming = dayState.phase !== undefined;
 
     // Day transition for new days
     if (!isResuming) {
@@ -84,6 +84,9 @@ export class DayRunner {
           continue;
         }
       }
+
+      // Save progress before executing step — ensures day doesn't restart if F5 during long step
+      this._saveDayProgress(dayKey, i, 'in_progress');
 
       // Get handler and execute
       try {
@@ -269,6 +272,9 @@ export class DayRunner {
 
     // Day divider
     this._ui.addDayDivider(newDate);
+
+    // Mark day as started — prevents day transition replay on page reload
+    this._saveDayProgress(dayKey, 0, 'started');
 
     return true;
   }
