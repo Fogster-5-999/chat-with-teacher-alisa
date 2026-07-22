@@ -707,22 +707,33 @@
 
 /* ====== OPTIONS PANEL ====== */
 #options {
-    padding: 12px 14px;
+    padding: 0 14px;
     background: var(--options-bg);
     border-top: 1px solid var(--options-border);
-    display: none;
+    border-top-width: 0;
+    display: flex;
     flex-direction: column;
     gap: 8px;
     flex-shrink: 0;
-    max-height: 45vh;
-    overflow-y: auto;
-    transition: background 0.3s, border-color 0.3s;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition:
+        max-height 0.5s ease,
+        padding 0.5s ease,
+        border-top-width 0.5s ease,
+        opacity 0.4s ease,
+        background 0.3s,
+        border-color 0.3s;
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
 }
 
-#options.active {
-    display: flex;
+#options.visible {
+    max-height: 400px;
+    padding: 12px 14px;
+    border-top-width: 1px;
+    opacity: 1;
 }
 
 .option-btn {

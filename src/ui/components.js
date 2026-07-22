@@ -186,21 +186,23 @@ let _savedOptions = null;
 let _savedHandler = null;
 
 export function hideOptions() {
-  if (!messagesContainer) return;
-  optionsContainer.style.display = 'none';
+  if (!optionsContainer) return;
+  optionsContainer.classList.remove('visible');
 }
 
 export function clearOptions() {
   _savedOptions = null;
   _savedHandler = null;
-  if (!messagesContainer) return;
+  if (!optionsContainer) return;
+  optionsContainer.classList.remove('visible');
   optionsContainer.innerHTML = '';
-  hideOptions();
 }
 
 function showOptionsContainer() {
-  if (!messagesContainer) return;
-  optionsContainer.style.display = 'flex';
+  if (!optionsContainer) return;
+  // Force reflow so the transition plays from the current (collapsed) state
+  void optionsContainer.offsetHeight;
+  optionsContainer.classList.add('visible');
 }
 
 export function reRenderSavedOptions() {
@@ -216,6 +218,9 @@ export function showOptions(options, clickHandler) {
     _savedOptions = [...options];
     _savedHandler = clickHandler;
   }
+
+  // If already animating out, cancel and update content in-place
+  const wasVisible = optionsContainer.classList.contains('visible');
   optionsContainer.innerHTML = '';
 
   options.forEach(opt => {
@@ -256,12 +261,18 @@ export function showOptions(options, clickHandler) {
     } else {
       btn.textContent = labelText;
       btn.addEventListener('click', function() {
+        // Hide panel immediately on choice
+        optionsContainer.classList.remove('visible');
         if (clickHandler) clickHandler(opt.id, opt.labelKey || opt.label || '');
       });
     }
     optionsContainer.appendChild(btn);
   });
-  showOptionsContainer();
+
+  // Only animate in if it was hidden; otherwise content just updates in place
+  if (!wasVisible) {
+    showOptionsContainer();
+  }
 }
 
 // ---- Date formatting ----

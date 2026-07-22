@@ -39,7 +39,9 @@ export default {
         bus.emit('game:restart');
       });
       optsEl.appendChild(restartBtn);
-      optsEl.style.display = 'flex';
+      // Force reflow so slide-up animation plays from collapsed state
+      void optsEl.offsetHeight;
+      optsEl.classList.add('visible');
     }
 
     bus.emit('game:ended', state);
