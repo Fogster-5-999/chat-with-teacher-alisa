@@ -70,6 +70,10 @@ export default {
       });
 
       if (allCorrect) {
+        // Set achievement flag for passing the test
+        store.setState({
+          flags: { ...store.getState().flags, ['miniTest:' + step.id + ':passed']: true }
+        });
         // Apply success points
         if (step.successPoints) {
           const newStats = { ...store.getState().stats };
@@ -126,6 +130,10 @@ export default {
       });
 
       if (wasShown) {
+        // Set achievement flag for passing the test via ad
+        store.setState({
+          flags: { ...store.getState().flags, ['miniTest:' + step.id + ':passed']: true }
+        });
         if (step.successPoints) {
           const newStats = { ...store.getState().stats };
           if (step.statKey) {

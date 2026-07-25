@@ -20,6 +20,12 @@ export const GAME_SCRIPT = {
       conditionData: { hasFlag: 'day1Completed' }
     },
     {
+      id: 'day2_minitest_passed',
+      name: { ru: 'Знаток грамматики', en: 'Grammar Guru' },
+      icon: '📝',
+      conditionData: { hasFlag: 'miniTest:day2_test:passed' }
+    },
+    {
       id: 'excellent',
       name: { ru: 'Отличник', en: 'Excellent Student' },
       icon: '📚',
@@ -92,7 +98,7 @@ export const GAME_SCRIPT = {
           opt1_1: [
             { type: 'reaction', sender: 'alisa', textKey: 'ого, слышать такое от тебя - праздник. ладно, скину тебе таблицу с правилом, сделай 5 предложений с примерами. если завтра к вечеру пришлёшь - спишем. договорились?' },
             { type: 'stats', changes: { success: 10, romance: 0, humor: 0 } },
-            { type: 'flags', set: { studiedHard: true } }
+            { type: 'flags', set: { studiedHard: true, allHonest: true } }
           ],
           opt1_2: [
             { type: 'reaction', sender: 'alisa', textKey: 'ой ты смелый) ладно, завтра подойди на перемене, разберём тему. но только потому, что я переживаю за твой аттестат, а не потому что я «красивая» (хотя спс, приятно)' },
@@ -106,8 +112,8 @@ export const GAME_SCRIPT = {
           ]
         }
       },
-      { type: 'achievement' },
       { type: 'flags', set: { day1Completed: true } },
+      { type: 'achievement' },
       // Conditional next day
       { type: 'if', check: { hasFlag: 'flirtWithTeacher' }, then: [{ type: 'goto', day: 'day2_flirt' }] },
       { type: 'if', check: { hasFlag: 'studiedHard' }, then: [{ type: 'goto', day: 'day2_study' }] },
@@ -416,7 +422,8 @@ export const GAME_SCRIPT = {
         branches: {
           s1_1: [
             { type: 'reaction', sender: 'alisa', textKey: 'ты прав. я тоже так думаю. мы ничего плохого не сделали. но учителя - они другие, у них своя логика. хорошо, если спросят - я скажу, что это был дополнительный урок. а ты держись.' },
-            { type: 'stats', changes: { success: 5, romance: 2, humor: 0 } }
+            { type: 'stats', changes: { success: 5, romance: 2, humor: 0 } },
+            { type: 'flags', set: { allHonest: true } }
           ],
           s1_2: [
             { type: 'reaction', sender: 'alisa', textKey: 'ты серьёзно? я… я даже не знаю, что сказать. мне тоже это было важно. но сейчас не время для признаний, у нас могут быть проблемы. давай сначала переживём этот день, а потом поговорим. договорились?' },
@@ -516,7 +523,8 @@ export const GAME_SCRIPT = {
         branches: {
           s3_1: [
             { type: 'reaction', sender: 'alisa', textKey: 'дружба - это тоже ценно. я согласна. значит, мы остаёмся хорошими приятелями, которые всегда могут поддержать друг друга. только учёбу не забрасывай, ладно? иначе я буду звонить тебе не как подруга, а как училка 😉' },
-            { type: 'stats', changes: { success: 10, romance: 5, humor: 0 } }
+            { type: 'stats', changes: { success: 10, romance: 5, humor: 0 } },
+            { type: 'flags', set: { allHonest: true } }
           ],
           s3_2: [
             { type: 'reaction', sender: 'alisa', textKey: 'я боюсь, но я согласна. у нас есть полгода до твоего выпускного. мы будем встречаться тайно, никто не узнает. но если нас поймают - я уволюсь. ты готов к такому риску? я готова. просто хочу, чтобы ты знал: ты мне очень дорог.' },
@@ -635,6 +643,7 @@ export const GAME_SCRIPT = {
           ]
         }
       },
+      { type: 'flags', set: { gameEnded: true } },
       { type: 'achievement' },
       {
         type: 'endGame',

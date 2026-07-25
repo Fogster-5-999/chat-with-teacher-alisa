@@ -5,7 +5,8 @@
  *   { type: 'photo', url: 'res/chat1.png', blurred: true }
  *
  * Photos with blurred:true require ad watch to unlock.
- * The unlock state is stored in flags.photoUnlocked.
+ * Unlock state is tracked per-URL in flags.unlockedPhotos (set of URLs).
+ * Legacy flag flags.photoUnlocked is kept for backward compat and achievements.
  */
 export default {
   type: 'photo',
@@ -16,7 +17,10 @@ export default {
     if (!await wait(1500)) return false;
 
     const isBlurred = step.blurred !== false;
-    const isLocked = isBlurred && !state.flags.photoUnlocked;
+    // Per-URL unlock tracking (new) + backward compat with old global photoUnlocked
+    const unlockedUrls = state.flags.unlockedPhotos || {};
+    const hasLegacyUnlock = state.flags.photoUnlocked && Object.keys(unlockedUrls).length === 0;
+    const isLocked = isBlurred && !hasLegacyUnlock && !unlockedUrls[step.url];
 
     const photoMsg = {
       sender: 'alisa',

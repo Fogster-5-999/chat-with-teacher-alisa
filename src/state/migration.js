@@ -7,6 +7,20 @@ import { SAVE_VERSION, defaultGameState } from './defaults.js';
  */
 const migrations = {};
 
+// v1 → v2: add day-divider for current day if missing
+registerMigration(1, (data) => {
+  const result = { ...data, messages: Array.isArray(data.messages) ? [...data.messages] : [] };
+  const hasDivider = result.messages.some(m => m && m.type === 'day-divider');
+  if (!hasDivider && result.dates && result.dates.currentDate) {
+    result.messages.push({
+      type: 'day-divider',
+      sender: 'system',
+      timestamp: result.dates.currentDate
+    });
+  }
+  return result;
+});
+
 /**
  * Register a migration step.
  * @param {number} fromVersion - migrate from this version

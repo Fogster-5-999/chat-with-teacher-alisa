@@ -1,5 +1,5 @@
 // State version — increment on schema change
-export const SAVE_VERSION = 1;
+export const SAVE_VERSION = 2;
 
 // Persisted game state (saved to localStorage via Yandex SDK)
 export const defaultGameState = {

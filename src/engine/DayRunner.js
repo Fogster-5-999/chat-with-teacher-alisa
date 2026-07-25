@@ -270,11 +270,19 @@ export class DayRunner {
     // Show day transition
     if (!await this._showDayTransition(dayKey, wait)) return false;
 
-    // Day divider
-    this._ui.addDayDivider(newDate);
-
-    // Mark day as started — prevents day transition replay on page reload
+    // Mark day as started FIRST — prevents double divider если F5 между divider и saveProgress
     this._saveDayProgress(dayKey, 0, 'started');
+
+    // Day divider — сохраняем как системное сообщение (для persistence после F5)
+    const dividerMsg = {
+      type: 'day-divider',
+      sender: 'system',
+      timestamp: newDate.toISOString()
+    };
+    this._store.setState({
+      messages: [...this._store.getState().messages, dividerMsg]
+    });
+    this._ui.renderMessage(dividerMsg);
 
     return true;
   }

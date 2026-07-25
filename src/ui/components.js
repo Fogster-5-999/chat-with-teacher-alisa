@@ -25,6 +25,25 @@ export function renderMessage(msgObj) {
   if (!messagesContainer) return;
   const { sender, textKey, text, timestamp, isHtml, type, photoUrl, isLocked } = msgObj;
   const date = new Date(timestamp);
+
+  // Day-divider — отдельный элемент (не.message), сохраняется в store для persistence
+  if (type === 'day-divider') {
+    if (!timestamp) {
+      console.warn('renderMessage: day-divider without timestamp, skipping');
+      return;
+    }
+    if (isNaN(date.getTime())) {
+      console.warn('renderMessage: day-divider with invalid timestamp, skipping');
+      return;
+    }
+    const div = document.createElement('div');
+    div.className = 'day-divider';
+    div.textContent = formatDate(date);
+    messagesContainer.insertBefore(div, typingIndicator);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    return;
+  }
+
   const div = document.createElement('div');
   div.className = 'message ' + (sender === 'alisa' ? 'incoming' : sender === 'system' ? 'system' : 'outgoing');
 
@@ -62,15 +81,6 @@ export function renderAllMessages(messages) {
   if (messages && messages.length > 0) {
     messages.forEach(msg => renderMessage(msg));
   }
-}
-
-export function addDayDivider(date) {
-  if (!messagesContainer) return;
-  const div = document.createElement('div');
-  div.className = 'day-divider';
-  div.textContent = formatDate(date);
-  messagesContainer.insertBefore(div, typingIndicator);
-  messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
 export function clearMessages() {

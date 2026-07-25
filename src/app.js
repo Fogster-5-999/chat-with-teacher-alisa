@@ -12,6 +12,7 @@ import { GameEngine } from './engine/GameEngine.js';
 let _engine = null;
 export function getEngine() { return _engine; }
 export function setEngine(e) { _engine = e; }
+import { loadGameIntoStore } from './state/persistence.js';
 import { loadConfig } from './data/config.js';
 import { t, setLanguage } from './data/translations.js';
 
@@ -24,7 +25,7 @@ import {
   initUI, renderMessage, renderAllMessages, clearMessages, hideOptions,
   showTyping, hideTyping, showNetworkStatus, hideNetworkStatus,
   showOptions, showMiniTest, renderFinalScreen,
-  showTopNotification, addDayDivider, reRenderSavedOptions
+  showTopNotification, reRenderSavedOptions
 } from './ui/components.js';
 
 // Step handlers
@@ -41,7 +42,7 @@ import gotoStep from './engine/steps/goto.js';
 import photoStep from './engine/steps/photo.js';
 import miniTestStep from './engine/steps/miniTest.js';
 import notificationStep from './engine/steps/notification.js';
-import achievementStep from './engine/steps/achievement.js';
+import achievementStep, { checkAchievements } from './engine/steps/achievement.js';
 import endGameStep from './engine/steps/endGame.js';
 
 import { MAX_STATS } from './data/config.js';
@@ -80,7 +81,6 @@ engine.buildUi({
   showMiniTest,
   renderFinalScreen,
   showTopNotification,
-  addDayDivider,
   updateCoreStatsUI: () => {
     const state = store.getState();
     const stats = state.stats;
@@ -124,11 +124,21 @@ bus.on('game:restart', async () => {
 // ---- Photo unlock event ----
 document.addEventListener('photo:unlocked', (e) => {
   const st = store.getState();
+  const url = e.detail && e.detail.url;
   store.setState({
-    flags: { ...st.flags, photoUnlocked: true },
+    flags: {
+      ...st.flags,
+      photoUnlocked: true,
+      unlockedPhotos: {
+        ...(st.flags.unlockedPhotos || {}),
+        ...(url ? { [url]: true } : {})
+      }
+    },
     stats: { ...st.stats, romance: (st.stats.romance || 0) + 1 }
   });
   bus.emit('stats:changed', store.getState().stats);
+  // Trigger achievement check so collector (and others) unlock immediately
+  checkAchievements(store, showTopNotification, bus);
 });
 
 // ---- Language / Theme change handlers ----
@@ -154,6 +164,9 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   await initSDK();
   initAudio();
+
+  // Load saved data so menu (achievements etc.) reflects persisted state immediately
+  await loadGameIntoStore(store);
 
   initMenu(engine);
   initSettings();
