@@ -49,4 +49,8 @@
 
 1. Клонируйте репозиторий:
    ```bash
+<<<<<<< HEAD
    git clone https://github.com/Fogster-5-999/teach-game-ai-project-.git
+=======
+   git clone https://github.com/Fogster-5-999/teach-game-ai-project-.git
+>>>>>>> cada9f49ebf86a584d9e3028a9213c9103c5e97f
