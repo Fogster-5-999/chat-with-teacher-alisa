@@ -3,14 +3,14 @@
  *
  * Coordinates Store, DayRunner, persistence, and UI.
  */
-import { GAME_SCRIPT } from '../data/story.js';
+import { GAME_SCRIPT } from '../data/story/index.js';
 import {
   beginSession, hasActiveSession, isSessionCurrent,
   pauseSession, resumeSession, cancelSession, createSessionAwaiter
 } from './GameLoop.js';
 import { DayRunner } from './DayRunner.js';
 import { StepRunner } from './StepRunner.js';
-import { evaluate, registerCheck, clearCustomChecks } from '../state/ConditionEngine.js';
+import { registerCheck, clearCustomChecks } from '../state/ConditionEngine.js';
 import { queueSave, loadGameIntoStore, deleteSave, setSession, getSession, resetSession } from '../state/persistence.js';
 import { defaultGameState } from '../state/defaults.js';
 import { getSDK } from './sdk.js';
@@ -91,9 +91,10 @@ export class GameEngine {
       resetSession();
       await this._runCurrentDay(state.currentDay, sessionId, wait);
     } else {
-      // New game
+      // New game — preserve achievements from previous session if any
+      const achievements = this._store.getState().achievements || [];
       resetSession();
-      this._store.setState({ ...defaultGameState, version: defaultGameState.version });
+      this._store.setState({ ...defaultGameState, version: defaultGameState.version, achievements });
       // Do NOT save after reset — clean slate
       this._bus.emit('game:started');
       await this._runCurrentDay('day1', sessionId, wait);
@@ -115,8 +116,10 @@ export class GameEngine {
       this._store.setState({ currentDay: result.day });
       await this._runCurrentDay(result.day, sessionId, wait);
     } else if (result === 'completed') {
-      // Day completed normally — check for nextDay in story data (legacy support)
-      await this._findNextDay(dayKey, sessionId, wait);
+      // Day completed normally with no goto — end the game
+      this._store.setState({
+        flags: { ...this._store.getState().flags, gameEnded: true }
+      });
     } else if (result === 'not_found') {
       // Day data not found → end game
       const endDay = GAME_SCRIPT[dayKey];
@@ -131,54 +134,24 @@ export class GameEngine {
     }
   }
 
-  async _findNextDay(currentDay, sessionId, wait) {
-    const dayData = GAME_SCRIPT[currentDay];
-    if (!dayData || !dayData.nextDay) {
-      // End game
-      this._store.setState({
-        flags: { ...this._store.getState().flags, gameEnded: true }
-      });
-      return;
+  /**
+   * Reset all progress and start fresh.
+   * @param {boolean} [preserveAchievements=false] - If true, player achievements are kept.
+   */
+  async reset(preserveAchievements = false) {
+    let savedAchievements = [];
+    if (preserveAchievements) {
+      savedAchievements = this._store.getState().achievements || [];
     }
-
-    let next;
-    if (Array.isArray(dayData.nextDay)) {
-      const state = this._store.getState();
-      for (const rule of dayData.nextDay) {
-        let meets = false;
-        if (rule.conditionData) {
-          meets = evaluate(rule.conditionData, state);
-        } else if (typeof rule.condition === 'function') {
-          meets = rule.condition(state);
-        }
-        if (meets) {
-          next = rule.day;
-          break;
-        }
-      }
-      if (!next) {
-        const defaultRule = dayData.nextDay.find(r => r.default);
-        next = defaultRule ? defaultRule.day : null;
-      }
-    } else {
-      next = dayData.nextDay;
-    }
-
-    if (next) {
-      this._store.setState({ currentDay: next });
-      await this._runCurrentDay(next, sessionId, wait);
-    }
-  }
-
-  /** Reset all progress and start fresh. */
-  async reset() {
     cancelSession();
     this._store.reset();
+    if (preserveAchievements && savedAchievements.length > 0) {
+      this._store.setState({ achievements: savedAchievements });
+    }
     deleteSave();
     if (this._uiInterface) this._uiInterface.clearMessages();
     this._bus.emit('game:reset');
   }
-
   /** Pause the current game session. */
   pause() {
     pauseSession();

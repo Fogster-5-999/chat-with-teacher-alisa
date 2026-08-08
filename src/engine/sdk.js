@@ -1,12 +1,12 @@
-// Эмуляция Yandex Games SDK для локальной разработки.
-// В продакшене заменить на реальный ysdk.
+// Yandex Games SDK emulation for local development.
+// Replace with real ysdk in production.
 let ysdk = null;
 
 export async function initSDK() {
     try {
-        // В реальном проекте: const ysdk = await YaGames.init();
-        // Сейчас эмулируем
-        console.log('SDK инициализирован (эмуляция)');
+        // In production: const ysdk = await YaGames.init();
+        // Currently emulating
+        console.log('SDK initialized (emulation)');
         ysdk = {
             player: {
                 setData: async (data) => {
@@ -23,7 +23,7 @@ export async function initSDK() {
             },
             adv: {
                 showFullscreenAdv: ({ callbacks }) => {
-                    console.log('Показываем рекламу (эмуляция)');
+                    console.log('Showing ad (emulation)');
                     const overlay = document.getElementById('ad-overlay');
                     overlay.classList.add('active');
                     const closeBtn = document.getElementById('close-ad-btn');
@@ -36,7 +36,7 @@ export async function initSDK() {
                     if (callbacks?.onOpen) callbacks.onOpen();
                 },
                 showRewardedVideo: ({ callbacks }) => {
-                    console.log('Показываем rewarded video (эмуляция)');
+                    console.log('Showing rewarded video (emulation)');
                     const overlay = document.getElementById('ad-overlay');
                     overlay.classList.add('active');
                     const closeBtn = document.getElementById('close-ad-btn');
@@ -58,7 +58,7 @@ export async function initSDK() {
         };
         return ysdk;
     } catch (e) {
-        console.warn('Ошибка инициализации SDK', e);
+        console.warn('SDK initialization error', e);
         return null;
     }
 }
@@ -71,7 +71,7 @@ export function showAd(callbacks) {
     if (ysdk && ysdk.adv) {
         ysdk.adv.showFullscreenAdv(callbacks);
     } else {
-        console.warn('SDK не инициализирован');
+        console.warn('SDK not initialized');
         if (callbacks?.onError) callbacks.onError('SDK not ready');
     }
 }
@@ -80,7 +80,7 @@ export async function saveGameData(data) {
     if (ysdk && ysdk.player) {
         await ysdk.player.setData(data);
     } else {
-        console.warn('SDK не инициализирован, сохранение в localStorage');
+        console.warn('SDK not initialized, saving to localStorage');
         try { localStorage.setItem('game_save', JSON.stringify(data)); } catch(e) {}
     }
 }

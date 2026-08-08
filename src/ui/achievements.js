@@ -2,7 +2,7 @@
  * Achievements modal — reads state from the store.
  */
 import { t } from '../data/translations.js';
-import { GAME_SCRIPT } from '../data/story.js';
+import { GAME_SCRIPT } from '../data/story/index.js';
 
 const achievementsModal = document.getElementById('achievements-modal');
 const closeAchievementsBtn = document.getElementById('close-achievements');
@@ -68,6 +68,6 @@ function renderAchievements() {
   });
 
   if (meta.length === 0) {
-    container.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.3);padding:30px;font-size:14px;">Нет достижений</div>';
+    container.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,0.3);padding:30px;font-size:14px;">No achievements</div>';
   }
 }

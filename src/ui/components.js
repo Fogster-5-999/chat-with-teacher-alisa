@@ -26,7 +26,7 @@ export function renderMessage(msgObj) {
   const { sender, textKey, text, timestamp, isHtml, type, photoUrl, isLocked } = msgObj;
   const date = new Date(timestamp);
 
-  // Day-divider — отдельный элемент (не.message), сохраняется в store для persistence
+  // Day-divider — standalone element (not a .message), persisted in the store
   if (type === 'day-divider') {
     if (!timestamp) {
       console.warn('renderMessage: day-divider without timestamp, skipping');
@@ -407,6 +407,23 @@ export function showTopNotification(title, text, durationMs = 5000, icon) {
 
 const statMapping = { grades: 'success', romance: 'romance', humor: 'humor' };
 
-export function updateCoreStatsUI() {
-  // This is called via EventBus; actual state comes from store snapshot
+/**
+ * Update the stats bar UI from a state snapshot.
+ * @param {object} state - current game state (must have stats)
+ * @param {object} maxStats - max values for each stat key
+ */
+export function updateCoreStatsUI(state, maxStats) {
+  if (!state || !state.stats) return;
+  const stats = state.stats;
+  for (const [uiKey, stateKey] of Object.entries(statMapping)) {
+    const value = stats[stateKey] || 0;
+    const valEl = document.getElementById('val-' + uiKey);
+    if (valEl) valEl.textContent = value;
+    const fillEl = document.getElementById('fill-' + uiKey);
+    if (fillEl) {
+      const maxVal = (maxStats && maxStats[uiKey]) || 50;
+      const percent = Math.min(100, Math.max(0, (value / maxVal) * 100));
+      fillEl.style.width = percent + '%';
+    }
+  }
 }

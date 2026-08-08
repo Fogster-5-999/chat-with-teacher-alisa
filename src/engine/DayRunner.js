@@ -12,7 +12,7 @@
  * Context passed to each step handler:
  *   { store, setStore, session, setSession, bus, ui, wait, audio, runSteps, t, getSDK }
  */
-import { GAME_SCRIPT } from '../data/story.js';
+import { GAME_SCRIPT } from '../data/story/index.js';
 import { evaluate } from '../state/ConditionEngine.js';
 
 export class DayRunner {
@@ -270,10 +270,10 @@ export class DayRunner {
     // Show day transition
     if (!await this._showDayTransition(dayKey, wait)) return false;
 
-    // Mark day as started FIRST — prevents double divider если F5 между divider и saveProgress
+    // Mark day as started FIRST — prevents double divider if F5 is pressed between divider and saveProgress
     this._saveDayProgress(dayKey, 0, 'started');
 
-    // Day divider — сохраняем как системное сообщение (для persistence после F5)
+    // Day divider — saved as system message (for persistence after F5)
     const dividerMsg = {
       type: 'day-divider',
       sender: 'system',

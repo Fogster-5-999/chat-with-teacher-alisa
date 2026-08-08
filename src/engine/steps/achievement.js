@@ -10,7 +10,7 @@
  *
  * Also exports checkAchievements() for external trigger (photo unlock, etc.).
  */
-import { GAME_SCRIPT } from '../../data/story.js';
+import { GAME_SCRIPT } from '../../data/story/index.js';
 import { evaluate } from '../../state/ConditionEngine.js';
 import { t } from '../../data/translations.js';
 

@@ -198,7 +198,7 @@ const storyTextMap = {
     }
 };
 
-// Дополнительные переводы для мини‑теста Day2
+// Additional translations for Day2 mini-test
 storyTextMap.en['раз уж ты не сделал домашку, ответь на 3 вопроса прямо здесь'] = 'Since you didn\'t do your homework, answer 3 questions right here.';
 storyTextMap.en['раз уж ты не сделал домашку, давай прямо сейчас проверим твой английский в чате. ответь на 3 вопроса и я сразу пойму, насколько ты готов'] = "since you didn't do your homework, let's check your english right here in chat. answer 3 questions and I'll immediately see how ready you are";
 storyTextMap.en['Вставь правильное слово: ___ I a student? (Am / Is / Are)'] = 'Fill in the correct word: ___ I a student? (Am / Is / Are)';
