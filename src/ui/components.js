@@ -151,7 +151,7 @@ function renderPhotoContent(container, { photoUrl, isLocked }) {
       text-shadow:0 1px 4px rgba(0,0,0,0.7);
       user-select:none; pointer-events:none;
     `;
-    overlay.textContent = 'Открыть за рекламу';
+    overlay.textContent = t('photo.unlock');
     wrap.appendChild(overlay);
 
     wrap.addEventListener('click', function unlockHandler(e) {
@@ -311,8 +311,8 @@ export function renderFinalScreen(messages) {
   messages.forEach(msg => {
     const div = document.createElement('div');
     div.className = 'message system';
-    const sourceText = msg.textKey || msg.text || '';
-    div.textContent = t(sourceText);
+    const sourceText = msg.text != null ? msg.text : t(msg.textKey || '');
+    div.textContent = sourceText;
     messagesContainer.insertBefore(div, typingIndicator);
   });
   messagesContainer.scrollTop = messagesContainer.scrollHeight;

@@ -17,14 +17,17 @@ export default {
       flags: { ...state.flags, gameEnded: true }
     });
 
-    // Render final messages (resolve template vars)
-    const finalMsgs = (step.messages || []).map(msg => ({
-      sender: 'system',
-      text: (msg.textKey || msg.text || '')
-        .replace(/\{\{success\}\}/g, state.stats.success)
-        .replace(/\{\{romance\}\}/g, state.stats.romance)
-        .replace(/\{\{humor\}\}/g, state.stats.humor)
-    }));
+    // Render final messages (translate then resolve template vars)
+    const finalMsgs = (step.messages || []).map(msg => {
+      const raw = ctx.t(msg.textKey || msg.text || '');
+      return {
+        sender: 'system',
+        text: raw
+          .replace(/\{\{success\}\}/g, state.stats.success)
+          .replace(/\{\{romance\}\}/g, state.stats.romance)
+          .replace(/\{\{humor\}\}/g, state.stats.humor)
+      };
+    });
 
     ui.renderFinalScreen(finalMsgs);
 

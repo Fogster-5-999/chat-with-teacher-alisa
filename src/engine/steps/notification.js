@@ -26,8 +26,8 @@ export default {
     store.setState({ flags: newFlags });
 
     ui.showTopNotification(
-      step.name || '',
-      step.textKey || '',
+      ctx.t(step.name || ''),
+      ctx.t(step.textKey || ''),
       step.durationMs || 5000,
       step.icon || '💬'
     );
