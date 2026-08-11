@@ -1,5 +1,6 @@
 /**
- * Day 1 — Monday evening. Alisa (English tutor) pings about a missed test and empty homework.
+ * Day 1 — Monday evening. Alisa pings about a missed test and empty homework.
+ * Rewritten: shorter messages, less literary, more messenger rhythm.
  */
 
 export default {
@@ -9,8 +10,8 @@ export default {
       type: 'messages',
       list: [
         { sender: 'alisa', textKey: 'Привет) не спишь?' },
-        { sender: 'alisa', textKey: 'Я тут открыла твой тест...' },
-        { sender: 'alisa', textKey: 'Результат так себе, если мягко' },
+        { sender: 'alisa', textKey: 'Открыла твой тест' },
+        { sender: 'alisa', textKey: 'Результат так себе' },
         { sender: 'alisa', textKey: 'И домашка пустая. что случилось?' }
       ]
     },
@@ -18,10 +19,10 @@ export default {
       type: 'choice',
       id: 'day1_choice',
       options: [
-        { id: 'opt1_1', labelKey: 'Простите, реально закрутился. можно пересдать?' },
-        { id: 'opt1_2', labelKey: 'Если честно, просто забыл всё на свете) объясните ещё раз?' },
-        { id: 'opt1_3', labelKey: 'Да, был косяк. Признаю, расслабился. Больше так не буду.' },
-        { id: 'opt1_4', labelKey: 'Честно, мне стыдно, что подвёл вас. Хочу исправиться', hidden: true }
+        { id: 'opt1_1', labelKey: 'Простите, закрутился. можно пересдать?' },
+        { id: 'opt1_2', labelKey: 'Если честно, просто всё забыл) объясните ещё раз?' },
+        { id: 'opt1_3', labelKey: 'Да, был косяк. признаю. больше так не буду' },
+        { id: 'opt1_4', labelKey: 'Стыдно, что подвёл. хочу исправиться', hidden: true }
       ]
     },
     {
@@ -30,8 +31,8 @@ export default {
       branches: {
         opt1_1: [
           { type: 'messages', list: [
-            { sender: 'alisa', textKey: 'Ладно, бывает, не начало конца света' },
-            { sender: 'alisa', textKey: 'Скину тебе правило и пример' },
+            { sender: 'alisa', textKey: 'Ладно, бывает' },
+            { sender: 'alisa', textKey: 'Скину правило и пример' },
             { sender: 'alisa', textKey: 'Сделаешь 5 предложений' },
             { sender: 'alisa', textKey: 'Успеешь к завтрашнему вечеру?' }
           ] },
@@ -39,23 +40,23 @@ export default {
           { type: 'flags', set: { studiedHard: true, allHonest: true } }
         ],
         opt1_2: [
-          { type: 'reaction', sender: 'alisa', textKey: 'То есть память как решето' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Но обаяние работает без сбоев?' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Ладно, объясню ещё раз.' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Память как решето' },
+          { type: 'reaction', sender: 'alisa', textKey: 'А обаяние работает?' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Ладно, объясню ещё раз' },
           { type: 'reaction', sender: 'alisa', textKey: 'Но это последний бесплатный повтор 😏' },
           { type: 'stats', changes: { success: 2, romance: 4, humor: 0 } },
           { type: 'flags', set: { flirtWithTeacher: true } }
         ],
         opt1_3: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Ну хоть честно сказал.' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Но таблицу прогресса это всё равно не исправит.' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Ладно, прощаю. Задание завтра жду.' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Хоть честно' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Но таблицу прогресса это не исправит' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Прощаю. задание завтра жду' },
           { type: 'stats', changes: { success: -2, romance: 0, humor: 6 } },
           { type: 'flags', set: { joked: true } }
         ],
         opt1_4: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Это, кстати, лучший ответ за сегодня' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Пришлю задание вечером. Жду результат' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Лучший ответ за сегодня' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Пришлю задание вечером. жду результат' },
           { type: 'stats', changes: { success: 6, romance: 3, humor: 0 } },
           { type: 'flags', set: { honestEffort: true } }
         ]
@@ -64,7 +65,7 @@ export default {
     {
       type: 'messages',
       list: [
-        { sender: 'alisa', textKey: 'Кстати, у меня завтра днём есть окно' },
+        { sender: 'alisa', textKey: 'Кстати, завтра днём есть окно' },
         { sender: 'alisa', textKey: 'Можем созвониться' },
         { sender: 'alisa', textKey: 'Или как тебе удобнее?' }
       ]
@@ -74,9 +75,9 @@ export default {
       id: 'day1_choice2',
       options: [
         { id: 'opt1b_1', labelKey: 'Давай как тебе удобно' },
-        { id: 'opt1b_2', labelKey: 'А сейчас можешь? хочу побыстрее закрыть вопрос' },
-        { id: 'opt1b_3', labelKey: 'Распишу время сам в приложении, не парьтесь' },
-        { id: 'opt1b_4', labelKey: 'А можно по видео? Хочу не только голос слышать', hidden: true }
+        { id: 'opt1b_2', labelKey: 'А сейчас можешь? хочу быстрее закрыть' },
+        { id: 'opt1b_3', labelKey: 'Распишу время сам в приложении' },
+        { id: 'opt1b_4', labelKey: 'А можно по видео? хочу не только голос', hidden: true }
       ]
     },
     {
@@ -84,27 +85,28 @@ export default {
       onChoice: 'day1_choice2',
       branches: {
         opt1b_1: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Приятно слышать.' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Обычно все тянут расписание до последнего' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Приятно слышать' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Обычно все тянут до последнего' },
           { type: 'stats', changes: { success: 3, romance: 0, humor: 0 } },
           { type: 'flags', set: { respectsTime: true } }
         ],
         opt1b_2: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Ого, шустрый)' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Не сейчас, у меня, между прочим, тоже есть жизнь' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Шустрый)' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Не сейчас. у меня тоже есть жизнь' },
           { type: 'reaction', sender: 'alisa', textKey: 'После работы' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Но мне нравится напор, ладно' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Но напор нравится' },
           { type: 'stats', changes: { success: -1, romance: 3, humor: 2 } },
           { type: 'flags', set: { pushySchedule: true } }
         ],
         opt1b_3: [
-          { type: 'reaction', sender: 'alisa', textKey: 'О, самостоятельный.' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Уважаю таких' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Самостоятельный' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Уважаю' },
           { type: 'stats', changes: { success: 3, romance: 0, humor: 0 } },
           { type: 'flags', set: { selfStudy: true } }
         ],
         opt1b_4: [
-          { type: 'reaction', sender: 'alisa', textKey: 'По видео? Ну смотри... я не против' },
+          { type: 'reaction', sender: 'alisa', textKey: 'По видео?' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Ну смотри... я не против' },
           { type: 'reaction', sender: 'alisa', textKey: 'Только не вздумай смотреть на меня вместо урока' },
           { type: 'stats', changes: { success: 2, romance: 6, humor: 0 } },
           { type: 'flags', set: { wantsVideo: true } }
@@ -114,12 +116,12 @@ export default {
     {
       type: 'message',
       sender: 'alisa',
-      textKey: 'Ладно, я спать. длинный был день'
+      textKey: 'Ладно, я спать. длинный день'
     },
     {
       type: 'message',
       sender: 'alisa',
-      textKey: 'Кстати... у нас в школе не особо приветствуют'
+      textKey: 'Кстати... у нас в школе не особо любят'
     },
     {
       type: 'message',
@@ -133,7 +135,6 @@ export default {
     },
     { type: 'flags', set: { day1Completed: true } },
     { type: 'achievement' },
-    // Conditional next day
     { type: 'if', check: { hasFlag: 'flirtWithTeacher' }, then: [{ type: 'goto', day: 'day2_flirt' }] },
     { type: 'if', check: { hasFlag: 'studiedHard' }, then: [{ type: 'goto', day: 'day2_study' }] },
     { type: 'goto', day: 'day2' }

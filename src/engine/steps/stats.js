@@ -22,6 +22,22 @@ export default {
 
     store.setState({ stats: newStats });
     bus.emit('stats:changed', newStats);
+
+    // Optional note — rendered as a persistent system message
+    if (step.note) {
+      const noteMsg = {
+        sender: 'system',
+        textKey: step.note,
+        timestamp: new Date().toISOString()
+      };
+      store.setState({
+        messages: [...store.getState().messages, noteMsg]
+      });
+      if (ctx.ui && typeof ctx.ui.renderMessage === 'function') {
+        ctx.ui.renderMessage(noteMsg);
+      }
+    }
+
     return true;
   }
 };
