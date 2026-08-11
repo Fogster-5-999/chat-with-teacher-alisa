@@ -130,6 +130,7 @@ export default {
     },
     { type: 'message', sender: 'alisa', textKey: 'Ладно, мне пора домой' },
     { type: 'message', sender: 'alisa', textKey: 'Но сегодня было... неожиданно хорошо' },
+    { type: 'voice', voiceId: 'day_3' },
     { type: 'achievement' },
     { type: 'goto', day: 'day4' }
   ]

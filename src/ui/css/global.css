@@ -150,6 +150,18 @@
     --placeholder-bg: rgba(28, 24, 48, 0.6);
     --placeholder-border: rgba(255, 255, 255, 0.1);
     --network-status-color: #8ba9b9;
+
+    /* voice messages */
+    --voice-play-bg: rgba(255, 255, 255, 0.14);
+    --voice-play-border: rgba(255, 255, 255, 0.12);
+    --voice-play-color: #ffffff;
+    --voice-bar-color: rgba(255, 255, 255, 0.45);
+    --voice-bar-active: #ff6b9d;
+    --voice-progress-color: #ff6b9d;
+    --voice-label-color: rgba(255, 255, 255, 0.55);
+    --voice-time-color: rgba(255, 255, 255, 0.75);
+    --voice-lock-bg: rgba(10, 8, 20, 0.55);
+    --voice-lock-color: #ffffff;
 }
 
 body.light-theme {
@@ -283,6 +295,18 @@ body.light-theme {
     --placeholder-bg: rgba(28, 24, 48, 0.6);
     --placeholder-border: rgba(255, 255, 255, 0.1);
     --network-status-color: #8ba9b9;
+
+    /* voice messages */
+    --voice-play-bg: rgba(0, 0, 0, 0.06);
+    --voice-play-border: rgba(0, 0, 0, 0.1);
+    --voice-play-color: #1a1636;
+    --voice-bar-color: rgba(0, 0, 0, 0.25);
+    --voice-bar-active: #448aff;
+    --voice-progress-color: #448aff;
+    --voice-label-color: rgba(0, 0, 0, 0.45);
+    --voice-time-color: rgba(0, 0, 0, 0.6);
+    --voice-lock-bg: rgba(255, 255, 255, 0.55);
+    --voice-lock-color: #1a1636;
 }
 
 * {

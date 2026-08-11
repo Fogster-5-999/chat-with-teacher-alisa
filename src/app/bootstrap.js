@@ -48,6 +48,7 @@ export async function initBootstrap(engine, store) {
       hideOptions();
       const profileModal = document.getElementById('profile-modal');
       if (profileModal) profileModal.classList.remove('active');
+      import('../engine/voicePlayer.js').then(({ stopVoice }) => stopVoice()).catch(() => {});
       showMenu();
     });
   }

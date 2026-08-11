@@ -57,6 +57,7 @@ export default {
       ]
     },
     { type: 'photo', url: 'res/chat2.png', blurred: true },
+    { type: 'voice', voiceId: 'day_6' },
     {
       type: 'choice',
       id: 'day6_choice',

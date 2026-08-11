@@ -4,6 +4,8 @@
  */
 import { playNotificationSound } from '../engine/audio.js';
 import { openLightbox } from './lightbox.js';
+import { toggleVoice, formatDuration, preloadDuration, cleanupAudioResources } from '../engine/voicePlayer.js';
+import { getVoiceClip } from '../data/voice.js';
 import { t, getCurrentLanguage } from '../data/translations.js';
 
 // DOM references (lazy init)
@@ -17,6 +19,10 @@ export function initUI() {
   optionsContainer = document.getElementById('options');
   typingIndicator = document.getElementById('typing-indicator');
   networkStatus = document.getElementById('network-status');
+  
+  // Cleanup audio resources on page unload
+  window.addEventListener('beforeunload', cleanupAudioResources);
+  window.addEventListener('unload', cleanupAudioResources);
 }
 
 // ---- Messages ----
@@ -46,9 +52,12 @@ export function renderMessage(msgObj) {
 
   const div = document.createElement('div');
   div.className = 'message ' + (sender === 'alisa' ? 'incoming' : sender === 'system' ? 'system' : 'outgoing');
+  if (type === 'voice') div.classList.add('voice-msg');
 
   if (type === 'photo') {
     renderPhotoContent(div, { photoUrl, isLocked });
+  } else if (type === 'voice') {
+    renderVoiceContent(div, msgObj);
   } else {
     const contentSpan = document.createElement('span');
     const translated = t(textKey || '');
@@ -189,6 +198,119 @@ function renderPhotoContent(container, { photoUrl, isLocked }) {
 
   container.appendChild(wrap);
 }
+
+// ---- Voice message rendering ----
+
+function renderVoiceContent(container, msg) {
+  const { voiceId, isLocked } = msg;
+  const clip = getVoiceClip(voiceId);
+  const src = clip ? clip.file : `res/voice/${voiceId}.mp3`;
+
+  const content = document.createElement('div');
+  content.className = 'voice-content';
+
+  const btn = document.createElement('button');
+  btn.className = 'voice-play-btn';
+  btn.type = 'button';
+  btn.textContent = '▶';
+  btn.setAttribute('aria-label', t('voice.label'));
+
+  const main = document.createElement('div');
+  main.className = 'voice-main';
+
+  const wave = document.createElement('div');
+  wave.className = 'voice-wave';
+  wave.setAttribute('role', 'progressbar');
+  wave.setAttribute('aria-valuemin', '0');
+  wave.setAttribute('aria-valuemax', '100');
+  wave.setAttribute('aria-valuenow', '0');
+  
+  const barCount = 28;
+  for (let i = 0; i < barCount; i++) {
+    const bar = document.createElement('span');
+    bar.className = 'voice-bar';
+    bar.setAttribute('aria-hidden', 'true');
+    const h = 25 + Math.round(((Math.abs(Math.sin(i * 12.9898)) * 43758.5453) % 1) * 70);
+    bar.style.setProperty('--h', h + '%');
+    bar.style.animationDelay = (i * 0.04).toFixed(2) + 's';
+    wave.appendChild(bar);
+  }
+  const progress = document.createElement('div');
+  progress.className = 'voice-progress';
+  wave.appendChild(progress);
+
+  const meta = document.createElement('div');
+  meta.className = 'voice-meta';
+  const label = document.createElement('span');
+  label.className = 'voice-label';
+  label.textContent = t('voice.label');
+  const timeEl = document.createElement('span');
+  timeEl.className = 'voice-time';
+  timeEl.textContent = formatDuration(0);
+  meta.appendChild(label);
+  meta.appendChild(timeEl);
+
+  main.appendChild(wave);
+  main.appendChild(meta);
+  content.appendChild(btn);
+  content.appendChild(main);
+  container.appendChild(content);
+
+  btn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    toggleVoice(container, src);
+  });
+
+  if (isLocked) {
+    container.classList.add('is-locked');
+    const overlay = document.createElement('div');
+    overlay.className = 'voice-lock';
+    const icon = document.createElement('span');
+    icon.className = 'voice-lock-icon';
+    icon.textContent = '🔒';
+    const lockLabel = document.createElement('span');
+    lockLabel.className = 'voice-lock-label';
+    lockLabel.textContent = t('voice.unlock');
+    overlay.appendChild(icon);
+    overlay.appendChild(lockLabel);
+    overlay.addEventListener('click', function unlockHandler(e) {
+      e.stopPropagation();
+      import('../engine/sdk.js').then(({ getSDK }) => {
+        const ysdk = getSDK();
+        if (ysdk && ysdk.adv) {
+          ysdk.adv.showRewardedVideo({
+            callbacks: {
+              onRewarded: () => {
+                overlay.remove();
+                container.classList.remove('is-locked');
+                container.classList.add('voice-unlocked');
+                // Use preloadDuration instead of probeDuration
+                preloadDuration(src).then(duration => {
+                  if (duration) {
+                    timeEl.textContent = formatDuration(duration);
+                  }
+                });
+                const event = new CustomEvent('voice:unlocked', { detail: { voiceId } });
+                document.dispatchEvent(event);
+              },
+              onClose: () => {}
+            }
+          });
+        }
+      });
+    });
+    container.appendChild(overlay);
+  } else {
+    container.classList.add('voice-unlocked');
+    // Show total duration immediately via optimized preload
+    preloadDuration(src).then(duration => {
+      if (duration) {
+        timeEl.textContent = formatDuration(duration);
+      }
+    });
+  }
+}
+
 
 // ---- Options ----
 

@@ -32,6 +32,7 @@ import ifStep from '../engine/steps/if.js';
 import labelStep from '../engine/steps/label.js';
 import gotoStep from '../engine/steps/goto.js';
 import photoStep from '../engine/steps/photo.js';
+import voiceStep from '../engine/steps/voice.js';
 import miniTestStep from '../engine/steps/miniTest.js';
 import notificationStep from '../engine/steps/notification.js';
 import achievementStep, { checkAchievements } from '../engine/steps/achievement.js';
@@ -60,7 +61,7 @@ setEngine(engine);
 engine.registerStepHandlers([
   messageStep, messagesStep, choiceStep, branchStep, reactionStep,
   statsStep, flagsStep, ifStep, labelStep, gotoStep,
-  photoStep, miniTestStep, notificationStep, achievementStep, endGameStep
+  photoStep, voiceStep, miniTestStep, notificationStep, achievementStep, endGameStep
 ]);
 
 // ---- UI Interface for engine ----
@@ -87,6 +88,7 @@ bus.on('stats:changed', (stats) => {
 });
 
 bus.on('game:restart', async () => {
+  import('../engine/voicePlayer.js').then(({ stopVoice }) => stopVoice()).catch(() => {});
   clearMessages();
   await engine.reset(true);
   showMenu();
@@ -110,6 +112,26 @@ document.addEventListener('photo:unlocked', (e) => {
   bus.emit('stats:changed', store.getState().stats);
   // Trigger achievement check so collector (and others) unlock immediately
   checkAchievements(store, showTopNotification, bus);
+});
+
+// ---- Voice unlock event ----
+document.addEventListener('voice:unlocked', (e) => {
+  const st = store.getState();
+  const voiceId = e.detail && e.detail.voiceId;
+  if (!voiceId) return;
+  store.setState({
+    flags: {
+      ...st.flags,
+      unlockedVoices: {
+        ...(st.flags.unlockedVoices || {}),
+        [voiceId]: true
+      }
+    },
+    // Keep persisted messages in sync so the lock never returns after re-render
+    messages: st.messages.map(m =>
+      (m.type === 'voice' && m.voiceId === voiceId) ? { ...m, isLocked: false } : m
+    )
+  });
 });
 
 // ---- Language / Theme change handlers ----

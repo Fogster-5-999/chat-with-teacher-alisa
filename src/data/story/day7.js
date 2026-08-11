@@ -18,6 +18,7 @@ export default {
         { sender: 'alisa', textKey: 'Без красивых слов ради красивых слов' }
       ]
     },
+    { type: 'voice', voiceId: 'day_7' },
     {
       type: 'choice',
       id: 'day7_choice',

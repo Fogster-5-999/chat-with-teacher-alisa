@@ -36,6 +36,7 @@ export const day5_1 = {
         { sender: 'alisa', textKey: 'Ты как?' }
       ]
     },
+    { type: 'voice', voiceId: 'day_5_1' },
     {
       type: 'choice',
       id: 'day5_1_choice',
@@ -185,6 +186,7 @@ export const day5_3 = {
         { sender: 'alisa', textKey: 'Я не тороплю' }
       ]
     },
+    { type: 'voice', voiceId: 'day_5_3' },
     {
       type: 'choice',
       id: 'day5_3_choice',

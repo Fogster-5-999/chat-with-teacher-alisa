@@ -49,7 +49,9 @@ export const translations = {
         'day.new': 'День',
         'photo.unlock': 'Открыть за рекламу',
         'notif.alisa': 'Алиса',
-        'photo.error': '📷 Фото не добавлено ('
+        'photo.error': '📷 Фото не добавлено (',
+        'voice.label': 'Голосовое сообщение',
+        'voice.unlock': 'Открыть за рекламу'
     },
     en: {
         'menu.title': '📱 Chat Story',
@@ -99,6 +101,8 @@ export const translations = {
         'photo.hint_unlocked': '👆 Tap the photo to view closer',
         'photo.error': '📷 Photo not added (',
         'photo.unlock': 'Unlock with an ad',
+        'voice.label': 'Voice message',
+        'voice.unlock': 'Unlock with an ad',
         'day.new': 'Day',
         'friend.prefix': 'Friend (',
         'notif.alisa': 'Alisa',
