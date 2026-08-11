@@ -66,6 +66,16 @@ export default {
 
     if (!await wait(1000)) return false;
 
+    // Alisa occasionally reacts to the player's last message (25% chance)
+    if (Math.random() < 0.25) {
+      const st = store.getState();
+      const msgs = st.messages;
+      if (msgs.length > 0) {
+        store.setMessages([...msgs.slice(0, -1), { ...msgs[msgs.length - 1], liked: true }]);
+      }
+      ui.likeLastMessage();
+    }
+
     return true;
   }
 };

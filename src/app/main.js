@@ -17,7 +17,7 @@ import {
   renderMessage, renderAllMessages, clearMessages,
   showTyping, hideTyping, showNetworkStatus, hideNetworkStatus,
   showOptions, showMiniTest, renderFinalScreen,
-  showTopNotification, reRenderSavedOptions, updateCoreStatsUI
+  showTopNotification, reRenderSavedOptions, updateCoreStatsUI, likeLastMessage
 } from '../ui/components.js';
 
 // Step handlers
@@ -77,6 +77,7 @@ engine.buildUi({
   showMiniTest,
   renderFinalScreen,
   showTopNotification,
+  likeLastMessage,
   updateCoreStatsUI: () => {
     updateCoreStatsUI(store.getState(), MAX_STATS);
   }

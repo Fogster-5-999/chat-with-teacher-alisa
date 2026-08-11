@@ -92,6 +92,17 @@ export function renderAllMessages(messages) {
   }
 }
 
+export function likeLastMessage() {
+  if (!messagesContainer) return;
+  const outgoing = messagesContainer.querySelectorAll('.message.outgoing');
+  const lastMsg = outgoing.length ? outgoing[outgoing.length - 1] : null;
+  if (!lastMsg) return;
+  const reaction = document.createElement('span');
+  reaction.className = 'message-reaction';
+  reaction.textContent = '❤️';
+  lastMsg.appendChild(reaction);
+}
+
 export function clearMessages() {
   if (!messagesContainer) return;
   messagesContainer.innerHTML = '';
