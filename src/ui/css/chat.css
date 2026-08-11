@@ -430,54 +430,65 @@
 
 /* ====== MESSAGE BUBBLES ====== */
 .message {
-    max-width: 72%;
-    padding: 12px 14px;
-    border-radius: 16px;
-    font-size: 15px;
-    line-height: 1.45;
+    max-width: 75%;
+    width: fit-content; /* Гарантирует, что блок плотно облегает текст */
+    padding: 8px 12px; /* Было 12px 14px — убрали лишний воздух сверху/снизу и по бокам */
+    border-radius: 14px; /* Немного уменьшили скругление, чтобы блоки были строже */
+    font-size: 14px; /* Уменьшили на 1px для компактности (было 15px) */
+    line-height: 1.35; /* Более плотное расположение строк */
     word-wrap: break-word;
     animation: fadeIn 0.3s ease;
     position: relative;
     font-family: var(--font-family);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Слегка смягчили тень для компактного блока */
 }
 
 .message.incoming {
     align-self: flex-start;
-    background: var(--bg-message-incoming);
-    border: 1px solid var(--incoming-border);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: rgba(35, 30, 55, 0.65); /* Чуть более прозрачный фон для эффекта стекла */
+    border: 1px solid rgba(255, 255, 255, 0.08); /* Тонкая светлая рамка */
+    backdrop-filter: blur(16px); /* Усилили размытие заднего фона */
+    -webkit-backdrop-filter: blur(16px);
     color: var(--incoming-color);
     border-bottom-left-radius: 4px;
+    /* Эффект внутреннего блика (glassmorphism) */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.12);
 }
 
 .message.outgoing {
     align-self: flex-end;
-    background: var(--bg-message-outgoing);
-    color: var(--text-outgoing);
+    /* Яркий градиент для сообщений игрока делает UI живее */
+    background: linear-gradient(135deg, #7c4dff 0%, #b388ff 100%);
+    color: #ffffff;
     border-bottom-right-radius: 4px;
     border: none;
+    /* Цветная тень в тон градиенту */
+    box-shadow: 0 6px 18px rgba(124, 77, 255, 0.25);
 }
 
 .message.system {
     align-self: center;
-    background: transparent;
+    background: rgba(255, 255, 255, 0.05); /* Легкая подложка вместо прозрачной */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     color: var(--text-secondary);
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
-    padding: 6px 10px;
-    max-width: 90%;
+    padding: 6px 14px;
+    border-radius: 999px; /* Делаем системные сообщения "пилюлями" */
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-top: none; /* Убираем старые линии */
+    border-bottom: none;
+    max-width: 85%;
     text-align: center;
-    border-top: 1px solid var(--divider-color);
-    border-bottom: 1px solid var(--divider-color);
-    border-radius: 0;
     animation: fadeIn 0.5s ease;
 }
 
+/* Время теперь тоже занимает меньше места и прижато ближе к тексту */
 .message .time {
-    font-size: 11px;
+    font-size: 10px; /* Сделали время чуть миниатюрнее */
     color: var(--text-secondary);
-    margin-top: 4px;
+    margin-top: 4px; /* Прижали время ближе к тексту */
     text-align: right;
     opacity: 0.7;
 }
@@ -1414,6 +1425,32 @@ body.light-theme #lightbox-close:hover {
     border-color: rgba(200, 70, 100, 0.3);
     color: #c9406a;
     box-shadow: 0 0 12px rgba(200, 70, 100, 0.15);
+}
+
+/* ====== LIGHT THEME: message bubbles ====== */
+body.light-theme .message {
+    box-shadow: 0 4px 12px rgba(60, 60, 110, 0.12);
+}
+
+body.light-theme .message.incoming {
+    background: rgba(255, 255, 255, 0.78); /* Светлый стеклянный фон */
+    border: 1px solid rgba(0, 0, 0, 0.07); /* Тонкая тёмная рамка */
+    color: #2b2b3d;
+    box-shadow: 0 4px 15px rgba(60, 60, 110, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.8);
+}
+
+body.light-theme .message.outgoing {
+    background: linear-gradient(135deg, #7c4dff 0%, #b388ff 100%);
+    color: #ffffff;
+    box-shadow: 0 6px 18px rgba(124, 77, 255, 0.3);
+}
+
+body.light-theme .message.system {
+    background: rgba(0, 0, 0, 0.04); /* Лёгкая тёмная подложка */
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-top: none;
+    border-bottom: none;
+    color: #7a7a8c;
 }
 
 /* ====== RESPONSIVE ====== */
