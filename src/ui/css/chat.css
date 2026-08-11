@@ -395,22 +395,6 @@
     background: rgba(255, 255, 255, 0.2);
 }
 
-/* Grid overlay pattern */
-#messages::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0.5;
-    background-image:
-        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px),
-        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.03), transparent 30%),
-        radial-gradient(circle at 80% 80%, rgba(255,255,255,0.025), transparent 35%);
-    background-size: 24px 24px, 24px 24px, auto, auto;
-    mix-blend-mode: screen;
-}
-
 /* ====== MESSAGE ROW WRAPPER ====== */
 .message-row {
     display: flex;
@@ -1430,15 +1414,6 @@ body.light-theme #lightbox-close:hover {
     border-color: rgba(200, 70, 100, 0.3);
     color: #c9406a;
     box-shadow: 0 0 12px rgba(200, 70, 100, 0.15);
-}
-
-body.light-theme #messages::before {
-    opacity: 0.45;
-    background-image:
-        linear-gradient(rgba(91, 127, 182, 0.06) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(91, 127, 182, 0.06) 1px, transparent 1px),
-        radial-gradient(circle at 20% 20%, rgba(95, 139, 255, 0.05), transparent 30%),
-        radial-gradient(circle at 80% 80%, rgba(160, 125, 255, 0.04), transparent 35%);
 }
 
 /* ====== RESPONSIVE ====== */
