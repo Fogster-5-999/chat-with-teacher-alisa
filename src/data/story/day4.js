@@ -23,9 +23,8 @@ export default {
     {
       type: 'messages',
       list: [
-        { sender: 'alisa', textKey: 'У меня редко получается вот так' },
-        { sender: 'alisa', textKey: 'Просто общаться с учениками' },
-        { sender: 'alisa', textKey: 'Обычно только уроки и дедлайны' },
+        { sender: 'alisa', textKey: 'Я редко вот так общаюсь с учениками' },
+        { sender: 'alisa', textKey: 'Обычно всё сводится к урокам и дедлайнам' },
         { sender: 'alisa', textKey: 'С тобой почему-то иначе' }
       ]
     },
@@ -52,7 +51,7 @@ export default {
         opt4_2: [
           { type: 'reaction', sender: 'alisa', textKey: 'Ого' },
           { type: 'reaction', sender: 'alisa', textKey: 'Я тоже, если честно' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Весь вечер прокручивала' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Весь вечер прокручивала наш разговор' },
           { type: 'stats', changes: { success: 2, romance: 12, humor: 0 } }
         ],
         opt4_3: [
@@ -100,7 +99,7 @@ export default {
         ],
         opt4b_2: [
           { type: 'reaction', sender: 'alisa', textKey: 'Правда? расскажешь как-нибудь' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Приятно, что не только я тут раскрываюсь' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Приятно, что я тут не одна раскрываюсь' },
           { type: 'stats', changes: { success: 0, romance: 9, humor: 0 } },
           { type: 'flags', set: { reciprocal: true } }
         ],

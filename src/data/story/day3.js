@@ -47,8 +47,8 @@ export default {
           { type: 'flags', set: { cameToCafe: true } }
         ],
         opt3_2: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Разговора — это про меня спросить?' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Или свои дела рассказать?' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Разговоры — это меня расспрашивать?' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Или мне про себя рассказывать?' },
           { type: 'reaction', sender: 'alisa', textKey: 'Ладно, давай тут. тоже нормально' },
           { type: 'stats', changes: { success: 2, romance: 4, humor: 0 } }
         ],
@@ -71,66 +71,56 @@ export default {
       type: 'if',
       check: { hasFlag: 'cameToCafe' },
       then: [
-        { type: 'message', sender: 'alisa', textKey: 'О, ты реально пришёл' },
-        { type: 'message', sender: 'alisa', textKey: 'Садись. взяла тебе кофе на всякий' }
+        { type: 'message', sender: 'system', textKey: '— Дальше — без экрана. Кофе, разговор, тишина 🙂' },
+        { type: 'message', sender: 'alisa', textKey: 'Всё, я с чаем на кухне. как добрался?' }
       ]
     },
     {
-      type: 'message',
-      sender: 'alisa',
-      textKey: 'С чего начнём?'
-    },
-    {
-      type: 'message',
-      sender: 'alisa',
-      textKey: 'Сразу к делу или сначала выдохнем?'
+      type: 'if',
+      check: { not: { hasFlag: 'cameToCafe' } },
+      then: [
+        { type: 'message', sender: 'alisa', textKey: 'Я дома)' },
+        { type: 'message', sender: 'alisa', textKey: 'Редко выходит поговорить просто так' },
+        { type: 'message', sender: 'alisa', textKey: 'С тобой как-то легко' }
+      ]
     },
     {
       type: 'choice',
-      id: 'day3_choice2',
+      id: 'day3_evening_choice',
       options: [
-        { id: 'opt3b_1', labelKey: 'Давай сразу к делу. я собран' },
-        { id: 'opt3b_2', labelKey: 'Выдохнем. расскажи, как у тебя дела' },
-        { id: 'opt3b_3', labelKey: 'Можно просто помолчать немного?' },
-        { id: 'opt3b_4', labelKey: 'Мне с тобой спокойно. непривычно, но приятно', hidden: true }
+        { id: 'ev_1', labelKey: 'Мне тоже было приятно. до завтра)' },
+        { id: 'ev_2', labelKey: 'Пойду заниматься. с понедельника зубрю)' },
+        { id: 'ev_3', labelKey: 'До понедельника. не скучай 😄' }
       ]
     },
     {
       type: 'branch',
-      onChoice: 'day3_choice2',
+      onChoice: 'day3_evening_choice',
       branches: {
-        opt3b_1: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Уважаю деловой подход' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Начинаем' },
-          { type: 'stats', changes: { success: 8, romance: 0, humor: 0 } },
-          { type: 'flags', set: { politeTopic: true } }
+        ev_1: [
+          { type: 'reaction', sender: 'alisa', textKey: 'Приятно слышать)' },
+          { type: 'stats', changes: { success: 0, romance: 4, humor: 0 } }
         ],
-        opt3b_2: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Дела... нормально' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Работы много, но не жалуюсь' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Странно, что тебе правда интересно' },
-          { type: 'stats', changes: { success: 0, romance: 8, humor: 0 } },
-          { type: 'flags', set: { openTopic: true } }
+        ev_2: [
+          { type: 'reaction', sender: 'alisa', textKey: 'Вот и отлично' },
+          { type: 'stats', changes: { success: 4, romance: 0, humor: 0 } }
         ],
-        opt3b_3: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Можно' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Иногда это лучше любых разговоров' },
-          { type: 'stats', changes: { success: 2, romance: 6, humor: 2 } },
-          { type: 'flags', set: { openTopic: true } }
-        ],
-        opt3b_4: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Спокойно...' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Даже не думала, что кто-то так скажет' },
-          { type: 'reaction', sender: 'alisa', textKey: 'На работе я обычно выключаю эмоции' },
-          { type: 'reaction', sender: 'alisa', textKey: 'С тобой не получается' },
-          { type: 'stats', changes: { success: 0, romance: 10, humor: 0 } },
-          { type: 'flags', set: { openTopic: true } }
+        ev_3: [
+          { type: 'reaction', sender: 'alisa', textKey: 'Ахах, не обещаю)' },
+          { type: 'stats', changes: { success: 0, romance: 0, humor: 4 } }
         ]
       }
     },
-    { type: 'message', sender: 'alisa', textKey: 'Ладно, мне пора домой' },
-    { type: 'message', sender: 'alisa', textKey: 'Но сегодня было... неожиданно хорошо' },
-    { type: 'voice', voiceId: 'day_3' },
+    {
+      type: 'if',
+      check: { hasFlag: 'cameToCafe' },
+      then: [{ type: 'voice', voiceId: 'day_3' }]
+    },
+    {
+      type: 'if',
+      check: { not: { hasFlag: 'cameToCafe' } },
+      then: [{ type: 'message', sender: 'alisa', textKey: 'Ладно, спокойной ночи' }]
+    },
     { type: 'achievement' },
     { type: 'goto', day: 'day4' }
   ]

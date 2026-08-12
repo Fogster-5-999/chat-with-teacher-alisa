@@ -7,24 +7,50 @@ export const day5_1 = {
   start: { afterDay: 'day4' },
   steps: [
     {
-      type: 'notification',
-      id: 'friendMisha',
-      name: 'Миша',
-      textKey: 'Бро, тебя спалили) кто-то скинул в чат фотку — ты с училкой в кафе. все обсуждают 😱',
-      icon: '👤'
-    },
-    {
-      type: 'messages',
-      list: [
-        { sender: 'alisa', textKey: 'Слушай' },
-        { sender: 'alisa', textKey: 'Тут плохо' },
-        { sender: 'alisa', textKey: 'Кто-то из кафе скинул нашу фотку' },
-        { sender: 'alisa', textKey: 'Дальше по знакомым' },
-        { sender: 'alisa', textKey: 'Мне уже написала руководитель' },
-        { sender: 'alisa', textKey: 'Спрашивает, что происходит' }
+      type: 'if',
+      check: { hasFlag: 'cameToCafe' },
+      then: [
+        {
+          type: 'notification',
+          id: 'friendMisha',
+          name: 'Миша',
+          textKey: 'Бро, тебя спалили) кто-то скинул в чат фотку — ты с училкой в кафе. все обсуждают 😱',
+          icon: '👤'
+        },
+        {
+          type: 'messages',
+          list: [
+            { sender: 'alisa', textKey: 'Слушай' },
+            { sender: 'alisa', textKey: 'Тут плохо' },
+            { sender: 'alisa', textKey: 'Кто-то из кафе скинул нашу фотку' },
+            { sender: 'alisa', textKey: 'Дальше по знакомым' },
+            { sender: 'alisa', textKey: 'Мне уже написала руководитель' },
+            { sender: 'alisa', textKey: 'Спрашивает, что происходит' }
+          ]
+        },
+        { type: 'photo', url: 'res/chat3.png', blurred: true }
+      ],
+      else: [
+        {
+          type: 'notification',
+          id: 'friendMisha',
+          name: 'Миша',
+          textKey: 'Бро, новость дня) говорят, вы с училкой ночами переписываетесь. все обсуждают 😱',
+          icon: '👤'
+        },
+        {
+          type: 'messages',
+          list: [
+            { sender: 'alisa', textKey: 'Слушай' },
+            { sender: 'alisa', textKey: 'Тут плохо' },
+            { sender: 'alisa', textKey: 'Кто-то из класса проболтался' },
+            { sender: 'alisa', textKey: 'Что мы переписываемся по вечерам' },
+            { sender: 'alisa', textKey: 'Мне уже написала руководитель' },
+            { sender: 'alisa', textKey: 'Спрашивает, что за «дополнительные занятия»' }
+          ]
+        }
       ]
     },
-    { type: 'photo', url: 'res/chat3.png', blurred: true },
     {
       type: 'messages',
       list: [
@@ -78,7 +104,7 @@ export const day5_1 = {
         s1_5: [
           { type: 'reaction', sender: 'alisa', textKey: 'Ты правда готов это сделать?' },
           { type: 'reaction', sender: 'alisa', textKey: 'Для меня?' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Спасибо. дай подумать' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Спасибо. Дай подумать' },
           { type: 'reaction', sender: 'alisa', textKey: 'Это очень много значит' },
           { type: 'stats', changes: { success: 5, romance: 8, humor: 0 } },
           { type: 'flags', set: { protectivePlayer: true } }
@@ -122,7 +148,7 @@ export const day5_2 = {
         { id: 's2_1', labelKey: 'Давай просто быть осторожнее, но не пропадать' },
         { id: 's2_2', labelKey: 'А что если официально попросить перевести меня к другому?', hidden: true },
         { id: 's2_3', labelKey: 'Может, правда лучше остановиться?', hidden: true },
-        { id: 's2_4', labelKey: 'Предлагаю режим «тихо». без лишнего' }
+        { id: 's2_4', labelKey: 'Предлагаю режим «секретных агентов» 😄 Шифруемся' }
       ]
     },
     {
@@ -137,7 +163,7 @@ export const day5_2 = {
         s2_2: [
           { type: 'reaction', sender: 'alisa', textKey: 'О' },
           { type: 'reaction', sender: 'alisa', textKey: 'Это... на самом деле неплохая идея' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Тогда формально у нас не будет конфликта' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Тогда у нас формально не будет конфликта интересов' },
           { type: 'reaction', sender: 'alisa', textKey: 'Дай подумать' },
           { type: 'stats', changes: { success: 10, romance: 6, humor: 0 } },
           { type: 'flags', set: { requestedReassignment: true } }
@@ -151,8 +177,8 @@ export const day5_2 = {
           { type: 'flags', set: { pulledBack: true } }
         ],
         s2_4: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Тихо, ха' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Ладно. хотя бы без явных смайликов на людях' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Шифруемся, ха.' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Ладно, давай хотя бы без явных смайликов на людях' },
           { type: 'stats', changes: { success: 0, romance: 3, humor: 8 } }
         ]
       }

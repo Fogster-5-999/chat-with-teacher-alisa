@@ -49,10 +49,9 @@ export default {
         { sender: 'alisa', textKey: 'Может, встретимся завтра?' },
         { sender: 'alisa', textKey: 'Не в кафе' },
         { sender: 'alisa', textKey: 'Просто в парке, погуляем' },
-        { sender: 'alisa', textKey: 'Хочу поговорить без телефонов' },
-        { sender: 'alisa', textKey: 'Без людей и суеты' },
-        { sender: 'alisa', textKey: 'Я обычно сижу на скамейке у пруда' },
-        { sender: 'alisa', textKey: 'Пишу что-то своё' },
+        { sender: 'alisa', textKey: 'Хочу просто поговорить, без телефонов' },
+        { sender: 'alisa', textKey: 'Без людей, без этой суеты' },
+        { sender: 'alisa', textKey: 'Я обычно сижу на скамейке у пруда, что-нибудь пишу' },
         { sender: 'alisa', textKey: 'Приходи, если хочешь' }
       ]
     },
@@ -80,7 +79,7 @@ export default {
         opt6_2: [
           { type: 'reaction', sender: 'alisa', textKey: 'Я тоже нервничаю' },
           { type: 'reaction', sender: 'alisa', textKey: 'Но иногда стоит рискнуть' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Завтра в 17:00. буду ждать' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Завтра в 17:00. Буду ждать' },
           { type: 'stats', changes: { success: 0, romance: 12, humor: 0 } },
           { type: 'flags', set: { earlyVulnerability: true } }
         ],
@@ -131,8 +130,8 @@ export default {
       id: 'day6_choice2',
       options: [
         { id: 'opt6b_1', labelKey: 'Может, и не надо ничего с этим делать' },
-        { id: 'opt6b_2', labelKey: 'Я рад, что ты впустила меня' },
-        { id: 'opt6b_3', labelKey: 'Звучит как диагноз. но я приму тебя такой 😄' }
+        { id: 'opt6b_2', labelKey: 'Я рад, что ты меня впустила. Серьёзно' },
+        { id: 'opt6b_3', labelKey: 'Звучит как диагноз 😄 Но ладно, буду принимать тебя такой' }
       ]
     },
     {

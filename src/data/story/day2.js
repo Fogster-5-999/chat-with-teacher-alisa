@@ -57,9 +57,9 @@ export const day2 = {
       type: 'choice',
       id: 'day2_choice',
       options: [
-        { id: 'opt2_1', labelKey: 'Клёвое фото, тут совсем другая' },
+        { id: 'opt2_1', labelKey: 'Клёвое фото, вы тут совсем другая' },
         { id: 'opt2_2', labelKey: 'С такой улыбкой хочется учить чаще 😏' },
-        { id: 'opt2_3', labelKey: 'А где строгий взгляд? удивлён' },
+        { id: 'opt2_3', labelKey: 'А где строгий взгляд? Даже непривычно' },
         { id: 'opt2_4', labelKey: 'Почему-то хочется пересматривать', hidden: true }
       ]
     },
@@ -144,8 +144,7 @@ export const day2 = {
       }
     },
     { type: 'message', sender: 'alisa', textKey: 'Ладно, до связи' },
-    { type: 'message', sender: 'alisa', textKey: 'И не проболтайся никому' },
-    { type: 'message', sender: 'alisa', textKey: 'Что я пишу ученикам по вечерам 😅' },
+    { type: 'message', sender: 'alisa', textKey: 'И не проболтайся никому, что я вообще пишу ученикам по вечерам 😅' },
     { type: 'achievement' },
     { type: 'goto', day: 'day3' }
   ]
@@ -158,13 +157,13 @@ export const day2_flirt = {
       type: 'messages',
       list: [
         { sender: 'alisa', textKey: 'Привет) ты сегодня не даёшь покоя' },
-        { sender: 'alisa', textKey: 'Ловлю себя на улыбке в телефон' },
-        { sender: 'alisa', textKey: 'План урока отложила' },
-        { sender: 'alisa', textKey: 'Есть час. просто поболтаем?' }
+        { sender: 'alisa', textKey: 'Ловлю себя на том, что улыбаюсь в телефон' },
+        { sender: 'alisa', textKey: 'Урок пока отложила' },
+        { sender: 'alisa', textKey: 'У меня есть час. просто поболтаем?' }
       ]
     },
     { type: 'message', sender: 'alisa', textKey: 'Вот, кстати' },
-    { type: 'message', sender: 'alisa', textKey: 'Сегодня в своём виде, не в режиме «препод»' },
+    { type: 'message', sender: 'alisa', textKey: 'Сегодня я не в режиме «препод»' },
     { type: 'photo', url: 'res/chat1_flirt.png', blurred: true },
     {
       type: 'choice',
@@ -182,8 +181,7 @@ export const day2_flirt = {
       branches: {
         opt2f_1: [
           { type: 'reaction', sender: 'alisa', textKey: 'Вот это поворот)' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Я тоже устала от formalities' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Давай просто на «ты»' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Я тоже устала от всей этой официальности' },
           { type: 'stats', changes: { success: 0, romance: 8, humor: 0 } }
         ],
         opt2f_2: [
@@ -240,7 +238,7 @@ export const day2_flirt = {
         ],
         opt2f_c3: [
           { type: 'reaction', sender: 'alisa', textKey: '«Важно» — сильно' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Ладно, интригуй' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Теперь обязана узнать, что такого «важно» 😄' },
           { type: 'stats', changes: { success: 0, romance: 4, humor: 6 } },
           { type: 'flags', set: { joked2: true } }
         ],

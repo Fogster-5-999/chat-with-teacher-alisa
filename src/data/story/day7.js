@@ -15,10 +15,11 @@ export default {
         { sender: 'alisa', textKey: 'На скамейке у пруда' },
         { sender: 'alisa', textKey: 'Что бы ты сейчас ни сказал' },
         { sender: 'alisa', textKey: 'Я хочу, чтобы это было честно' },
-        { sender: 'alisa', textKey: 'Без красивых слов ради красивых слов' }
+        { sender: 'alisa', textKey: 'Только без красивых слов ради красивых слов' }
       ]
     },
     { type: 'voice', voiceId: 'day_7' },
+    { type: 'message', sender: 'system', textKey: '— Дальше — без экрана: парк, скамейка у пруда, долгий разговор 🙂' },
     {
       type: 'choice',
       id: 'day7_choice',
@@ -106,11 +107,7 @@ export default {
       type: 'if',
       check: { and: [{ hasFlag: 'earlyConfession' }, { hasFlag: 'finalCommit' }] },
       then: [
-        { type: 'reaction', sender: 'alisa', textKey: 'Помнишь, вчера я говорил' },
-        { type: 'reaction', sender: 'alisa', textKey: 'Что хочу сказать тебе кое-что важное' },
-        { type: 'reaction', sender: 'alisa', textKey: 'Вот, говорю вживую: я хочу быть с тобой' },
-        { type: 'reaction', sender: 'alisa', textKey: 'Не из-за понедельника и не понарошку' },
-        { type: 'reaction', sender: 'alisa', textKey: 'Просто так' },
+        { type: 'message', sender: 'system', textKey: '— Ты, как и обещал вчера, говоришь ей это вживую — просто так, без поводов.' },
         { type: 'reaction', sender: 'alisa', textKey: 'Я знала' },
         { type: 'reaction', sender: 'alisa', textKey: 'Я весь день ждала, когда ты это скажешь' },
         {
@@ -138,7 +135,7 @@ export default {
           type: 'endGame',
           messages: [
             { sender: 'system', textKey: '💛 Финал: честное начало' },
-            { sender: 'system', textKey: 'Вы сначала разобрались с формальностями и только потом позволили себе быть вместе. Ни тайн, ни компромиссов. Начало получилось спокойным и настоящим.' },
+            { sender: 'system', textKey: 'Вы сначала разобрались со всем официально, а уже потом решили попробовать быть вместе.' },
             { sender: 'system', textKey: '📊 Итог: Успеваемость {{success}}, Романтика {{romance}}, Юмор {{humor}}' }
           ]
         },
@@ -172,10 +169,8 @@ export default {
       type: 'if',
       check: { hasFlag: 'finalWait' },
       then: [
-        { type: 'reaction', sender: 'alisa', textKey: 'Мне нравится, что ты не торопишь' },
-        { type: 'reaction', sender: 'alisa', textKey: 'Это редкость' },
-        { type: 'reaction', sender: 'alisa', textKey: 'А пока у нас есть уроки' },
-        { type: 'reaction', sender: 'alisa', textKey: 'Кофе по субботам и очень много времени' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Мне нравится, что ты не торопишь события' },
+        { type: 'reaction', sender: 'alisa', textKey: 'А пока у нас есть уроки, кофе по субботам и куча времени' },
         {
           type: 'endGame',
           messages: [
