@@ -9,7 +9,8 @@ export const MAX_STATS = {
 const defaultConfig = {
     language: 'ru',
     theme: 'dark',
-    sound: true,
+    musicVolume: 30,           // 0-100, музыка
+    notificationsVolume: 100,  // 0-100, уведомления
 };
 
 let config = { ...defaultConfig };
@@ -19,9 +20,20 @@ export function loadConfig() {
         const saved = localStorage.getItem('game_config');
         if (saved) {
             const parsed = JSON.parse(saved);
+            // Убедиться что значения громкости - числа (0 допустимо и не заменяется на fallback)
+            if (parsed.musicVolume !== undefined) {
+                const m = parseInt(parsed.musicVolume, 10);
+                if (!isNaN(m)) parsed.musicVolume = Math.max(0, Math.min(100, m));
+            }
+            if (parsed.notificationsVolume !== undefined) {
+                const n = parseInt(parsed.notificationsVolume, 10);
+                if (!isNaN(n)) parsed.notificationsVolume = Math.max(0, Math.min(100, n));
+            }
             config = { ...defaultConfig, ...parsed };
         }
-    } catch (e) {}
+    } catch (e) {
+        console.error('Error loading config:', e);
+    }
     return config;
 }
 

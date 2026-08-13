@@ -57,14 +57,6 @@ export async function initBootstrap(engine, store) {
   const settingsBtn = document.getElementById('settings-btn-game');
   if (settingsBtn) settingsBtn.addEventListener('click', openSettings);
 
-  // Music toggle
-  const musicToggle = document.getElementById('music-toggle');
-  if (musicToggle) {
-    musicToggle.addEventListener('click', () => {
-      import('../engine/audio.js').then(mod => mod.toggleMusic());
-    });
-  }
-
   // Audio unlock on first click
   document.addEventListener('click', () => { unlockAudio(); }, { once: false });
 
