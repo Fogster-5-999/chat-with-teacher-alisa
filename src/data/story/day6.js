@@ -1,162 +1,84 @@
-/**
- * Day 6 — park invitation.
- * Rewritten: shorter, more natural.
- */
-
+/** Day 6 — the park is an off-screen conversation, but each route arrives there differently. */
 export default {
   start: { afterDay: 'day5_3' },
   steps: [
-    {
-      type: 'if',
-      check: { hasFlag: 'chosePathRisk' },
-      then: [
-        { type: 'message', sender: 'alisa', textKey: 'Привет' },
-        { type: 'message', sender: 'alisa', textKey: 'Я весь день улыбаюсь без причины' },
-        { type: 'message', sender: 'alisa', textKey: 'Это ты виноват' }
-      ]
-    },
-    {
-      type: 'if',
-      check: { hasFlag: 'chosePathClean' },
-      then: [
-        { type: 'message', sender: 'alisa', textKey: 'Привет!' },
-        { type: 'message', sender: 'alisa', textKey: 'Заявку на перевод подала' },
-        { type: 'message', sender: 'alisa', textKey: 'Чувствую себя свободнее' }
-      ]
-    },
-    {
-      type: 'if',
-      check: { hasFlag: 'chosePathFriends' },
-      then: [
-        { type: 'message', sender: 'alisa', textKey: 'Привет)' },
-        { type: 'message', sender: 'alisa', textKey: 'Как настоящий друг' },
-        { type: 'message', sender: 'alisa', textKey: 'Я весь день о тебе думала' },
-        { type: 'message', sender: 'alisa', textKey: 'Это нормально?' }
-      ]
-    },
-    {
-      type: 'if',
-      check: { hasFlag: 'pulledBack' },
-      then: [
-        { type: 'message', sender: 'alisa', textKey: 'Привет' },
-        { type: 'message', sender: 'alisa', textKey: 'Знаю, мы решили быть осторожнее' },
-        { type: 'message', sender: 'alisa', textKey: 'Но я не выдержала и написала' }
-      ]
-    },
-    {
-      type: 'messages',
-      list: [
-        { sender: 'alisa', textKey: 'Может, встретимся завтра?' },
-        { sender: 'alisa', textKey: 'Не в кафе' },
-        { sender: 'alisa', textKey: 'Просто в парке, погуляем' },
-        { sender: 'alisa', textKey: 'Хочу просто поговорить, без телефонов' },
-        { sender: 'alisa', textKey: 'Без людей, без этой суеты' },
-        { sender: 'alisa', textKey: 'Я обычно сижу на скамейке у пруда, что-нибудь пишу' },
-        { sender: 'alisa', textKey: 'Приходи, если хочешь' }
-      ]
-    },
+    { type: 'if', check: { hasFlag: 'finalStopPath' }, then: [
+      { type: 'messages', list: [
+        { sender: 'alisa', textKey: 'Привет.' },
+        { sender: 'alisa', textKey: 'Не буду много писать. Просто надеюсь, что у тебя всё будет нормально.' }
+      ] },
+      { type: 'goto', day: 'day7' }
+    ] },
+    { type: 'if', check: { hasFlag: 'choseClean' }, then: [
+      { type: 'messages', list: [
+        { sender: 'alisa', textKey: 'Есть новости: перевод одобрили.' },
+        { sender: 'alisa', textKey: 'С понедельника я больше не веду твою группу.' },
+        { sender: 'alisa', textKey: 'С одной стороны, легче. С другой — вообще не по себе.' }
+      ] }
+    ] },
+    { type: 'if', check: { and: [{ hasFlag: 'choseRisk' }, { not: { hasFlag: 'choseClean' } }] }, then: [
+      { type: 'messages', list: [
+        { sender: 'alisa', textKey: 'Руководитель попросила меня держать дистанцию.' },
+        { sender: 'alisa', textKey: 'Я не хочу больше врать и прятаться.' },
+        { sender: 'alisa', textKey: 'Но и сделать вид, что ничего не было, я не могу.' }
+      ] }
+    ] },
+    { type: 'if', check: { and: [{ hasFlag: 'choseCareful' }, { not: { hasFlag: 'choseClean' } }, { not: { hasFlag: 'choseRisk' } }] }, then: [
+      { type: 'messages', list: [
+        { sender: 'alisa', textKey: 'Спасибо, что не давил.' },
+        { sender: 'alisa', textKey: 'Я всё-таки хочу поговорить не в чате.' },
+        { sender: 'alisa', textKey: 'Не думала, что сама это предложу.' }
+      ] }
+    ] },
+    { type: 'if', check: { and: [{ or: [{ hasFlag: 'pushedTooFast' }, { hasFlag: 'actedWithoutConsent' }, { hasFlag: 'liedToManager' }] }, { not: { hasFlag: 'finalStopPath' } }] }, then: [
+      { type: 'messages', list: [
+        { sender: 'alisa', textKey: 'После последних разговоров я пока немного на нервах.' },
+        { sender: 'alisa', textKey: 'Я приду, когда сама буду готова.' }
+      ] }
+    ] },
+    { type: 'messages', list: [
+      { sender: 'alisa', textKey: 'Завтра буду в парке у пруда.' },
+      { sender: 'alisa', textKey: 'Без уроков. Просто поговорим.' },
+      { sender: 'alisa', textKey: 'Если хочешь, просто поговорим.' }
+    ] },
     { type: 'photo', url: 'res/chat2.png', blurred: true },
     { type: 'voice', voiceId: 'day_6' },
-    {
-      type: 'choice',
-      id: 'day6_choice',
-      options: [
-        { id: 'opt6_1', labelKey: 'Приду. давай просто поговорим' },
-        { id: 'opt6_2', labelKey: 'Честно? немного нервничаю. но приду', hidden: true },
-        { id: 'opt6_3', labelKey: 'Скамейка у пруда — звучит как начало истории' },
-        { id: 'opt6_4', labelKey: 'Мне нужно сказать тебе кое-что важное...', hidden: true, cost: 2 }
+    { type: 'choice', id: 'day6_park_choice', options: [
+      { id: 'd6_park_come', labelKey: 'd6_park_come' },
+      { id: 'd6_park_nervous', labelKey: 'd6_park_nervous' },
+      { id: 'd6_park_wait', labelKey: 'd6_park_wait' },
+      { id: 'd6_park_secret', labelKey: 'd6_park_secret', hidden: true, cost: 2 }
+    ] },
+    { type: 'branch', onChoice: 'day6_park_choice', branches: {
+      d6_park_come: [
+        { type: 'reaction', sender: 'alisa', textKey: 'Хорошо. В пять, у входа. Только не опаздывай, я и так буду нервничать.' },
+        { type: 'stats', changes: { success: 1, romance: 1, humor: 0 } },
+        { type: 'flags', set: { meetPark: true } }
+      ],
+      d6_park_nervous: [
+        { type: 'reaction', sender: 'alisa', textKey: 'Я тоже нервничаю, это нормально.' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Только не приходи с заготовленной речью.' },
+        { type: 'stats', changes: { success: 0, romance: 2, humor: 0 } },
+        { type: 'flags', set: { meetPark: true, honestWithAlisa: true } }
+      ],
+      d6_park_wait: [
+        { type: 'reaction', sender: 'alisa', textKey: 'Поняла. Тогда ждать и уговаривать не буду.' },
+        { type: 'flags', set: { skippedPark: true, choseCareful: true } }
+      ],
+      d6_park_secret: [
+        { type: 'reaction', sender: 'alisa', textKey: 'Нет, я не хочу превращать встречу в спецоперацию.' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Если нам приходится всё скрывать, это уже нехороший знак.' },
+        { type: 'stats', changes: { success: -1, romance: -4, humor: 0 } },
+        { type: 'flags', set: { skippedPark: true, choseRisk: true, pushedTooFast: true } }
       ]
-    },
-    {
-      type: 'branch',
-      onChoice: 'day6_choice',
-      branches: {
-        opt6_1: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Отлично' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Завтра в 17:00 у входа в парк' },
-          { type: 'stats', changes: { success: 5, romance: 8, humor: 0 } }
-        ],
-        opt6_2: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Я тоже нервничаю' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Но иногда стоит рискнуть' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Завтра в 17:00. Буду ждать' },
-          { type: 'stats', changes: { success: 0, romance: 12, humor: 0 } },
-          { type: 'flags', set: { earlyVulnerability: true } }
-        ],
-        opt6_3: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Ахах' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Я похожа на героиню книги?' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Спасибо, наверное' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Жду завтра в 17:00' },
-          { type: 'stats', changes: { success: 3, romance: 5, humor: 10 } }
-        ],
-        opt6_4: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Кое-что важное?' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Теперь я весь вечер буду гадать' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Скажешь завтра лично' },
-          { type: 'reaction', sender: 'alisa', textKey: 'В 17:00 я на месте' },
-          { type: 'stats', changes: { success: 0, romance: 10, humor: 0 }, note: 'Ты дал понять, что готовишь важный разговор. Открыт особый путь к финалу.' },
-          { type: 'flags', set: { earlyConfession: true } }
-        ]
-      }
-    },
-    {
-      type: 'message',
-      sender: 'alisa',
-      textKey: 'Если что'
-    },
-    {
-      type: 'message',
-      sender: 'alisa',
-      textKey: 'Я весь этот год работаю над тем'
-    },
-    {
-      type: 'message',
-      sender: 'alisa',
-      textKey: 'Чтобы никого не подпускать слишком близко'
-    },
-    {
-      type: 'message',
-      sender: 'alisa',
-      textKey: 'А с тобой это как-то само получилось'
-    },
-    {
-      type: 'message',
-      sender: 'alisa',
-      textKey: 'Не знаю, что с этим делать'
-    },
-    {
-      type: 'choice',
-      id: 'day6_choice2',
-      options: [
-        { id: 'opt6b_1', labelKey: 'Может, и не надо ничего с этим делать' },
-        { id: 'opt6b_2', labelKey: 'Я рад, что ты меня впустила. Серьёзно' },
-        { id: 'opt6b_3', labelKey: 'Звучит как диагноз 😄 Но ладно, буду принимать тебя такой' }
-      ]
-    },
-    {
-      type: 'branch',
-      onChoice: 'day6_choice2',
-      branches: {
-        opt6b_1: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Может, и правда' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Посмотрим, что будет завтра' },
-          { type: 'stats', changes: { success: 0, romance: 8, humor: 0 } }
-        ],
-        opt6b_2: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Спасибо' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Я редко это говорю' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Но мне с тобой спокойно' },
-          { type: 'stats', changes: { success: 0, romance: 12, humor: 0 } },
-          { type: 'flags', set: { deepTrust: true } }
-        ],
-        opt6b_3: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Диагноз «влюбилась в своего ученика»' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Ужасно, знаю' },
-          { type: 'stats', changes: { success: 0, romance: 10, humor: 10 } }
-        ]
-      }
-    },
+    } },
+    { type: 'if', check: { hasFlag: 'meetPark' }, then: [
+      { type: 'messages', list: [
+        { sender: 'alisa', textKey: 'И ещё одно.' },
+        { sender: 'alisa', textKey: 'Только не приходи с готовым финалом в голове.' },
+        { sender: 'alisa', textKey: 'Приходи, только если правда хочешь всё это обсудить.' }
+      ] }
+    ] },
     { type: 'achievement' },
     { type: 'goto', day: 'day7' }
   ]

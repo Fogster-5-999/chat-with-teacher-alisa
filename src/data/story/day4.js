@@ -1,126 +1,83 @@
-/**
- * Day 4 — deeper conversation after Saturday.
- * Rewritten: shorter, less literary, more natural.
- */
-
+/** Day 4 — closeness is earned through restraint, not a confession on command. */
 export default {
   start: { afterDay: 'day3' },
   steps: [
-    {
-      type: 'if',
-      check: { hasFlag: 'cameToCafe' },
-      then: [
-        { type: 'message', sender: 'alisa', textKey: 'Привет' },
-        { type: 'message', sender: 'alisa', textKey: 'Ты вчера нормально добрался?' },
-        { type: 'message', sender: 'alisa', textKey: 'Если честно, не была уверена' },
-        { type: 'message', sender: 'alisa', textKey: 'Что ты правда придёшь' }
+    { type: 'if', check: { hasFlag: 'cafeMet' }, then: [
+      { type: 'messages', list: [
+        { sender: 'alisa', textKey: 'Привет.' },
+        { sender: 'alisa', textKey: 'Я всё ещё думаю о субботе.' },
+        { sender: 'alisa', textKey: 'Спасибо, что не сделал всё неловким.' }
+      ] }
+    ], else: [
+      { type: 'messages', list: [
+        { sender: 'alisa', textKey: 'Привет.' },
+        { sender: 'alisa', textKey: 'Как твоя тема, я сегодня проверяю ваши работы.' }
+      ] }
+    ] },
+    { type: 'choice', id: 'day4_tone_choice', options: [
+      { id: 'd4_listen', labelKey: 'd4_listen' },
+      { id: 'd4_study', labelKey: 'd4_study' },
+      { id: 'd4_joke', labelKey: 'd4_joke' },
+      { id: 'd4_confess_early', labelKey: 'd4_confess_early', hidden: true }
+    ] },
+    { type: 'branch', onChoice: 'day4_tone_choice', branches: {
+      d4_listen: [
+        { type: 'reaction', sender: 'alisa', textKey: 'Мне приятно. Только без громких слов, ладно?' },
+        { type: 'stats', changes: { success: 0, romance: 2, humor: 0 } },
+        { type: 'flags', set: { trustBuilt: true } }
       ],
-      else: [
-        { type: 'message', sender: 'alisa', textKey: 'Привет)' },
-        { type: 'message', sender: 'alisa', textKey: 'Всё ещё думаю про вчерашний разговор' }
+      d4_study: [
+        { type: 'reaction', sender: 'alisa', textKey: 'Вот это мне нравится.' },
+        { type: 'stats', changes: { success: 3, romance: 1, humor: 0 } },
+        { type: 'flags', set: { studyFocused: true } }
+      ],
+      d4_joke: [
+        { type: 'reaction', sender: 'alisa', textKey: 'Хоть посмеялась.' },
+        { type: 'stats', changes: { success: 0, romance: 0, humor: 3 } }
+      ],
+      d4_confess_early: [
+        { type: 'reaction', sender: 'alisa', textKey: 'Мне пока рано такое слышать.' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Я просто не знаю, что на это ответить.' },
+        { type: 'stats', changes: { success: 0, romance: -3, humor: 0 } },
+        { type: 'flags', set: { pushedTooFast: true } }
       ]
-    },
-    {
-      type: 'messages',
-      list: [
-        { sender: 'alisa', textKey: 'Я редко вот так общаюсь с учениками' },
-        { sender: 'alisa', textKey: 'Обычно всё сводится к урокам и дедлайнам' },
-        { sender: 'alisa', textKey: 'С тобой почему-то иначе' }
+    } },
+    { type: 'messages', list: [
+      { sender: 'alisa', textKey: 'Завтра у меня разговор с руководителем.' },
+      { sender: 'alisa', textKey: 'Не про тебя. Просто по работе.' },
+      { sender: 'alisa', textKey: 'Но почему-то я нервничаю сильнее обычного.' }
+    ] },
+    { type: 'choice', id: 'day4_support_choice', options: [
+      { id: 'd4_support_space', labelKey: 'd4_support_space' },
+      { id: 'd4_support_transfer', labelKey: 'd4_support_transfer' },
+      { id: 'd4_support_joke', labelKey: 'd4_support_joke' },
+      { id: 'd4_support_pressure', labelKey: 'd4_support_pressure', hidden: true }
+    ] },
+    { type: 'branch', onChoice: 'day4_support_choice', branches: {
+      d4_support_space: [
+        { type: 'reaction', sender: 'alisa', textKey: 'Только не торопи меня сейчас, ладно?' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Извини. Я сегодня совсем вымоталась.' },
+        { type: 'stats', changes: { success: 0, romance: 2, humor: 0 } },
+        { type: 'flags', set: { respectsBoundary: true } }
+      ],
+      d4_support_transfer: [
+        { type: 'reaction', sender: 'alisa', textKey: 'Ты правда готов перевестись?' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Не знаю, к чему это приведёт. Но спасибо.' },
+        { type: 'stats', changes: { success: 3, romance: 2, humor: 0 } },
+        { type: 'flags', set: { openToTransfer: true } }
+      ],
+      d4_support_joke: [
+        { type: 'reaction', sender: 'alisa', textKey: 'Я улыбнулась. Но завтра всё равно будет тяжело.' },
+        { type: 'stats', changes: { success: 0, romance: 0, humor: 2 } },
+      ],
+      d4_support_pressure: [
+        { type: 'reaction', sender: 'alisa', textKey: 'Не надо решать за меня, пожалуйста.' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Если что, я сама скажу.' },
+        { type: 'stats', changes: { success: 0, romance: -3, humor: 0 } },
+        { type: 'flags', set: { pushedTooFast: true } }
       ]
-    },
-    {
-      type: 'choice',
-      id: 'day4_choice',
-      options: [
-        { id: 'opt4_1', labelKey: 'Мне тоже было легко. спасибо' },
-        { id: 'opt4_2', labelKey: 'Я весь день думал про наш разговор' },
-        { id: 'opt4_3', labelKey: 'Наверное, потому что я обаятельный. шучу' },
-        { id: 'opt4_4', labelKey: 'Я тоже думал про тебя. всё, сказал', hidden: true }
-      ]
-    },
-    {
-      type: 'branch',
-      onChoice: 'day4_choice',
-      branches: {
-        opt4_1: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Прям тепло стало' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Иногда устаю быть только «училкой»' },
-          { type: 'reaction', sender: 'alisa', textKey: 'С тобой могу быть просто собой' },
-          { type: 'stats', changes: { success: 6, romance: 8, humor: 0 } }
-        ],
-        opt4_2: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Ого' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Я тоже, если честно' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Весь вечер прокручивала наш разговор' },
-          { type: 'stats', changes: { success: 2, romance: 12, humor: 0 } }
-        ],
-        opt4_3: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Обаятельный — громко сказано' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Но забавный — да' },
-          { type: 'stats', changes: { success: 3, romance: 5, humor: 8 } }
-        ],
-        opt4_4: [
-          { type: 'reaction', sender: 'alisa', textKey: 'С утра сразу такие заявления' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Я, если честно, тоже' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Просто первой говорить не хотела' },
-          { type: 'stats', changes: { success: 2, romance: 12, humor: 0 } }
-        ]
-      }
-    },
-    {
-      type: 'messages',
-      list: [
-        { sender: 'alisa', textKey: 'Если честно' },
-        { sender: 'alisa', textKey: 'Я подумываю сменить работу' },
-        { sender: 'alisa', textKey: 'Устала немного' },
-        { sender: 'alisa', textKey: 'Не от учеников' },
-        { sender: 'alisa', textKey: 'От всей этой... системы' },
-        { sender: 'alisa', textKey: 'Извини, не хотела грузить' }
-      ]
-    },
-    {
-      type: 'choice',
-      id: 'day4_choice2',
-      options: [
-        { id: 'opt4b_1', labelKey: 'Не извиняйся. мне интересно тебя слушать' },
-        { id: 'opt4b_2', labelKey: 'Я понимаю. у меня похожая история' },
-        { id: 'opt4b_3', labelKey: 'Зато у тебя есть я — твой лучший ученик 😄' },
-        { id: 'opt4b_4', labelKey: 'Если решишь уйти — я рядом. и это не про учёбу', hidden: true }
-      ]
-    },
-    {
-      type: 'branch',
-      onChoice: 'day4_choice2',
-      branches: {
-        opt4b_1: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Спасибо, что не свёл к шутке' },
-          { type: 'stats', changes: { success: 0, romance: 10, humor: 0 } },
-          { type: 'flags', set: { caringResponse: true } }
-        ],
-        opt4b_2: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Правда? расскажешь как-нибудь' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Приятно, что я тут не одна раскрываюсь' },
-          { type: 'stats', changes: { success: 0, romance: 9, humor: 0 } },
-          { type: 'flags', set: { reciprocal: true } }
-        ],
-        opt4b_3: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Ахах' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Хоть кто-то ценит' },
-          { type: 'stats', changes: { success: 2, romance: 5, humor: 7 } },
-          { type: 'flags', set: { humorRelief: true } }
-        ],
-        opt4b_4: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Ты серьёзно?' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Мы ведь даже не до конца знаем друг друга' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Но почему-то я тебе верю' },
-          { type: 'stats', changes: { success: 0, romance: 10, humor: 0 } },
-          { type: 'flags', set: { caringResponse: true } }
-        ]
-      }
-    },
-    { type: 'message', sender: 'alisa', textKey: 'Ладно, спать пора' },
-    { type: 'message', sender: 'alisa', textKey: 'Завтра понедельник' },
-    { type: 'message', sender: 'alisa', textKey: 'С утра проверка от начальства' },
+    } },
+    { type: 'message', sender: 'alisa', textKey: 'Ладно, пойду готовиться. Спокойной ночи.' },
     { type: 'achievement' },
     { type: 'goto', day: 'day5_1' }
   ]

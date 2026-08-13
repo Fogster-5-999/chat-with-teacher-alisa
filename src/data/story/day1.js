@@ -1,142 +1,86 @@
-/**
- * Day 1 — Monday evening. Alisa pings about a missed test and empty homework.
- * Rewritten: shorter messages, less literary, more messenger rhythm.
- */
-
+/** Day 1 — first contact: study first, boundaries stated plainly. */
 export default {
   start: { hour: 20, minute: 0 },
   steps: [
-    {
-      type: 'messages',
-      list: [
-        { sender: 'alisa', textKey: 'Привет) не спишь?' },
-        { sender: 'alisa', textKey: 'Открыла твой тест' },
-        { sender: 'alisa', textKey: 'Результат так себе' },
-        { sender: 'alisa', textKey: 'И домашка пустая. что случилось?' }
+    { type: 'messages', list: [
+      { sender: 'alisa', textKey: 'Привет, есть минутка?' },
+      { sender: 'alisa', textKey: 'Проверила тест у вашей группы.' },
+      { sender: 'alisa', textKey: 'У тебя слабовато вышло.' },
+      { sender: 'alisa', textKey: 'И домашка пустая, что случилось?' }
+    ] },
+    { type: 'choice', id: 'day1_response', options: [
+      { id: 'd1_apologize', labelKey: 'd1_apologize' },
+      { id: 'd1_ask_help', labelKey: 'd1_ask_help' },
+      { id: 'd1_joke', labelKey: 'd1_joke' },
+      { id: 'd1_flirt_early', labelKey: 'd1_flirt_early', hidden: true }
+    ] },
+    { type: 'branch', onChoice: 'day1_response', branches: {
+      d1_apologize: [
+        { type: 'reaction', sender: 'alisa', textKey: 'Ок, спасибо, что сказал прямо.' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Давай без подвигов. Пересдача и пять коротких предложений.' },
+        { type: 'stats', changes: { success: 5, romance: 0, humor: 0 } },
+        { type: 'flags', set: { studyFocused: true, honestWithAlisa: true } }
+      ],
+      d1_ask_help: [
+        { type: 'reaction', sender: 'alisa', textKey: 'Объясню. А дальше уже сам.' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Скину правило и пару примеров.' },
+        { type: 'stats', changes: { success: 4, romance: 0, humor: 0 } },
+        { type: 'flags', set: { studyFocused: true } }
+      ],
+      d1_joke: [
+        { type: 'reaction', sender: 'alisa', textKey: 'Ладно, засчитано.' },
+        { type: 'reaction', sender: 'alisa', textKey: 'А теперь серьёзно. Когда сможешь сдать?' },
+        { type: 'stats', changes: { success: 1, romance: 0, humor: 3 } },
+      ],
+      d1_flirt_early: [
+        { type: 'reaction', sender: 'alisa', textKey: 'Мы только начали общаться.' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Давай пока не будем смешивать это с домашкой.' },
+        { type: 'stats', changes: { success: -1, romance: -4, humor: 0 } },
+        { type: 'flags', set: { pushedTooFast: true } }
       ]
-    },
-    {
-      type: 'choice',
-      id: 'day1_choice',
-      options: [
-        { id: 'opt1_1', labelKey: 'Простите, закрутился. можно пересдать?' },
-        { id: 'opt1_2', labelKey: 'Если честно, просто всё забыл) объясните ещё раз?' },
-        { id: 'opt1_3', labelKey: 'Да, был косяк. признаю. больше так не буду' },
-        { id: 'opt1_4', labelKey: 'Стыдно, что подвёл. хочу исправиться', hidden: true }
+    } },
+    { type: 'messages', list: [
+      { sender: 'alisa', textKey: 'И ещё момент.' },
+      { sender: 'alisa', textKey: 'Ты взрослый, я понимаю.' },
+      { sender: 'alisa', textKey: 'Но пока ты учишься у меня, давай без путаницы.' }
+    ] },
+    { type: 'choice', id: 'day1_schedule', options: [
+      { id: 'd1_schedule_calm', labelKey: 'd1_schedule_calm' },
+      { id: 'd1_schedule_self', labelKey: 'd1_schedule_self' },
+      { id: 'd1_schedule_now', labelKey: 'd1_schedule_now' },
+      { id: 'd1_schedule_video', labelKey: 'd1_schedule_video', hidden: true }
+    ] },
+    { type: 'branch', onChoice: 'day1_schedule', branches: {
+      d1_schedule_calm: [
+        { type: 'reaction', sender: 'alisa', textKey: 'Спасибо, завтра после шести смогу.' },
+        { type: 'stats', changes: { success: 2, romance: 1, humor: 0 } },
+        { type: 'flags', set: { respectsTime: true, respectsBoundary: true } }
+      ],
+      d1_schedule_self: [
+        { type: 'reaction', sender: 'alisa', textKey: 'Договорились, пришли, когда будет готово.' },
+        { type: 'stats', changes: { success: 3, romance: 0, humor: 0 } },
+        { type: 'flags', set: { selfStudy: true, respectsBoundary: true } }
+      ],
+      d1_schedule_now: [
+        { type: 'reaction', sender: 'alisa', textKey: 'Сегодня уже не получится.' },
+        { type: 'reaction', sender: 'alisa', textKey: 'У меня уже рабочий день закончился.' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Напиши завтра, в рабочее время.' },
+        { type: 'stats', changes: { success: 0, romance: -2, humor: 0 } },
+        { type: 'flags', set: { pushySchedule: true } }
+      ],
+      d1_schedule_video: [
+        { type: 'reaction', sender: 'alisa', textKey: 'Нет, видео точно не нужно.' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Это просто разбор. Давай без лишнего.' },
+        { type: 'stats', changes: { success: 0, romance: -4, humor: 0 } },
+        { type: 'flags', set: { pushedTooFast: true, pushySchedule: true } }
       ]
-    },
-    {
-      type: 'branch',
-      onChoice: 'day1_choice',
-      branches: {
-        opt1_1: [
-          { type: 'messages', list: [
-            { sender: 'alisa', textKey: 'Ладно, бывает' },
-            { sender: 'alisa', textKey: 'Скину правило и пример' },
-            { sender: 'alisa', textKey: 'Сделаешь 5 предложений' },
-            { sender: 'alisa', textKey: 'Успеешь к завтрашнему вечеру?' }
-          ] },
-          { type: 'stats', changes: { success: 8, romance: 0, humor: 0 } },
-          { type: 'flags', set: { studiedHard: true, allHonest: true } }
-        ],
-        opt1_2: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Память как решето' },
-          { type: 'reaction', sender: 'alisa', textKey: 'А обаяние работает?' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Ладно, объясню ещё раз' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Но это последний бесплатный повтор 😏' },
-          { type: 'stats', changes: { success: 2, romance: 4, humor: 0 } },
-          { type: 'flags', set: { flirtWithTeacher: true } }
-        ],
-        opt1_3: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Хоть честно' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Но таблицу прогресса это не исправит' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Прощаю. задание завтра жду' },
-          { type: 'stats', changes: { success: -2, romance: 0, humor: 6 } },
-          { type: 'flags', set: { joked: true } }
-        ],
-        opt1_4: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Лучший ответ за сегодня' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Пришлю задание вечером. жду результат' },
-          { type: 'stats', changes: { success: 6, romance: 3, humor: 0 } },
-          { type: 'flags', set: { honestEffort: true } }
-        ]
-      }
-    },
-    {
-      type: 'messages',
-      list: [
-        { sender: 'alisa', textKey: 'Кстати, завтра днём есть окно' },
-        { sender: 'alisa', textKey: 'Можем созвониться' },
-        { sender: 'alisa', textKey: 'Или как тебе удобнее?' }
-      ]
-    },
-    {
-      type: 'choice',
-      id: 'day1_choice2',
-      options: [
-        { id: 'opt1b_1', labelKey: 'Давай как тебе удобно' },
-        { id: 'opt1b_2', labelKey: 'А сейчас можешь? хочу быстрее закрыть' },
-        { id: 'opt1b_3', labelKey: 'Распишу время сам в приложении' },
-        { id: 'opt1b_4', labelKey: 'А можно по видео? хочу не только голос', hidden: true }
-      ]
-    },
-    {
-      type: 'branch',
-      onChoice: 'day1_choice2',
-      branches: {
-        opt1b_1: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Приятно слышать' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Обычно все тянут до последнего' },
-          { type: 'stats', changes: { success: 3, romance: 0, humor: 0 } },
-          { type: 'flags', set: { respectsTime: true } }
-        ],
-        opt1b_2: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Шустрый)' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Не сейчас. у меня тоже есть жизнь' },
-          { type: 'reaction', sender: 'alisa', textKey: 'После работы' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Но напор нравится' },
-          { type: 'stats', changes: { success: -1, romance: 3, humor: 2 } },
-          { type: 'flags', set: { pushySchedule: true } }
-        ],
-        opt1b_3: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Самостоятельный' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Уважаю' },
-          { type: 'stats', changes: { success: 3, romance: 0, humor: 0 } },
-          { type: 'flags', set: { selfStudy: true } }
-        ],
-        opt1b_4: [
-          { type: 'reaction', sender: 'alisa', textKey: 'По видео?' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Ну смотри... я не против' },
-          { type: 'reaction', sender: 'alisa', textKey: 'Только не вздумай смотреть на меня вместо урока' },
-          { type: 'stats', changes: { success: 2, romance: 6, humor: 0 } },
-          { type: 'flags', set: { wantsVideo: true } }
-        ]
-      }
-    },
-    {
-      type: 'message',
-      sender: 'alisa',
-      textKey: 'Ладно, я спать. длинный день'
-    },
-    {
-      type: 'message',
-      sender: 'alisa',
-      textKey: 'Кстати... у нас в школе не особо любят'
-    },
-    {
-      type: 'message',
-      sender: 'alisa',
-      textKey: 'Когда препод с учеником слишком сближается)'
-    },
-    {
-      type: 'message',
-      sender: 'alisa',
-      textKey: 'Но это я так, к слову 👀'
-    },
+    } },
+    { type: 'messages', list: [
+      { sender: 'alisa', textKey: 'Скину тему и до завтра пропаду.' },
+      { sender: 'alisa', textKey: 'Удачи. И не откладывай снова.' }
+    ] },
     { type: 'flags', set: { day1Completed: true } },
     { type: 'achievement' },
-    { type: 'if', check: { hasFlag: 'flirtWithTeacher' }, then: [{ type: 'goto', day: 'day2_flirt' }] },
-    { type: 'if', check: { hasFlag: 'studiedHard' }, then: [{ type: 'goto', day: 'day2_study' }] },
     { type: 'goto', day: 'day2' }
   ]
 };
