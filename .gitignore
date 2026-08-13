@@ -2,5 +2,6 @@ ARCHITECTURE.md
 .openforge/
 opencode.jsonc
 test story/
+src/dev/
 voice.txt
 shot.html

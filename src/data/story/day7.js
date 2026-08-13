@@ -12,8 +12,8 @@ export default {
     ] },
     { type: 'if', check: { hasFlag: 'skippedPark' }, then: [
       { type: 'messages', list: [
-        { sender: 'alisa', textKey: 'Я поняла, что ты не придёшь.' },
-        { sender: 'alisa', textKey: 'Спасибо, что хотя бы не заставил меня ждать дольше.' }
+        { sender: 'alisa', textKey: 'Я поняла, что ты не придёшь' },
+        { sender: 'alisa', textKey: 'Спасибо, что хотя бы не заставил меня ждать дольше' }
       ] },
       { type: 'endGame', messages: [
         { sender: 'system', textKey: '🌫️ Финал: недосказанность' },
@@ -23,9 +23,9 @@ export default {
       { type: 'goto', label: 'end' }
     ] },
     { type: 'messages', list: [
-      { sender: 'alisa', textKey: 'Привет, я уже у пруда.' },
-      { sender: 'alisa', textKey: 'Немного холодно.' },
-      { sender: 'alisa', textKey: 'И я вообще не знаю, чем всё закончится.' }
+      { sender: 'alisa', textKey: 'Привет, я уже у пруда' },
+      { sender: 'alisa', textKey: 'Немного холодно' },
+      { sender: 'alisa', textKey: 'И я вообще не знаю, чем всё закончится' }
     ] },
     { type: 'voice', voiceId: 'day_7' },
     { type: 'message', sender: 'system', textKey: '— Дальше — встреча в парке и разговор без телефонов.' },
@@ -37,19 +37,19 @@ export default {
     ] },
     { type: 'branch', onChoice: 'day7_final_choice', branches: {
       d7_commit: [
-        { type: 'reaction', sender: 'alisa', textKey: 'Я услышала.' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Я услышала' },
         { type: 'flags', set: { finalCommit: true } }
       ],
       d7_wait: [
-        { type: 'reaction', sender: 'alisa', textKey: 'Мне тоже так спокойнее.' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Мне тоже так спокойнее' },
         { type: 'flags', set: { finalWait: true } }
       ],
       d7_open: [
-        { type: 'reaction', sender: 'alisa', textKey: 'Давай без громких слов. Просто честно.' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Давай без громких слов. Просто честно' },
         { type: 'flags', set: { finalOpen: true } }
       ],
       d7_stop: [
-        { type: 'reaction', sender: 'alisa', textKey: 'Хорошо. Мне больно, но я понимаю.' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Хорошо. Мне больно, но я понимаю' },
         { type: 'flags', set: { finalStop: true } }
       ]
     } },
