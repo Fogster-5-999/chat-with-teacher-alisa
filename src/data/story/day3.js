@@ -3,8 +3,9 @@ export default {
   start: { afterDay: 'day2' },
   steps: [
     { type: 'messages', list: [
-      { sender: 'alisa', textKey: 'Здравствуйте, я уже в кофейне' },
-      { sender: 'alisa', textKey: 'С ноутом, конспектами и ужасным американо' }
+      { sender: 'alisa', textKey: 'Добрый день' },
+      { sender: 'alisa', textKey: 'Если планы не поменялись, могу час вам выделить' },
+      { sender: 'alisa', textKey: 'Вы как подойдете, я уже по идее освобожусь' }
     ] },
     { type: 'if', check: { hasFlag: 'warmthShared' }, then: [
       { type: 'message', sender: 'alisa', textKey: 'Кстати, после вашего сообщения я всё-таки оставила то фото' }
@@ -70,8 +71,9 @@ export default {
       } }
     ] },
     { type: 'if', check: { hasFlag: 'cafeMet' }, then: [
-      { type: 'message', sender: 'system', textKey: '— Дальше — без экрана. Кофе, конспекты и спокойный разговор.' },
-      { type: 'message', sender: 'alisa', textKey: 'Я уже дома' },
+      { type: 'message', sender: 'system', textKey: '— Дальше — без экрана.' },
+      { type: 'message', sender: 'system', textKey: 'Она черкает ручкой по полям тетради, разбирает твои ошибки — и вдруг смеётся над собственной фразой «ну что за ученик мне достался».' },
+      { type: 'message', sender: 'system', textKey: 'К концу часа уже кажется, что говорили не про английский, а про всё подряд. И не хочется уходить.' },
       { type: 'message', sender: 'alisa', textKey: 'Вы нормально добрались?' },
       { type: 'message', sender: 'alisa', textKey: 'Спасибо, что пришли. Вы стараетесь, это видно' },
       { type: 'choice', id: 'day3_after_cafe', options: [
@@ -93,18 +95,20 @@ export default {
           { type: 'flags', set: { trustBuilt: true } }
         ],
         d3_after_personal: [
-          { type: 'reaction', sender: 'alisa', textKey: 'Это зависит от вопроса. Давайте в личку, но не сейчас, поздно' },
+          { type: 'reaction', sender: 'alisa', textKey: 'Это зависит от вопроса. Давайте не сейчас — поздно уже. Напишите завтра днём' },
           { type: 'stats', changes: { success: 0, romance: 0, humor: 0 } },
-          { type: 'flags', set: { warmthShared: true } }
+          { type: 'flags', set: { warmthShared: true, askedPersonal: true } }
         ],
         d3_after_flirt: [
           { type: 'reaction', sender: 'alisa', textKey: 'Не сводите всё к намёкам, хорошо?' },
           { type: 'reaction', sender: 'alisa', textKey: 'Вот сейчас уже перебор' },
           { type: 'stats', changes: { success: 0, romance: -4, humor: 0 } },
-          { type: 'flags', set: { pushedTooFast: true } }
+          { type: 'flags', set: { pushedTooFast: true, afterCafeFlirt: true } }
         ]
       } },
-      { type: 'voice', voiceId: 'day_3' }
+      { type: 'if', check: { not: { hasFlag: 'afterCafeFlirt' } }, then: [
+        { type: 'voice', voiceId: 'day_3' }
+      ] }
     ] },
     { type: 'if', check: { not: { hasFlag: 'cafeMet' } }, then: [
       { type: 'message', sender: 'alisa', textKey: 'Я ещё пару часов тут с работами, глаза уже квадратные. Потом напишу, как всё сдам' }

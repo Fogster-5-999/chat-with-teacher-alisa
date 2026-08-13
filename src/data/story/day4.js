@@ -7,6 +7,12 @@ export default {
         { sender: 'alisa', textKey: 'Привет' },
         { sender: 'alisa', textKey: 'Суббота всё ещё в голове' },
         { sender: 'alisa', textKey: 'И спасибо, что без неловкостей' }
+      ] },
+      { type: 'if', check: { hasFlag: 'askedPersonal' }, then: [
+        { type: 'messages', list: [
+          { sender: 'alisa', textKey: 'И насчёт вашего вопроса…' },
+          { sender: 'alisa', textKey: 'Я ещё думаю, как ответить. Дайте день-два, ладно?' }
+        ] }
       ] }
     ], else: [
       { type: 'messages', list: [
@@ -78,11 +84,18 @@ export default {
       ]
     } },
     { type: 'if', check: { hasFlag: 'trustBuilt' }, then: [
-      { type: 'message', sender: 'alisa', textKey: 'Знаешь…' },
-      { type: 'message', sender: 'alisa', textKey: 'Давай перейдём на «ты»?' },
-            { type: 'message', sender: 'alisa', textKey: 'Мне так легче, когда я с тобой говорю' }
+      { type: 'messages', list: [
+        { sender: 'alisa', textKey: 'Знаешь…' },
+        { sender: 'alisa', textKey: 'Давай перейдём на «ты»?' },
+        { sender: 'alisa', textKey: 'Мне так легче, когда я с тобой говорю' }
+      ] }
+    ], else: [
+      { type: 'messages', list: [
+        { sender: 'alisa', textKey: 'Слушай…' },
+        { sender: 'alisa', textKey: 'Давай перейдём на «ты». Столько уже переписались — как-то странно на «вы».' }
+      ] }
     ] },
-    { type: 'message', sender: 'alisa', textKey: 'Ладно, пойду готовиться. Спокойной ночи' },
+    { type: 'message', sender: 'alisa', textKey: 'Ладно, пойду готовиться. До завтра' },
     { type: 'achievement' },
     { type: 'goto', day: 'day5_1' }
   ]

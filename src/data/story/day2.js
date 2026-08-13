@@ -4,7 +4,7 @@ export const day2 = {
   steps: [
     { type: 'messages', list: [
       { sender: 'alisa', textKey: 'Здравствуйте' },
-      { sender: 'alisa', textKey: 'Работу получила, ошибки есть(' }
+      { sender: 'alisa', textKey: 'Работу получила, есть ошибки(' }
     ] },
     { type: 'if', check: { hasFlag: 'pushedTooFast' }, then: [
       { type: 'message', sender: 'alisa', textKey: 'Давайте сегодня просто про учёбу, ладно?' }
@@ -29,7 +29,7 @@ export const day2 = {
     ], achievementId: 'day2_minitest_passed', successPoints: 3, successMessage: 'Неплохо, +3 к успеваемости', failMessage: 'Не страшно, тему ещё раз закрепим' },
     { type: 'messages', list: [
       { sender: 'alisa', textKey: 'Ладно, с учёбой пока всё' },
-      { sender: 'alisa', textKey: 'Я новое фото для страницы кафедры поставила' },
+      { sender: 'alisa', textKey: 'Я новое фото для страницы кафедры сделала' },
       { sender: 'alisa', textKey: 'Сама не могу решить, нормальное оно или нет. Глянете?' }
     ] },
     { type: 'photo', url: 'res/chat1.png', blurred: true },
@@ -41,7 +41,8 @@ export const day2 = {
     ] },
     { type: 'branch', onChoice: 'day2_photo_response', branches: {
       d2_photo_kind: [
-        { type: 'reaction', sender: 'alisa', textKey: 'Спасибо. Теперь хоть не буду переделывать его в сотый раз' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Спасибо' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Хоть не буду переделывать его в сотый раз)' },
         { type: 'stats', changes: { success: 0, romance: 2, humor: 0 } },
         { type: 'flags', set: { warmthShared: true } }
       ],
@@ -52,7 +53,7 @@ export const day2 = {
       ],
       d2_photo_joke: [
         { type: 'reaction', sender: 'alisa', textKey: 'Всё, после такого вам фото больше не показываю)' },
-        { type: 'reaction', sender: 'alisa', textKey: 'Ахаха, надеюсь ты поверил' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Ахаха, надеюсь вы поверили' },
         { type: 'stats', changes: { success: 0, romance: 0, humor: 3 } }
       ],
       d2_photo_flirt: [
@@ -64,9 +65,10 @@ export const day2 = {
     } },
     { type: 'messages', list: [
       { sender: 'alisa', textKey: 'А сейчас о английском' },
-      { sender: 'alisa', textKey: 'Я в кофейне на Ленина, готовлю материалы' },
+      { sender: 'alisa', textKey: 'Завтра днём буду в кофейне на Ленина, готовить материалы для пар' },
       { sender: 'alisa', textKey: 'Можете подойти, разберём ошибки живьём' },
-      { sender: 'alisa', textKey: 'Но это просто консультация. Буду там еще пару часов' }
+            { sender: 'alisa', textKey: 'Я там обычно пару часиков сижу' },
+      { sender: 'alisa', textKey: 'Но это просто консультация.' }
     ] },
     { type: 'choice', id: 'day2_cafe_response', options: [
       { id: 'd2_cafe_study', labelKey: 'd2_cafe_study' },
@@ -76,7 +78,7 @@ export const day2 = {
     ] },
     { type: 'branch', onChoice: 'day2_cafe_response', branches: {
       d2_cafe_study: [
-        { type: 'reaction', sender: 'alisa', textKey: 'Тогда можете зайти на час. Позанимаемся' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Тогда можете заглянуть. Позанимаемся' },
         { type: 'stats', changes: { success: 3, romance: 1, humor: 0 } },
         { type: 'flags', set: { cafePlan: true, respectsBoundary: true } }
       ],
@@ -86,7 +88,7 @@ export const day2 = {
         { type: 'flags', set: { prefersDistance: true } }
       ],
       d2_cafe_joke: [
-        { type: 'reaction', sender: 'alisa', textKey: 'Кофе с вас. А остальное — по учёбе' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Кофе тогда с вас' },
         { type: 'stats', changes: { success: 1, romance: 0, humor: 3 } }
       ],
       d2_cafe_date: [

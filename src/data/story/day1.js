@@ -18,7 +18,7 @@ export default {
     { type: 'branch', onChoice: 'day1_response', branches: {
       d1_apologize: [
         { type: 'reaction', sender: 'alisa', textKey: 'Ок, спасибо, что сказали прямо' },
-        { type: 'reaction', sender: 'alisa', textKey: 'Завтра до 18:00 пришлёте переделанную работу на почту' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Хорошо. Жду переделанную работу' },
         { type: 'stats', changes: { success: 5, romance: 0, humor: 0 } },
         { type: 'flags', set: { studyFocused: true, honestWithAlisa: true } }
       ],
@@ -77,8 +77,8 @@ export default {
       ]
     } },
     { type: 'messages', list: [
-      { sender: 'alisa', textKey: 'Ты лучше повтори тему' },
-      { sender: 'alisa', textKey: 'Спокойной ночи' }
+      { sender: 'alisa', textKey: 'Повторите тему' },
+      { sender: 'alisa', textKey: 'До завтра' }
     ] },
     { type: 'flags', set: { day1Completed: true } },
     { type: 'achievement' },

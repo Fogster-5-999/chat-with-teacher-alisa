@@ -33,13 +33,12 @@ export default {
     { type: 'if', check: { and: [{ or: [{ hasFlag: 'pushedTooFast' }, { hasFlag: 'actedWithoutConsent' }, { hasFlag: 'liedToManager' }] }, { not: { hasFlag: 'finalStopPath' } }] }, then: [
       { type: 'messages', list: [
         { sender: 'alisa', textKey: 'После последних ситуаций я пока немного на нервах' },
-        { sender: 'alisa', textKey: 'Я приду, когда сама буду готова' }
+        { sender: 'alisa', textKey: 'Но я приду. Только не торопи меня' }
       ] }
     ] },
     { type: 'messages', list: [
       { sender: 'alisa', textKey: 'Завтра буду в парке у пруда' },
-      { sender: 'alisa', textKey: 'Без уроков. Просто поговорим' },
-      { sender: 'alisa', textKey: 'Если хочешь, просто поговорим' }
+      { sender: 'alisa', textKey: 'Никаких уроков. Только прогулка' }
     ] },
     { type: 'photo', url: 'res/chat2.png', blurred: true },
     { type: 'voice', voiceId: 'day_6' },

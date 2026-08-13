@@ -23,12 +23,21 @@ export default {
       { type: 'goto', label: 'end' }
     ] },
     { type: 'messages', list: [
-      { sender: 'alisa', textKey: 'Привет, я уже у пруда' },
-      { sender: 'alisa', textKey: 'Немного холодно' },
+      { sender: 'alisa', textKey: 'Привет' },
+      { sender: 'alisa', textKey: 'Я не знаю, как начать этот разговор' },
       { sender: 'alisa', textKey: 'И я вообще не знаю, чем всё закончится' }
     ] },
     { type: 'voice', voiceId: 'day_7' },
-    { type: 'message', sender: 'system', textKey: '— Дальше — встреча в парке и разговор без телефонов.' },
+    { type: 'message', sender: 'system', textKey: '— Дальше — парк и разговор без телефонов.' },
+    { type: 'if', check: { hasFlag: 'choseClean' }, then: [
+      { type: 'message', sender: 'system', textKey: 'Перевод уже оформлен — между вами больше нет уроков. Только этот разговор.' }
+    ] },
+    { type: 'if', check: { and: [{ hasFlag: 'choseRisk' }, { not: { hasFlag: 'choseClean' } }] }, then: [
+      { type: 'message', sender: 'system', textKey: 'За её спиной всё ещё гудят разговоры. Она всё равно пришла.' }
+    ] },
+    { type: 'message', sender: 'system', textKey: 'Ветер с пруда, на скамейке между вами полтора места. Она молчит ровно столько, чтобы ты успел передумать.' },
+    { type: 'message', sender: 'system', textKey: 'Потом тихо: «Ну? Я пришла не для того, чтобы мы снова ушли в телефоны. Скажи уже».' },
+    { type: 'message', sender: 'system', textKey: 'И оказывается, самое страшное — не молчать в голове, а ответить вслух.' },
     { type: 'choice', id: 'day7_final_choice', options: [
       { id: 'd7_commit', labelKey: 'd7_commit' },
       { id: 'd7_wait', labelKey: 'd7_wait' },
@@ -105,9 +114,14 @@ export default {
       { type: 'goto', label: 'end' }
     ] },
     { type: 'if', check: { always: true }, then: [
+      { type: 'messages', list: [
+        { sender: 'alisa', textKey: 'Спасибо, что пришёл. И что был честен — даже когда было неудобно.' },
+        { sender: 'alisa', textKey: 'Я не могу сейчас ответить тебе так, как ты хочешь. Не потому что не хочу — просто пока не готова.' },
+        { sender: 'alisa', textKey: 'Может, однажды мы вернёмся к этому разговору. А пока — береги себя.' }
+      ] },
       { type: 'endGame', messages: [
         { sender: 'system', textKey: '🌫️ Финал: честная неопределённость' },
-        { sender: 'system', textKey: 'Разговор состоялся, но готового ответа не дал. Вы разошлись с пониманием, что одной симпатии оказалось мало.' },
+        { sender: 'system', textKey: 'Разговор состоялся, но готового ответа он не дал. Вы разошлись — с пониманием, что дверь осталась приоткрытой.' },
         { sender: 'system', textKey: '📊 Итог: Успеваемость {{success}}, Романтика {{romance}}, Юмор {{humor}}' }
       ] },
       { type: 'goto', label: 'end' }

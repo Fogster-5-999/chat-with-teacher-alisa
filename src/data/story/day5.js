@@ -6,8 +6,7 @@ export const day5_1 = {
       { type: 'notification', id: 'friendMisha', name: 'Миша', textKey: 'ЧЕЕЛ, в чат кинули фото из кофейни, это ты с преподом?', icon: '👤' },
       { type: 'messages', list: [
         { sender: 'alisa', textKey: 'Слушай, у нас проблема' },
-        { sender: 'alisa', textKey: 'Кто-то выложил фото из кофейни' },
-        { sender: 'alisa', textKey: 'Руководитель уже спросила, что это было' }
+        { sender: 'alisa', textKey: 'Кто-то выложил фото из кофейни' }
       ] },
       { type: 'photo', url: 'res/chat3.png', blurred: true }
     ], else: [
@@ -29,12 +28,18 @@ export const day5_1 = {
     ] },
     { type: 'voice', voiceId: 'day_5_1' },
     { type: 'choice', id: 'day5_first_response', options: [
+      { id: 'd5_reassure', labelKey: 'd5_reassure' },
       { id: 'd5_truth', labelKey: 'd5_truth' },
       { id: 'd5_transfer', labelKey: 'd5_transfer' },
       { id: 'd5_lie', labelKey: 'd5_lie', hidden: true },
       { id: 'd5_take_over', labelKey: 'd5_take_over', hidden: true, cost: 2 }
     ] },
     { type: 'branch', onChoice: 'day5_first_response', branches: {
+      d5_reassure: [
+        { type: 'reaction', sender: 'alisa', textKey: 'Спасибо… правда. Это помогает' },
+        { type: 'stats', changes: { success: 0, romance: 2, humor: 0 } },
+        { type: 'flags', set: { reassuredHer: true } }
+      ],
       d5_truth: [
         { type: 'reaction', sender: 'alisa', textKey: 'Спасибо, что не предлагаешь врать' },
         { type: 'reaction', sender: 'alisa', textKey: 'Скажу как есть. Были занятия и ещё несколько личных разговоров' },
@@ -167,8 +172,8 @@ export const day5_3 = {
     ] },
     { type: 'if', check: { not: { hasFlag: 'choseDistance' } }, then: [
       { type: 'messages', list: [
-        { sender: 'alisa', textKey: 'Лежу и весь вечер об этом думаю' },
-        { sender: 'alisa', textKey: 'И вообще не понимаю, чего хочу' }
+        { sender: 'alisa', textKey: 'Слушай…' },
+        { sender: 'alisa', textKey: 'Не буду писать много. Просто скажу.' }
       ] },
       { type: 'voice', voiceId: 'day_5_3' },
       { type: 'choice', id: 'day5_commitment_choice', options: [
