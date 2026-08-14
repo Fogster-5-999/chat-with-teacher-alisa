@@ -209,13 +209,20 @@ body:not(.light-theme) .hero-title-main {
     font-weight: 600;
     cursor: pointer;
     font-family: var(--font-family);
-    transition: opacity 0.2s, transform 0.15s;
-    box-shadow: 0 4px 15px rgba(138, 43, 226, 0.3);
+    transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+    box-shadow:
+        0 8px 22px rgba(138, 43, 226, 0.28),
+        0 3px 8px rgba(255, 107, 157, 0.22),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
 .story-card-btn:hover {
-    opacity: 0.9;
+    opacity: 0.96;
     transform: scale(1.02);
+    box-shadow:
+        0 12px 28px rgba(138, 43, 226, 0.34),
+        0 4px 10px rgba(255, 107, 157, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.45);
 }
 
 .story-card-btn:active {
@@ -353,4 +360,93 @@ body:not(.light-theme) .hero-title-main {
     white-space: nowrap;
 }
 
+/* ====== LIGHT THEME: menu refinements ====== */
+body.light-theme .hero-title-main {
+    text-shadow: 0 1px 14px rgba(255, 255, 255, 0.6), 0 0 30px rgba(255, 255, 255, 0.25);
+}
 
+body.light-theme .hero-title-sub {
+    text-shadow: 0 1px 10px rgba(255, 255, 255, 0.6);
+}
+
+body.light-theme .top-lang-btn:hover {
+    background: rgba(35, 45, 70, 0.08);
+    border-color: rgba(201, 64, 106, 0.35);
+    color: #c9406a;
+}
+
+body.light-theme .menu-tab-btn:hover {
+    color: #c9406a;
+}
+
+body.light-theme .menu-tab-btn:hover svg {
+    filter: drop-shadow(0 0 6px rgba(201, 64, 106, 0.4));
+}
+
+body.light-theme .menu-bottom-actions {
+    box-shadow: 0 -8px 24px rgba(70, 90, 140, 0.1);
+}
+
+body.light-theme .story-card {
+    box-shadow: var(--story-card-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+body.light-theme .story-card:not(.locked):hover {
+    box-shadow: var(--story-card-shadow-hover), inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+body.light-theme .top-lang-btn {
+    backdrop-filter: blur(14px) saturate(1.3);
+    -webkit-backdrop-filter: blur(14px) saturate(1.3);
+}
+
+body.light-theme .menu-overlay {
+    box-shadow:
+        inset 0 60px 80px -70px rgba(120, 120, 150, 0.1),
+        inset 0 -60px 80px -70px rgba(120, 120, 150, 0.08);
+}
+
+
+
+
+/* LIGHT THEME — menu uses the same blue/lavender/pink mesh language */
+body.light-theme .menu-overlay::before {
+    content: '';
+    position: absolute;
+    inset: -12%;
+    pointer-events: none;
+    background:
+        radial-gradient(34% 30% at 10% 22%, rgba(85, 140, 255, 0.3) 0%, transparent 72%),
+        radial-gradient(34% 30% at 90% 76%, rgba(205, 120, 255, 0.28) 0%, transparent 72%);
+    filter: blur(36px);
+    animation: menuLightMesh 12s ease-in-out infinite alternate;
+}
+
+@keyframes menuLightMesh {
+    from { transform: scale(1); }
+    to { transform: scale(1.12); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body.light-theme .menu-overlay::before {
+        animation: none;
+    }
+}
+
+body.light-theme .stories-section,
+body.light-theme .menu-hero {
+    position: relative;
+    z-index: 1;
+}
+
+body.light-theme .story-card {
+    background: rgba(248, 250, 253, 0.76);
+    border-color: rgba(255, 255, 255, 0.80);
+}
+
+body.light-theme .menu-bottom-actions {
+    background: rgba(247, 249, 253, 0.76);
+    border-top-color: rgba(255, 255, 255, 0.76);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+}
