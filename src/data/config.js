@@ -9,8 +9,9 @@ export const MAX_STATS = {
 const defaultConfig = {
     language: 'ru',
     theme: 'dark',
-    musicVolume: 30,           // 0-100, музыка
-    notificationsVolume: 100,  // 0-100, уведомления
+    musicVolume: 30,
+    notificationsVolume: 100,
+    disclaimerAccepted: false,
 };
 
 let config = { ...defaultConfig };

@@ -7,6 +7,7 @@ import { initAvatar } from './avatar.js';
 import { initUI, hideOptions } from '../ui/components.js';
 import { initMenu, showMenu } from '../ui/menu.js';
 import { initSettings, openSettings } from '../ui/settings.js';
+import { initLegal, showLegal, isLegalAccepted } from '../ui/legal.js';
 import { initAchievements, setStore as setAchievementStore } from '../ui/achievements.js';
 import { initLightbox } from '../ui/lightbox.js';
 import { initSDK } from '../engine/sdk.js';
@@ -60,6 +61,8 @@ export async function initBootstrap(engine, store) {
   // Audio unlock on first click
   document.addEventListener('click', () => { unlockAudio(); }, { once: false });
 
-  // Show the main menu
+  // Show the main menu, then overlay legal screen if first launch
   showMenu();
+  initLegal();
+  if (!isLegalAccepted()) showLegal();
 }
