@@ -1,5 +1,11 @@
 <h1 align="center">👩‍🏫 Чат с учительницей Алисой</h1>
 
+<p align="center">
+  <a href="https://fogster-5-999.github.io/chat-with-teacher-alisa/">
+    <img src="https://img.shields.io/badge/🎮%20Играть%20онлайн-Демо-brightgreen?style=for-the-badge" alt="Demo" />
+  </a>
+</p>
+
 > ⚠️ **Статус:** Ядро игры готово: полный сюжет на 7 дней, характеристики, автосохранения, медиа-контент и data-driven конструктор дней. Дополнительные фичи (онбординг, SDK, галерея достижений и т.д.) — в процессе.
 
 <p align="center">
