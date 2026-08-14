@@ -73,7 +73,8 @@ export default {
         { type: 'flags', set: { openToTransfer: true } }
       ],
       d4_support_joke: [
-        { type: 'reaction', sender: 'alisa', textKey: 'Я улыбнулась. Но завтра всё равно будет тяжело' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Я улыбнулась)' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Но завтра всё равно будет тяжело' },
         { type: 'stats', changes: { success: 0, romance: 0, humor: 2 } },
       ],
       d4_support_pressure: [
@@ -92,7 +93,8 @@ export default {
     ], else: [
       { type: 'messages', list: [
         { sender: 'alisa', textKey: 'Слушай…' },
-        { sender: 'alisa', textKey: 'Давай перейдём на «ты». Столько уже переписались — как-то странно на «вы».' }
+        { sender: 'alisa', textKey: 'Давай перейдём на «ты»' },
+        { sender: 'alisa', textKey: 'Столько уже переписывались — как-то странно на «вы».' }
       ] }
     ] },
     { type: 'message', sender: 'alisa', textKey: 'Ладно, пойду готовиться. До завтра' },

@@ -66,8 +66,8 @@ export const day2 = {
     { type: 'messages', list: [
       { sender: 'alisa', textKey: 'А сейчас о английском' },
       { sender: 'alisa', textKey: 'Завтра днём буду в кофейне на Ленина, готовить материалы для пар' },
-      { sender: 'alisa', textKey: 'Можете подойти, разберём ошибки живьём' },
-            { sender: 'alisa', textKey: 'Я там обычно пару часиков сижу' },
+      { sender: 'alisa', textKey: 'Можете подойти, разберём ошибки вместе' },
+      { sender: 'alisa', textKey: 'Я там обычно пару часиков сижу' },
       { sender: 'alisa', textKey: 'Но это просто консультация.' }
     ] },
     { type: 'choice', id: 'day2_cafe_response', options: [

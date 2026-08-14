@@ -71,7 +71,7 @@ export default {
       ],
       d1_schedule_video: [
         { type: 'reaction', sender: 'alisa', textKey: 'Нет, это лишние' },
-        { type: 'reaction', sender: 'alisa', textKey: 'Это просто разбор. Давайте без лишнего' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Это просто разбор. Давайте без этого' },
         { type: 'stats', changes: { success: 0, romance: -4, humor: 0 } },
         { type: 'flags', set: { pushedTooFast: true, pushySchedule: true } }
       ]
