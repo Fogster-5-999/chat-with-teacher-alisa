@@ -22,12 +22,15 @@ export default {
     const hasLegacyUnlock = state.flags.photoUnlocked && Object.keys(unlockedUrls).length === 0;
     const isLocked = isBlurred && !hasLegacyUnlock && !unlockedUrls[step.url];
 
+    if (!step.time) {
+      console.warn(`photo: no time for "${step.url}", using day start`);
+    }
     const photoMsg = {
       sender: 'alisa',
       type: 'photo',
       photoUrl: step.url,
       isLocked,
-      timestamp: new Date().toISOString()
+      timestamp: ctx.resolveTime(step.time)
     };
 
     store.setState({

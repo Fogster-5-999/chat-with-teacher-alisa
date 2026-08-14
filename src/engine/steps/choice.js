@@ -31,15 +31,10 @@ export default {
     const state = store.getState();
 
     // Player's choice message
-    const dates = state.dates;
-    let timestamp;
-    if (dates.currentTime) {
-      const t = new Date(dates.currentTime);
-      t.setMinutes(t.getMinutes() + 1);
-      timestamp = t.toISOString();
-    } else {
-      timestamp = new Date().toISOString();
+    if (!step.time) {
+      console.warn(`choice: no time for "${step.id}", using day start`);
     }
+    const timestamp = ctx.resolveTime(step.time);
 
     const playerMsg = {
       sender: 'player',
@@ -48,8 +43,7 @@ export default {
     };
 
     store.setState({
-      messages: [...state.messages, playerMsg],
-      dates: { ...dates, currentTime: timestamp }
+      messages: [...state.messages, playerMsg]
     });
 
     ui.renderMessage(playerMsg);

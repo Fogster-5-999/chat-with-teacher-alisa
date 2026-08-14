@@ -29,15 +29,10 @@ export default {
     ui.hideTyping();
 
     // Read fresh state after async gap
-    const dates = store.getState().dates;
-    let timestamp;
-    if (dates.currentDate && dates.currentTime) {
-      const t = new Date(dates.currentTime);
-      t.setMinutes(t.getMinutes() + Math.floor(Math.random() * 5) + 1);
-      timestamp = t.toISOString();
-    } else {
-      timestamp = new Date().toISOString();
+    if (!step.time) {
+      console.warn(`voice: no time for "${step.voiceId}", using day start`);
     }
+    const timestamp = ctx.resolveTime(step.time);
 
     // Locked by default; already-unlocked voices stay unlocked
     const freshState = store.getState();
@@ -53,8 +48,7 @@ export default {
     };
 
     store.setState({
-      messages: [...freshState.messages, msg],
-      dates: { ...freshState.dates, currentTime: timestamp }
+      messages: [...freshState.messages, msg]
     });
 
     ui.renderMessage(msg);

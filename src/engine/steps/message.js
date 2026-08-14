@@ -17,15 +17,10 @@ export default {
     ui.hideTyping();
 
     const state = store.getState();
-    const dates = state.dates;
-    let timestamp;
-    if (dates.currentDate && dates.currentTime) {
-      const t = new Date(dates.currentTime);
-      t.setMinutes(t.getMinutes() + Math.floor(Math.random() * 5) + 1);
-      timestamp = t.toISOString();
-    } else {
-      timestamp = new Date().toISOString();
+    if (step.sender !== 'system' && !step.time) {
+      console.warn(`message: no time for "${step.textKey}", using day start`);
     }
+    const timestamp = ctx.resolveTime(step.time);
 
     const msg = {
       sender: step.sender,
@@ -35,8 +30,7 @@ export default {
     };
 
     store.setState({
-      messages: [...state.messages, msg],
-      dates: { ...dates, currentTime: timestamp }
+      messages: [...state.messages, msg]
     });
 
     ui.renderMessage(msg);

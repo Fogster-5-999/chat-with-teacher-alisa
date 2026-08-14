@@ -21,6 +21,15 @@ registerMigration(1, (data) => {
   return result;
 });
 
+// v2 → v3: drop runtime message-time tracking (dates.currentTime)
+registerMigration(2, (data) => {
+  if (data && data.dates && 'currentTime' in data.dates) {
+    const { currentTime, ...dates } = data.dates;
+    data.dates = dates;
+  }
+  return data;
+});
+
 /**
  * Register a migration step.
  * @param {number} fromVersion - migrate from this version

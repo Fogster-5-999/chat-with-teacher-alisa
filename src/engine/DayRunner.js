@@ -14,6 +14,7 @@
  */
 import { GAME_SCRIPT } from '../data/story/index.js';
 import { evaluate } from '../state/ConditionEngine.js';
+import { resolveTime } from './time.js';
 
 export class DayRunner {
   constructor(stepRunner, store, bus, ui, audio, t, getSDK) {
@@ -192,6 +193,15 @@ export class DayRunner {
       audio: this._audio,
       t: this._t,
       getSDK: this._getSDK,
+      resolveTime: (timeStr) => {
+        const state = this._store.getState();
+        const msgs = state.messages;
+        return resolveTime(
+          state.dates?.currentDate,
+          timeStr,
+          msgs && msgs.length ? msgs[msgs.length - 1].timestamp : null
+        );
+      },
       runSteps: (steps, ctx) => this.runSteps(steps, ctx)
     };
   }
@@ -258,7 +268,7 @@ export class DayRunner {
     }
 
     this._store.setState({
-      dates: { currentDate: newDate.toISOString(), currentTime: newDate.toISOString() }
+      dates: { currentDate: newDate.toISOString() }
     });
 
     // Show network status

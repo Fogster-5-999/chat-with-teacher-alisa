@@ -28,7 +28,7 @@ export default {
       const noteMsg = {
         sender: 'system',
         textKey: step.note,
-        timestamp: new Date().toISOString()
+        timestamp: ctx.resolveTime()
       };
       store.setState({
         messages: [...store.getState().messages, noteMsg]

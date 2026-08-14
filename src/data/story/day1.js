@@ -3,13 +3,13 @@ export default {
   start: { hour: 20, minute: 0 },
   steps: [
     { type: 'messages', list: [
-      { sender: 'alisa', textKey: 'Добрый вечер' },
-      { sender: 'alisa', textKey: 'Это Алиса Сергеевна'},
-      { sender: 'alisa', textKey: 'Проверила ваш сегодняшний тест' },
-      { sender: 'alisa', textKey: 'Иии это слабовато' },
-      { sender: 'alisa', textKey: 'И домашка пустая. Что случилось?'}
+      { sender: 'alisa', textKey: 'Добрый вечер', time: '20:01' },
+      { sender: 'alisa', textKey: 'Это Алиса Сергеевна', time: '20:02' },
+      { sender: 'alisa', textKey: 'Проверила ваш сегодняшний тест', time: '20:03' },
+      { sender: 'alisa', textKey: 'Иии это слабовато', time: '20:04' },
+      { sender: 'alisa', textKey: 'И домашка пустая. Что случилось?', time: '20:06' }
     ] },
-    { type: 'choice', id: 'day1_response', options: [
+    { type: 'choice', id: 'day1_response', time: '20:09', options: [
       { id: 'd1_apologize', labelKey: 'd1_apologize' },
       { id: 'd1_ask_help', labelKey: 'd1_ask_help' },
       { id: 'd1_joke', labelKey: 'd1_joke' },
@@ -17,36 +17,36 @@ export default {
     ] },
     { type: 'branch', onChoice: 'day1_response', branches: {
       d1_apologize: [
-        { type: 'reaction', sender: 'alisa', textKey: 'Ок, спасибо, что сказали прямо' },
-        { type: 'reaction', sender: 'alisa', textKey: 'Хорошо. Жду переделанную работу' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Ок, спасибо, что сказали прямо', time: '20:11' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Хорошо. Жду переделанную работу', time: '20:12' },
         { type: 'stats', changes: { success: 5, romance: 0, humor: 0 } },
         { type: 'flags', set: { studyFocused: true, honestWithAlisa: true } }
       ],
       d1_ask_help: [
-        { type: 'reaction', sender: 'alisa', textKey: 'Хорошо, скину памятку с примерами' },
-        { type: 'reaction', sender: 'alisa', textKey: 'Изучите, потом напишите, если останутся вопросы. Но только в рабочие часы' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Хорошо, скину памятку с примерами', time: '20:11' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Изучите, потом напишите, если останутся вопросы. Но только в рабочие часы', time: '20:13' },
         { type: 'stats', changes: { success: 4, romance: 0, humor: 0 } },
         { type: 'flags', set: { studyFocused: true } }
       ],
       d1_joke: [
-        { type: 'reaction', sender: 'alisa', textKey: 'Ладно, засчитано' },
-        { type: 'reaction', sender: 'alisa', textKey: 'А теперь серьёзно. Когда сможете сдать?' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Ладно, засчитано', time: '20:11' },
+        { type: 'reaction', sender: 'alisa', textKey: 'А теперь серьёзно. Когда сможете сдать?', time: '20:12' },
         { type: 'stats', changes: { success: 1, romance: 0, humor: 3 } },
       ],
       d1_flirt_early: [
-        { type: 'reaction', sender: 'alisa', textKey: 'Мы только начали общаться' },
-        { type: 'reaction', sender: 'alisa', textKey: 'Давайте пока не будем смешивать это с домашкой' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Мы только начали общаться', time: '20:11' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Давайте пока не будем смешивать это с домашкой', time: '20:12' },
         { type: 'stats', changes: { success: -1, romance: -4, humor: 0 } },
         { type: 'flags', set: { pushedTooFast: true } }
       ]
     } },
     { type: 'messages', list: [
-      { sender: 'alisa', textKey: 'И ещё момент' },
-      { sender: 'alisa', textKey: 'Вы взрослый, я понимаю' },
-      { sender: 'alisa', textKey: 'Поэтому заранее хотела бы обговорить' },
-      { sender: 'alisa', textKey: 'В личку только по учебе' }
+      { sender: 'alisa', textKey: 'И ещё момент', time: '20:15' },
+      { sender: 'alisa', textKey: 'Вы взрослый, я понимаю', time: '20:16' },
+      { sender: 'alisa', textKey: 'Поэтому заранее хотела бы обговорить', time: '20:17' },
+      { sender: 'alisa', textKey: 'В личку только по учебе', time: '20:18' }
     ] },
-    { type: 'choice', id: 'day1_schedule', options: [
+    { type: 'choice', id: 'day1_schedule', time: '20:21', options: [
       { id: 'd1_schedule_calm', labelKey: 'd1_schedule_calm' },
       { id: 'd1_schedule_self', labelKey: 'd1_schedule_self' },
       { id: 'd1_schedule_now', labelKey: 'd1_schedule_now' },
@@ -54,31 +54,31 @@ export default {
     ] },
     { type: 'branch', onChoice: 'day1_schedule', branches: {
       d1_schedule_calm: [
-        { type: 'reaction', sender: 'alisa', textKey: 'Ну и отлично, думаю к шести тогда' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Ну и отлично, думаю к шести тогда', time: '20:23' },
         { type: 'stats', changes: { success: 2, romance: 1, humor: 0 } },
         { type: 'flags', set: { respectsTime: true, respectsBoundary: true } }
       ],
       d1_schedule_self: [
-        { type: 'reaction', sender: 'alisa', textKey: 'Договорились, пришлите, когда будет готово' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Договорились, пришлите, когда будет готово', time: '20:23' },
         { type: 'stats', changes: { success: 3, romance: 0, humor: 0 } },
         { type: 'flags', set: { selfStudy: true, respectsBoundary: true } }
       ],
       d1_schedule_now: [
-        { type: 'reaction', sender: 'alisa', textKey: 'Сегодня уже поздно' },
-        { type: 'reaction', sender: 'alisa', textKey: 'Напишите завтра, в рабочее время' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Сегодня уже поздно', time: '20:23' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Напишите завтра, в рабочее время', time: '20:24' },
         { type: 'stats', changes: { success: 0, romance: -2, humor: 0 } },
         { type: 'flags', set: { pushySchedule: true } }
       ],
       d1_schedule_video: [
-        { type: 'reaction', sender: 'alisa', textKey: 'Нет, это лишние' },
-        { type: 'reaction', sender: 'alisa', textKey: 'Это просто разбор. Давайте без этого' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Нет, это лишние', time: '20:23' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Это просто разбор. Давайте без этого', time: '20:24' },
         { type: 'stats', changes: { success: 0, romance: -4, humor: 0 } },
         { type: 'flags', set: { pushedTooFast: true, pushySchedule: true } }
       ]
     } },
     { type: 'messages', list: [
-      { sender: 'alisa', textKey: 'Повторите тему' },
-      { sender: 'alisa', textKey: 'До завтра' }
+      { sender: 'alisa', textKey: 'Повторите тему', time: '20:26' },
+      { sender: 'alisa', textKey: 'До завтра', time: '20:27' }
     ] },
     { type: 'flags', set: { day1Completed: true } },
     { type: 'achievement' },

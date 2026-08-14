@@ -32,10 +32,13 @@ export default {
     if (state.flags[miniKey]) return true;
 
     // Show intro message from alisa
+    if (!step.time) {
+      console.warn(`miniTest: no time for "${step.id}", using day start`);
+    }
     const introMsg = {
       sender: 'alisa',
       textKey: step.intro,
-      timestamp: new Date().toISOString()
+      timestamp: ctx.resolveTime(step.time)
     };
     store.setState({ messages: [...state.messages, introMsg] });
     ui.renderMessage(introMsg);

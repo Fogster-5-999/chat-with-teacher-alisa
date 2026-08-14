@@ -1,5 +1,5 @@
 // State version — increment on schema change
-export const SAVE_VERSION = 2;
+export const SAVE_VERSION = 3;
 
 // Persisted game state (saved to localStorage via Yandex SDK)
 export const defaultGameState = {
@@ -9,7 +9,7 @@ export const defaultGameState = {
   flags: {},
   messages: [],
   dayStates: {},
-  dates: { currentDate: null, currentTime: null },
+  dates: { currentDate: null },
   achievements: []
 };
 
