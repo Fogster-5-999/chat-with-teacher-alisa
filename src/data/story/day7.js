@@ -12,8 +12,8 @@ export default {
     ] },
     { type: 'if', check: { hasFlag: 'skippedPark' }, then: [
       { type: 'messages', list: [
-        { sender: 'alisa', textKey: 'Я поняла, что ты не придёшь', time: '20:01' },
-        { sender: 'alisa', textKey: 'Спасибо, что хотя бы не заставил меня ждать дольше', time: '20:02' }
+        { sender: 'alisa', textKey: 'Я поняла, что ты не придёшь', time: '17:01' },
+        { sender: 'alisa', textKey: 'Спасибо, что хотя бы не заставил меня ждать дольше', time: '17:02' }
       ] },
       { type: 'endGame', messages: [
         { sender: 'system', textKey: '🌫️ Финал: недосказанность' },
@@ -23,11 +23,11 @@ export default {
       { type: 'goto', label: 'end' }
     ] },
     { type: 'messages', list: [
-      { sender: 'alisa', textKey: 'Привет', time: '20:01' },
-      { sender: 'alisa', textKey: 'Я не знаю, как начать этот разговор', time: '20:02' },
-      { sender: 'alisa', textKey: 'И я вообще не знаю, чем всё закончится', time: '20:03' }
+      { sender: 'alisa', textKey: 'Привет', time: '17:01' },
+      { sender: 'alisa', textKey: 'Я не знаю, как начать этот разговор', time: '17:02' },
+      { sender: 'alisa', textKey: 'И я вообще не знаю, чем всё закончится', time: '17:03' }
     ] },
-    { type: 'voice', voiceId: 'day_7', time: '20:05' },
+    { type: 'voice', voiceId: 'day_7', time: '17:05' },
     { type: 'message', sender: 'system', textKey: '— Дальше — парк и разговор без телефонов.' },
     { type: 'if', check: { hasFlag: 'choseClean' }, then: [
       { type: 'message', sender: 'system', textKey: 'Перевод уже оформлен — между вами больше нет уроков. Только этот разговор.' }
@@ -38,7 +38,7 @@ export default {
     { type: 'message', sender: 'system', textKey: 'Ветер с пруда, на скамейке между вами полтора места. Она молчит ровно столько, чтобы ты успел передумать.' },
     { type: 'message', sender: 'system', textKey: 'Потом тихо: «Ну? Я пришла не для того, чтобы мы снова ушли в телефоны. Скажи уже».' },
     { type: 'message', sender: 'system', textKey: 'И оказывается, самое страшное — не молчать в голове, а ответить вслух.' },
-    { type: 'choice', id: 'day7_final_choice', time: '20:08', options: [
+    { type: 'choice', id: 'day7_final_choice', time: '17:08', options: [
       { id: 'd7_commit', labelKey: 'd7_commit' },
       { id: 'd7_wait', labelKey: 'd7_wait' },
       { id: 'd7_open', labelKey: 'd7_open' },
@@ -46,19 +46,19 @@ export default {
     ] },
     { type: 'branch', onChoice: 'day7_final_choice', branches: {
       d7_commit: [
-        { type: 'reaction', sender: 'alisa', textKey: 'Я услышала', time: '20:10' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Я услышала', time: '17:10' },
         { type: 'flags', set: { finalCommit: true } }
       ],
       d7_wait: [
-        { type: 'reaction', sender: 'alisa', textKey: 'Мне тоже так спокойнее', time: '20:10' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Мне тоже так спокойнее', time: '17:10' },
         { type: 'flags', set: { finalWait: true } }
       ],
       d7_open: [
-        { type: 'reaction', sender: 'alisa', textKey: 'Давай без громких слов. Просто честно', time: '20:10' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Давай без громких слов. Просто честно', time: '17:10' },
         { type: 'flags', set: { finalOpen: true } }
       ],
       d7_stop: [
-        { type: 'reaction', sender: 'alisa', textKey: 'Хорошо. Мне больно, но я понимаю', time: '20:10' },
+        { type: 'reaction', sender: 'alisa', textKey: 'Хорошо. Мне больно, но я понимаю', time: '17:10' },
         { type: 'flags', set: { finalStop: true } }
       ]
     } },
@@ -115,9 +115,9 @@ export default {
     ] },
     { type: 'if', check: { always: true }, then: [
       { type: 'messages', list: [
-        { sender: 'alisa', textKey: 'Спасибо, что пришёл. И что был честен — даже когда было неудобно.', time: '20:12' },
-        { sender: 'alisa', textKey: 'Я не могу сейчас ответить тебе так, как ты хочешь. Не потому что не хочу — просто пока не готова.', time: '20:13' },
-        { sender: 'alisa', textKey: 'Может, однажды мы вернёмся к этому разговору. А пока — береги себя.', time: '20:14' }
+        { sender: 'alisa', textKey: 'Спасибо, что пришёл. И что был честен — даже когда было неудобно.', time: '17:12' },
+        { sender: 'alisa', textKey: 'Я не могу сейчас ответить тебе так, как ты хочешь. Не потому что не хочу — просто пока не готова.', time: '17:13' },
+        { sender: 'alisa', textKey: 'Может, однажды мы вернёмся к этому разговору. А пока — береги себя.', time: '17:14' }
       ] },
       { type: 'endGame', messages: [
         { sender: 'system', textKey: '🌫️ Финал: честная неопределённость' },
