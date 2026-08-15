@@ -4,7 +4,7 @@
 import { applyTheme } from './theme.js';
 import { applyLanguage } from './language.js';
 import { initAvatar } from './avatar.js';
-import { initUI, hideOptions } from '../ui/components.js';
+import { initUI } from '../ui/components.js';
 import { initMenu, showMenu } from '../ui/menu.js';
 import { initSettings, openSettings } from '../ui/settings.js';
 import { initLegal, showLegal, isLegalAccepted } from '../ui/legal.js';
@@ -46,7 +46,6 @@ export async function initBootstrap(engine, store) {
   if (backBtn) {
     backBtn.addEventListener('click', async () => {
       engine.pause();
-      hideOptions();
       const profileModal = document.getElementById('profile-modal');
       if (profileModal) profileModal.classList.remove('active');
       import('../engine/voicePlayer.js').then(({ stopVoice }) => stopVoice()).catch(() => {});
